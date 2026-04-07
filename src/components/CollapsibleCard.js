@@ -1,0 +1,86 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { COLORS, BORDER_RADIUS, SHADOW, SPACING } from '../utils/theme';
+
+function getIconName(icon) {
+  if (!icon || typeof icon !== 'string') return null;
+  return icon;
+}
+
+export default function CollapsibleCard({ title, icon, rightContent, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const iconName = getIconName(icon);
+
+  return (
+    <View style={[styles.card, SHADOW]}>
+      <TouchableOpacity
+        style={[styles.header, !open && styles.headerClosed]}
+        onPress={() => setOpen(!open)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.headerTitleRow}>
+          {iconName ? <FontAwesome5 name={iconName} size={15} color={COLORS.primary} style={styles.headerIcon} /> : null}
+          <Text style={styles.headerText}>{title}</Text>
+        </View>
+        {rightContent ? <View style={styles.rightContent}>{rightContent}</View> : null}
+        <FontAwesome5
+          name={open ? 'chevron-up' : 'chevron-down'}
+          size={12}
+          color={COLORS.primary}
+          style={styles.chevron}
+        />
+      </TouchableOpacity>
+      {open && <View style={styles.body}>{children}</View>}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: COLORS.cardBg,
+    borderRadius: BORDER_RADIUS,
+    marginBottom: SPACING.sm,
+    overflow: 'hidden',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: SPACING.md,
+    backgroundColor: '#f0f2f5',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  headerClosed: {
+    borderBottomWidth: 0,
+  },
+  headerText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.text,
+    flex: 1,
+  },
+  headerTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: SPACING.sm,
+  },
+  headerIcon: {
+    width: 20,
+    marginRight: 8,
+  },
+  chevron: {
+    width: 14,
+    textAlign: 'center',
+  },
+  rightContent: {
+    marginRight: SPACING.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  body: {
+    padding: SPACING.md,
+  },
+});

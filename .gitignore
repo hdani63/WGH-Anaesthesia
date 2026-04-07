@@ -1,0 +1,8 @@
+node_modules
+
+# Expo / React Native local build and cache files
+.expo/
+dist/
+
+# macOS
+.DS_Store

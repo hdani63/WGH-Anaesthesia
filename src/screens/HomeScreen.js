@@ -1,0 +1,166 @@
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+
+const TOOLS = [
+  { key: 'Preoperative', icon: 'clipboard-list', title: 'Preoperative Assessment' },
+  { key: 'Postoperative', icon: 'bed', title: 'Postoperative & Recovery' },
+  { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
+  { key: 'ICUCalculators', icon: 'procedures', title: 'ICU Calculators' },
+  { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
+  { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
+  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
+  { key: 'QualitySafety', icon: 'check-circle', title: 'Quality & Safety' },
+  { key: 'GeneralMedical', icon: 'calculator', title: 'General Medical' },
+  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
+  { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
+  { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
+  { key: 'CriticalTransfer', icon: 'shuttle-van', title: 'Critical Transfer', badge: 'New', highlight: true },
+  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
+  { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
+  { key: 'PerioperativeMedication', icon: 'pills', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
+  { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
+  { key: 'LabourAnalgesia', icon: 'baby', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
+  { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
+];
+
+export default function HomeScreen({ navigation }) {
+  return (
+    <LinearGradient
+      colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.safeAreaGradient}
+    >
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+          <LinearGradient
+            colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.header}
+          >
+          <View style={styles.headerLeft}>
+            <View style={styles.headerIconWrap}>
+              <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
+            </View>
+            <View>
+              <Text style={styles.headerTitle}>WGH Anaesthesia</Text>
+              <Text style={styles.headerSub}>Anaesthesia For Wexford General Hospital</Text>
+            </View>
+          </View>
+          <View style={styles.hospitalLogo}>
+            <FontAwesome5 name="hospital" size={38} color="rgba(255,255,255,0.8)" />
+          </View>
+          </LinearGradient>
+
+        <View style={styles.gridWrap}>
+          <View style={styles.grid}>
+          {TOOLS.map(tool => (
+            <TouchableOpacity
+              key={tool.key}
+              style={[styles.card, SHADOW, tool.highlight && styles.cardHighlight]}
+              onPress={() => navigation.navigate(tool.key)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.cardIconWrap}>
+                <FontAwesome5
+                  name={tool.icon}
+                  size={22}
+                  color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
+                />
+              </View>
+              <Text style={[styles.cardTitle, tool.highlight && styles.cardTitleHighlight]}>
+                {tool.title}
+              </Text>
+              {tool.badge && (
+                <Text style={styles.badge}>{tool.badge}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
+          </View>
+        </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>© 2025 WGH Anaesthesia - Wexford General Hospital Anaesthesia Department</Text>
+            <Text style={styles.footerMuted}>For medical professional use only</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeAreaGradient: { flex: 1 },
+  safeArea: { flex: 1, backgroundColor: 'transparent' },
+  container: { flex: 1, backgroundColor: COLORS.background },
+  content: { paddingBottom: 24 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.lg,
+    marginBottom: SPACING.md,
+  },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', flexShrink: 1 },
+  headerIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  hospitalLogo: { marginLeft: SPACING.sm },
+  headerTitle: { fontSize: 22, fontWeight: '700', color: COLORS.white },
+  headerSub: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
+  gridWrap: { paddingHorizontal: SPACING.md },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  card: {
+    width: '48%',
+    backgroundColor: COLORS.cardBg,
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.md,
+    minHeight: 118,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  cardHighlight: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  cardIconWrap: { marginBottom: 8 },
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.text,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  cardTitleHighlight: { color: COLORS.white },
+  badge: {
+    fontSize: 11,
+    color: '#ffc107',
+    fontWeight: '600',
+    marginTop: 4,
+  },
+  footer: {
+    alignItems: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.lg,
+    marginTop: SPACING.sm,
+    backgroundColor: '#343a40',
+  },
+  footerText: { fontSize: 12, color: COLORS.white, textAlign: 'center' },
+  footerMuted: { fontSize: 11, color: '#6c757d', marginTop: 2 },
+});
