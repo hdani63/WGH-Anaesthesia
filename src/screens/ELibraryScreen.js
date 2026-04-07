@@ -53,32 +53,6 @@ const BOOKS = [
       },
     ],
   },
-  {
-    category: 'Source PDF Archive (All Project PDFs)',
-    color: '#6c757d',
-    icon: 'archive',
-    items: [
-      { title: 'Algorithm ACLS Bradycardia (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_bradycardia_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_bradycardia_attached.pdf') },
-      { title: 'Algorithm ACLS Cardiac Arrest (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_cardiac_arrest_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_cardiac_arrest_attached.pdf') },
-      { title: 'Algorithm ACLS Circular (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_circular_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_circular_attached.pdf') },
-      { title: 'Algorithm ACLS Pregnancy (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_pregnancy_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_pregnancy_attached.pdf') },
-      { title: 'Algorithm ACLS Post Arrest (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_post_arrest_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_post_arrest_attached.pdf') },
-      { title: 'Algorithm ACLS Tachycardia (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_acls_tachycardia_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_acls_tachycardia_attached.pdf') },
-      { title: 'Algorithm Opioid HC Provider (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_opioid_hc_provider_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_opioid_hc_provider_attached.pdf') },
-      { title: 'Algorithm Opioid Lay Responder (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'algorithm_opioid_lay_responder_attached.pdf', source: require('../../assets/pdfs/archive/algorithm_opioid_lay_responder_attached.pdf') },
-      { title: 'Handbook for Trainees (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'handbook_trainees_attached.pdf', source: require('../../assets/pdfs/archive/handbook_trainees_attached.pdf') },
-      { title: 'Morgan & Mikhail 7th (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'morgan_mikhail_7th_attached.pdf', source: require('../../assets/pdfs/archive/morgan_mikhail_7th_attached.pdf') },
-      { title: 'Morgan & Mikhail Cases (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'morgan_mikhail_cases_attached.pdf', source: require('../../assets/pdfs/archive/morgan_mikhail_cases_attached.pdf') },
-      { title: 'Oxford Handbook 5th (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'oxford_handbook_5th_attached.pdf', source: require('../../assets/pdfs/archive/oxford_handbook_5th_attached.pdf') },
-      { title: 'DAS Unanticipated (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'das_unanticipated_attached.pdf', source: require('../../assets/pdfs/archive/das_unanticipated_attached.pdf') },
-      { title: 'DAS Unanticipated Alt (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'das_unanticipated_alt_attached.pdf', source: require('../../assets/pdfs/archive/das_unanticipated_alt_attached.pdf') },
-      { title: 'DAS Unanticipated New (Static)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'das_unanticipated_guidelines_new.pdf', source: require('../../assets/pdfs/archive/das_unanticipated_guidelines_new.pdf') },
-      { title: 'Obstetric GA Failed Intubation (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'obstetric_ga_failed_intubation_attached.pdf', source: require('../../assets/pdfs/archive/obstetric_ga_failed_intubation_attached.pdf') },
-      { title: 'Obstetric GA Failed Intubation Alt (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'obstetric_ga_failed_intubation_alt_attached.pdf', source: require('../../assets/pdfs/archive/obstetric_ga_failed_intubation_alt_attached.pdf') },
-      { title: 'Obstetric Guidelines New (Static)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'obstetric_guidelines_new.pdf', source: require('../../assets/pdfs/archive/obstetric_guidelines_new.pdf') },
-      { title: 'Midwife Monitoring Alt (Attached)', edition: 'Archive', badge: 'PDF', desc: 'Source archive copy.', fileName: 'midwife_monitoring_guide_alt_attached.pdf', source: require('../../assets/pdfs/archive/midwife_monitoring_guide_alt_attached.pdf') },
-    ],
-  },
 ];
 
 function BookCard({ book, categoryColor }) {
@@ -145,11 +119,6 @@ export default function ELibraryScreen() {
           ))}
         </CollapsibleCard>
       ))}
-
-      <View style={styles.noteBox}>
-        <Text style={styles.noteTitle}>Access Information</Text>
-        <Text style={styles.noteText}>All listed PDFs are now bundled in-app. Use Open to view immediately and Download to export/save via the iOS share sheet.</Text>
-      </View>
     </ScreenWrapper>
   );
 }
@@ -204,7 +173,4 @@ const styles = StyleSheet.create({
   },
   openBtnText: { color: COLORS.white, fontWeight: '600', fontSize: 12 },
   downloadBtnText: { fontWeight: '600', fontSize: 12 },
-  noteBox: { backgroundColor: '#e8f4fd', borderRadius: BORDER_RADIUS, padding: SPACING.md, marginTop: SPACING.md },
-  noteTitle: { fontWeight: '700', fontSize: 14, color: COLORS.medicalBlue, marginBottom: SPACING.xs },
-  noteText: { fontSize: 13, color: COLORS.text, lineHeight: 19 },
 });

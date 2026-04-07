@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
@@ -65,16 +65,18 @@ export default function DepartmentalProtocolsScreen() {
           'Complete audit form for departmental tracking',
         ]} />
 
-        <View style={styles.tableWrapper}>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableHeader, { flex: 1 }]}>Weekdays 09:00-17:00</Text>
-            <Text style={[styles.tableHeader, { flex: 1 }]}>Out of Hours</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+          <View style={styles.tableWrapper}>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableHeader, { width: 220, minWidth: 220 }]}>Weekdays 09:00-17:00</Text>
+              <Text style={[styles.tableHeader, { width: 220, minWidth: 220 }]}>Out of Hours</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, { width: 220, minWidth: 220 }]}>Contact Consultant Anaesthesiologist via switchboard</Text>
+              <Text style={[styles.tableCell, { width: 220, minWidth: 220 }]}>Contact On-Call Anaesthesia NCHD / Registrar</Text>
+            </View>
           </View>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, { flex: 1 }]}>Contact Consultant Anaesthesiologist via switchboard</Text>
-            <Text style={[styles.tableCell, { flex: 1 }]}>Contact On-Call Anaesthesia NCHD / Registrar</Text>
-          </View>
-        </View>
+        </ScrollView>
 
         <InfoSection title="Documentation Required" items={[
           'Patient details and clinical need',
@@ -128,10 +130,11 @@ const styles = StyleSheet.create({
   section: { marginBottom: SPACING.md },
   sectionTitle: { fontWeight: '700', fontSize: 14, color: COLORS.primary, marginBottom: 4 },
   sectionItem: { fontSize: 13, color: COLORS.text, marginBottom: 2, paddingLeft: 4 },
+  tableScrollContent: { paddingBottom: 2 },
   tableWrapper: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, overflow: 'hidden', marginBottom: SPACING.md },
   tableRow: { flexDirection: 'row' },
-  tableHeader: { backgroundColor: COLORS.medicalBlue, color: COLORS.white, padding: 8, fontWeight: '700', fontSize: 12 },
-  tableCell: { padding: 8, fontSize: 12, color: COLORS.text, borderTopWidth: 1, borderTopColor: COLORS.border },
+  tableHeader: { backgroundColor: COLORS.medicalBlue, color: COLORS.white, padding: 8, fontWeight: '700', fontSize: 12, lineHeight: 17 },
+  tableCell: { padding: 8, fontSize: 12, color: COLORS.text, borderTopWidth: 1, borderTopColor: COLORS.border, lineHeight: 17 },
   importantNoteBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',

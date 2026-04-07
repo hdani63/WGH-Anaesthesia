@@ -110,6 +110,21 @@ export default function PerioperativeMedicationScreen() {
     );
   }, [search]);
 
+  const classBadgeStyle = (cls) => {
+    const c = cls.toLowerCase();
+    if (c.includes('anticoagulant')) return { backgroundColor: COLORS.danger, color: COLORS.white };
+    if (c.includes('antiplatelet')) return { backgroundColor: COLORS.warning, color: COLORS.dark };
+    if (c.includes('herbal')) return { backgroundColor: '#6c757d', color: COLORS.white };
+    if (c.includes('diabetes')) return { backgroundColor: COLORS.info, color: COLORS.white };
+    return { backgroundColor: COLORS.primary, color: COLORS.white };
+  };
+
+  const recStyle = (rec) => {
+    if (rec.includes('Continue')) return { color: COLORS.success };
+    if (rec.includes('Stop') || rec.includes('Hold')) return { color: COLORS.danger };
+    return { color: '#856404' };
+  };
+
   return (
     <ScreenWrapper title="Perioperative Medication" subtitle="Evidence-based medication management (2024)">
       <View style={styles.searchBox}>
@@ -129,29 +144,33 @@ export default function PerioperativeMedicationScreen() {
       </View>
       <Text style={styles.countText}>{filtered.length} medication{filtered.length !== 1 ? 's' : ''} found</Text>
 
-      {filtered.map((med, i) => (
-        <View key={i} style={styles.medCard}>
-          <View style={styles.medHeader}>
-            <Text style={styles.medName}>{med.name}</Text>
-            <Text style={styles.medClass}>{med.cls}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+        <View style={styles.tableWrap}>
+          <View style={styles.tableHeaderRow}>
+            <Text style={[styles.tableHeaderCell, { width: 190 }]}>Medication</Text>
+            <Text style={[styles.tableHeaderCell, { width: 120 }]}>Class</Text>
+            <Text style={[styles.tableHeaderCell, { width: 170 }]}>Recommendation</Text>
+            <Text style={[styles.tableHeaderCell, { width: 130 }]}>Stop</Text>
+            <Text style={[styles.tableHeaderCell, { width: 130 }]}>Restart</Text>
+            <Text style={[styles.tableHeaderCell, { width: 280 }]}>Key Notes</Text>
           </View>
-          <View style={styles.medBody}>
-            <View style={styles.medRow}>
-              <Text style={styles.medLabel}>Recommendation:</Text>
-              <Text style={[styles.medValue, { color: med.rec.includes('Continue') ? COLORS.success : med.rec.includes('Stop') || med.rec.includes('Hold') ? COLORS.danger : COLORS.warning }]}>{med.rec}</Text>
-            </View>
-            <View style={styles.medRow}>
-              <Text style={styles.medLabel}>Stop:</Text>
-              <Text style={styles.medValue}>{med.stop}</Text>
-            </View>
-            <View style={styles.medRow}>
-              <Text style={styles.medLabel}>Restart:</Text>
-              <Text style={styles.medValue}>{med.restart}</Text>
-            </View>
-            <Text style={styles.medNotes}>{med.notes}</Text>
-          </View>
+          {filtered.map((med, i) => {
+            const badge = classBadgeStyle(med.cls);
+            return (
+              <View key={i} style={[styles.tableDataRow, i % 2 === 1 && styles.tableDataRowAlt]}>
+                <Text style={[styles.tableDataCell, { width: 190, fontWeight: '600' }]}>{med.name}</Text>
+                <View style={[styles.tableDataCell, { width: 120 }]}> 
+                  <Text style={[styles.classBadge, { backgroundColor: badge.backgroundColor, color: badge.color }]}>{med.cls}</Text>
+                </View>
+                <Text style={[styles.tableDataCell, { width: 170 }, recStyle(med.rec)]}>{med.rec}</Text>
+                <Text style={[styles.tableDataCell, { width: 130 }]}>{med.stop}</Text>
+                <Text style={[styles.tableDataCell, { width: 130 }]}>{med.restart}</Text>
+                <Text style={[styles.tableDataCell, { width: 280 }]}>{med.notes}</Text>
+              </View>
+            );
+          })}
         </View>
-      ))}
+      </ScrollView>
 
       <View style={styles.refBox}>
         <Text style={styles.refTitle}>References</Text>
@@ -169,15 +188,14 @@ const styles = StyleSheet.create({
   clearBtn: { position: 'absolute', right: 12, padding: 4 },
   clearText: { fontSize: 18, color: COLORS.textMuted },
   countText: { fontSize: 12, color: COLORS.textMuted, marginBottom: SPACING.md, textAlign: 'right' },
-  medCard: { backgroundColor: COLORS.cardBg, borderRadius: BORDER_RADIUS, marginBottom: SPACING.sm, ...SHADOW, overflow: 'hidden' },
-  medHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f0f4f8', padding: SPACING.sm },
-  medName: { fontWeight: '700', fontSize: 14, color: COLORS.text, flex: 1 },
-  medClass: { fontSize: 11, color: COLORS.white, backgroundColor: COLORS.primary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, overflow: 'hidden' },
-  medBody: { padding: SPACING.sm },
-  medRow: { flexDirection: 'row', marginBottom: 2 },
-  medLabel: { fontWeight: '600', fontSize: 12, color: COLORS.textMuted, width: 110 },
-  medValue: { fontSize: 12, color: COLORS.text, flex: 1 },
-  medNotes: { fontSize: 11, color: COLORS.textMuted, fontStyle: 'italic', marginTop: 4 },
+  tableScrollContent: { paddingBottom: 2 },
+  tableWrap: { borderWidth: 1, borderColor: COLORS.border, borderRadius: BORDER_RADIUS, overflow: 'hidden', backgroundColor: COLORS.white, ...SHADOW },
+  tableHeaderRow: { flexDirection: 'row', backgroundColor: COLORS.medicalBlue, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  tableHeaderCell: { color: COLORS.white, fontWeight: '700', fontSize: 12, paddingVertical: 10, paddingHorizontal: 8 },
+  tableDataRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  tableDataRowAlt: { backgroundColor: '#f8f9fa' },
+  tableDataCell: { fontSize: 12, color: COLORS.text, lineHeight: 17, paddingVertical: 10, paddingHorizontal: 8 },
+  classBadge: { fontSize: 11, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, overflow: 'hidden', alignSelf: 'flex-start' },
   refBox: { backgroundColor: '#e8f4fd', borderRadius: BORDER_RADIUS, padding: SPACING.md, marginTop: SPACING.md },
   refTitle: { fontWeight: '700', fontSize: 14, color: COLORS.medicalBlue, marginBottom: SPACING.xs },
   refItem: { fontSize: 11, color: COLORS.text, marginBottom: 2 },

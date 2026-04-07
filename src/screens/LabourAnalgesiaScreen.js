@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
@@ -22,22 +23,45 @@ function InfoSection({ title, items }) {
   );
 }
 
-function DataTable({ headers, rows }) {
-  return (
-    <View style={styles.table}>
-      <View style={styles.tableHeader}>
-        {headers.map((h, i) => (
-          <Text key={i} style={[styles.tableHeaderText, { flex: i === 0 ? 1.5 : 1 }]}>{h}</Text>
-        ))}
-      </View>
-      {rows.map((row, i) => (
-        <View key={i} style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}>
-          {row.map((cell, j) => (
-            <Text key={j} style={[styles.tableCell, { flex: j === 0 ? 1.5 : 1 }]}>{cell}</Text>
+function DataTable({ headers, rows, columnWidths, columnFlex }) {
+  if (columnFlex?.length === headers.length) {
+    return (
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          {headers.map((h, i) => (
+            <Text key={i} style={[styles.tableHeaderText, { flex: columnFlex[i] }]}>{h}</Text>
           ))}
         </View>
-      ))}
-    </View>
+        {rows.map((row, i) => (
+          <View key={i} style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}>
+            {row.map((cell, j) => (
+              <Text key={j} style={[styles.tableCell, { flex: columnFlex[j] }]}>{cell}</Text>
+            ))}
+          </View>
+        ))}
+      </View>
+    );
+  }
+
+  const widths = columnWidths || headers.map(() => 140);
+
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          {headers.map((h, i) => (
+            <Text key={i} style={[styles.tableHeaderText, { width: widths[i], minWidth: widths[i] }]}>{h}</Text>
+          ))}
+        </View>
+        {rows.map((row, i) => (
+          <View key={i} style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}>
+            {row.map((cell, j) => (
+              <Text key={j} style={[styles.tableCell, { width: widths[j], minWidth: widths[j] }]}>{cell}</Text>
+            ))}
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -56,9 +80,51 @@ export default function LabourAnalgesiaScreen() {
 
       {/* EPIDURAL SECTION */}
       <CollapsibleCard title="Epidural Analgesia" defaultOpen>
-        <View style={styles.alertBox}>
-          <Text style={styles.alertTitle}>NCHD Responsibilities</Text>
-          <Text style={styles.alertText}>The anaesthetic NCHD is responsible for siting and managing epidurals. Seek senior help early if experiencing difficulty.</Text>
+        <View style={styles.respIntroRow}>
+          <FontAwesome5 name="user-md" size={18} color={COLORS.primary} style={styles.respIntroIcon} />
+          <Text style={styles.respIntroTitle}>NCHD Responsibilities (1st On-Call)</Text>
+        </View>
+
+        <View style={styles.respListCard}>
+          {[
+            ['clock', '#ffc107', 'Attend within 30 minutes of being informed'],
+            ['phone', '#17a2b8', 'If long delay anticipated, coordinate with 2nd on-call'],
+            ['file-signature', '#28a745', 'Obtain consent and give explanation'],
+            ['check-circle', '#0066cc', 'Establish effective epidural analgesia'],
+            ['prescription-bottle', '#6c757d', 'Prepare infusion and connect line'],
+            ['stethoscope', '#dc3545', 'Respond to midwife concerns and review as needed'],
+          ].map(([icon, color, text], i) => (
+            <View key={i} style={[styles.respItemRow, i > 0 && styles.respItemBorder]}>
+              <FontAwesome5 name={icon} size={16} color={color} style={styles.respItemIcon} />
+              <Text style={styles.respItemText}>{text}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.protocolCardWarning}>
+          <View style={styles.protocolHeaderWarning}>
+            <FontAwesome5 name="exclamation-triangle" size={16} color={COLORS.dark} style={styles.protocolHeaderIcon} />
+            <Text style={styles.protocolHeaderWarningText}>Seek Advice BEFORE Siting</Text>
+          </View>
+          {['Obese patient', 'Previous back problems', 'Previous epidural/spinal problems', 'Cardiac/respiratory pathology'].map((item, i) => (
+            <Text key={i} style={[styles.protocolItem, i > 0 && styles.protocolItemBorder]}>{item}</Text>
+          ))}
+        </View>
+
+        <View style={styles.protocolCardDanger}>
+          <View style={styles.protocolHeaderDanger}>
+            <FontAwesome5 name="phone-alt" size={16} color={COLORS.white} style={styles.protocolHeaderIcon} />
+            <Text style={styles.protocolHeaderDangerText}>Seek Help DURING Procedure</Text>
+          </View>
+          {[
+            'Dural tap - inform consultant within 24hrs',
+            'Failed after 2 attempts at 2 spaces',
+            'Patient becoming distressed',
+            'Blood or CSF in catheter',
+            'Cardiac/respiratory history',
+          ].map((item, i) => (
+            <Text key={i} style={[styles.protocolItem, i > 0 && styles.protocolItemBorder]}>{item}</Text>
+          ))}
         </View>
 
         <InfoSection title="Seek Advice/Help When" items={[
@@ -129,12 +195,13 @@ export default function LabourAnalgesiaScreen() {
 
         <Text style={styles.sectionTitle}>Drug Doses</Text>
         <DataTable
-          headers={['', 'Drug', 'Volume', 'Concentration']}
+          headers={['Stage', 'Drug', 'Dose']}
+          columnFlex={[1.2, 2.2, 1.2]}
           rows={[
-            ['Test Dose', 'Lidocaine 2%', '3 mL', '+ Adrenaline 1:200,000'],
-            ['Loading', 'Levobupivacaine', '15-20 mL', '0.1% + Fentanyl 2mcg/mL'],
-            ['Top-up', 'Levobupivacaine', '10-15 mL', '0.1% + Fentanyl 2mcg/mL'],
-            ['Infusion', 'Levobupivacaine', '10-15 mL/hr', '0.1% + Fentanyl 2mcg/mL'],
+            ['Test Dose', '0.25% or 0.5% bupi/levobupivacaine', '3 mL'],
+            ['Loading Dose', '0.125% bupi/levobupivacaine + fentanyl', '10-15 mL + 50-100 mcg'],
+            ['Top-up', '0.1% levobupivacaine + fentanyl 2 mcg/mL', '10-15 mL'],
+            ['Infusion', '0.1% levobupivacaine + fentanyl 2 mcg/mL', '10 mL/hr (max 15 mL/hr)'],
           ]}
         />
         <Text style={styles.note}>Loading dose given in 5mL increments with aspiration between each. Wait 5 minutes before next increment.</Text>
@@ -204,6 +271,7 @@ export default function LabourAnalgesiaScreen() {
         <Text style={styles.sectionTitle}>PCA Settings</Text>
         <DataTable
           headers={['Parameter', 'Setting']}
+          columnFlex={[1.4, 2.1]}
           rows={[
             ['Bolus dose', '20 mcg'],
             ['Lockout interval', '2 minutes'],
@@ -278,6 +346,23 @@ export default function LabourAnalgesiaScreen() {
 
 const styles = StyleSheet.create({
   section: { marginBottom: SPACING.md },
+  respIntroRow: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.sm },
+  respIntroIcon: { marginRight: 8 },
+  respIntroTitle: { fontSize: 18, fontWeight: '700', color: COLORS.primary, flex: 1 },
+  respListCard: { borderWidth: 1, borderColor: '#ced4da', borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.md, overflow: 'hidden' },
+  respItemRow: { flexDirection: 'row', alignItems: 'flex-start', padding: 12 },
+  respItemBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
+  respItemIcon: { width: 24, marginTop: 2 },
+  respItemText: { fontSize: 13, color: COLORS.dark, flex: 1, lineHeight: 20 },
+  protocolCardWarning: { borderWidth: 1, borderColor: COLORS.warning, borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.xs, overflow: 'hidden' },
+  protocolHeaderWarning: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.warning, padding: 12 },
+  protocolHeaderWarningText: { fontSize: 16, fontWeight: '600', color: COLORS.dark },
+  protocolCardDanger: { borderWidth: 1, borderColor: COLORS.danger, borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.md, overflow: 'hidden' },
+  protocolHeaderDanger: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.danger, padding: 12 },
+  protocolHeaderDangerText: { fontSize: 16, fontWeight: '600', color: COLORS.white },
+  protocolHeaderIcon: { marginRight: 8 },
+  protocolItem: { fontSize: 13, color: COLORS.dark, padding: 12, lineHeight: 20 },
+  protocolItemBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
   buttonRow: { flexDirection: 'row', marginBottom: SPACING.sm },
   primaryBtn: { backgroundColor: COLORS.primary, borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12, marginRight: 8 },
   primaryBtnText: { color: COLORS.white, fontSize: 12, fontWeight: '600' },
@@ -290,11 +375,12 @@ const styles = StyleSheet.create({
   alertText: { fontSize: 13, color: '#856404' },
   alertTextDanger: { fontSize: 13, color: COLORS.danger, marginBottom: 2 },
   checklistItem: { fontSize: 14, color: COLORS.text, paddingVertical: 6, paddingHorizontal: 4, borderBottomWidth: 0.5, borderBottomColor: COLORS.border },
+  tableScrollContent: { paddingBottom: 2 },
   table: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 4, overflow: 'hidden', marginBottom: SPACING.md },
   tableHeader: { flexDirection: 'row', backgroundColor: COLORS.medicalBlue, padding: 8 },
-  tableHeaderText: { color: COLORS.white, fontWeight: '700', fontSize: 11 },
+  tableHeaderText: { color: COLORS.white, fontWeight: '700', fontSize: 12, paddingRight: 8 },
   tableRow: { flexDirection: 'row', padding: 8, borderTopWidth: 0.5, borderTopColor: COLORS.border },
   tableRowAlt: { backgroundColor: '#f8f9fa' },
-  tableCell: { fontSize: 12, color: COLORS.text },
+  tableCell: { fontSize: 12, color: COLORS.text, paddingRight: 8, lineHeight: 18 },
   note: { fontSize: 11, color: COLORS.textMuted, fontStyle: 'italic', marginTop: 4, marginBottom: SPACING.md },
 });

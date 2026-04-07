@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
@@ -17,6 +17,32 @@ const OBSTETRIC_DOC = {
   fileName: 'obstetric_guidelines.pdf',
   source: require('../../assets/pdfs/obstetric/obstetric_guidelines.pdf'),
 };
+
+const AIRWAY_IMAGES = {
+  unanticipatedOverview: require('../../assets/images/web-protocols/das_unanticipated_overview.jpg'),
+  unanticipatedManagement: require('../../assets/images/web-protocols/das_unanticipated_management.jpg'),
+  unanticipatedCico: require('../../assets/images/web-protocols/das_unanticipated_cico.jpg'),
+  ati: require('../../assets/images/web-protocols/ati_algorithm_new.jpg'),
+  icu: require('../../assets/images/web-protocols/das_icu_algorithm_new.jpg'),
+  cervical: require('../../assets/images/web-protocols/airway_cervical_spine_new.png'),
+  extubation1: require('../../assets/images/web-protocols/das_extubation_1_new.png'),
+  extubation2: require('../../assets/images/web-protocols/das_extubation_2_new.png'),
+  extubation3: require('../../assets/images/web-protocols/das_extubation_3_new.png'),
+  obstetricMaster: require('../../assets/images/web-protocols/obstetric_master_algorithm.jpg'),
+  obstetric1: require('../../assets/images/web-protocols/obstetric_algorithm_1.jpg'),
+  obstetric2: require('../../assets/images/web-protocols/obstetric_algorithm_2.jpg'),
+  obstetric3: require('../../assets/images/web-protocols/obstetric_algorithm_3.jpg'),
+  obstetricTable1: require('../../assets/images/web-protocols/obstetric_table_1.jpg'),
+  obstetricTable2: require('../../assets/images/web-protocols/obstetric_table_2.jpg'),
+};
+
+function ProtocolImage({ source, label }) {
+  return (
+    <View style={styles.imageWrap}>
+      <Image source={source} style={styles.protocolImage} resizeMode="contain" accessibilityLabel={label} />
+    </View>
+  );
+}
 
 function GuidelineSection({ title, items }) {
   return (
@@ -45,6 +71,9 @@ export default function DifficultAirwayScreen() {
     <ScreenWrapper title="Difficult Airway Management" subtitle="DAS Guidelines & Algorithms">
       <CollapsibleCard title="DAS Unanticipated Difficult Intubation (2015)">
         <Text style={styles.desc}>Difficult Airway Society guidelines for unanticipated difficult tracheal intubation in adults.</Text>
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedOverview} label="DAS Difficult Intubation Overview" />
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedManagement} label="DAS Unanticipated Management Algorithm" />
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedCico} label="DAS CICO Emergency Algorithm" />
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(DAS_DOC.source, DAS_DOC.fileName, DAS_DOC.title)}>
             <Text style={styles.primaryBtnText}>Open PDF</Text>
@@ -65,6 +94,7 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="DAS Awake Tracheal Intubation (ATI)">
+        <ProtocolImage source={AIRWAY_IMAGES.ati} label="DAS Awake Tracheal Intubation Algorithm" />
         <InfoColumns columns={[
           { title: 'OXYGENATE', items: ['Apply HFNO early', 'Titrate 30-70 L/min', 'Continue throughout'] },
           { title: 'TOPICALISE', items: ['Lidocaine 10% spray', '20-30 sprays over 5 min', 'Co-phenylcaine if nasal'] },
@@ -74,6 +104,7 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="DAS ICU Tracheal Intubation">
+        <ProtocolImage source={AIRWAY_IMAGES.icu} label="DAS ICU Tracheal Intubation Algorithm" />
         <InfoColumns columns={[
           { title: 'Pre-oxygenation', items: ['Position head up', 'Assess airway & cricothyroid', 'Waveform capnograph ready', 'Optimise cardiovascular'] },
           { title: 'Plan A — Laryngoscopy', items: ['Maximum 3 attempts', 'Maintain oxygenation', 'Video/direct +/- bougie', 'Call for help on 1st failure'] },
@@ -82,6 +113,7 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="Cervical Spine Airway Management (2024)">
+        <ProtocolImage source={AIRWAY_IMAGES.cervical} label="Cervical Spine Airway Management" />
         <Text style={styles.desc}>Multi-society guidelines (DAS, AoA, BSOA, ICS, NACCS)</Text>
         <GuidelineSection title="Key Recommendations" items={[
           '1. Minimise cervical spine movement during pre-oxygenation',
@@ -100,6 +132,9 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="DAS Extubation Guidelines">
+        <ProtocolImage source={AIRWAY_IMAGES.extubation1} label="DAS Extubation Algorithm 1" />
+        <ProtocolImage source={AIRWAY_IMAGES.extubation2} label="DAS Extubation Algorithm 2" />
+        <ProtocolImage source={AIRWAY_IMAGES.extubation3} label="DAS Extubation Algorithm 3" />
         <GuidelineSection title="Low Risk Criteria" items={[
           'Fasted, uncomplicated airway',
           'No risk factors',
@@ -115,6 +150,12 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="Obstetric GA & Failed Intubation">
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricMaster} label="Obstetric Master Algorithm" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric1} label="Obstetric Algorithm 1" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric2} label="Obstetric Algorithm 2" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric3} label="Obstetric Algorithm 3" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable1} label="Obstetric Table 1" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable2} label="Obstetric Table 2" />
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title)}>
             <Text style={styles.primaryBtnText}>Open PDF</Text>
@@ -177,6 +218,18 @@ export default function DifficultAirwayScreen() {
 }
 
 const styles = StyleSheet.create({
+  imageWrap: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: BORDER_RADIUS,
+    padding: 8,
+    marginBottom: SPACING.sm,
+  },
+  protocolImage: {
+    width: '100%',
+    height: 240,
+  },
   desc: { fontSize: 13, color: COLORS.textMuted, marginBottom: SPACING.md, fontStyle: 'italic' },
   buttonRow: { flexDirection: 'row', marginBottom: SPACING.sm },
   primaryBtn: { backgroundColor: COLORS.primary, borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12, marginRight: 8 },

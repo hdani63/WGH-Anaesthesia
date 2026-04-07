@@ -11,16 +11,22 @@ const RAPM_DOC = {
   source: require('../../assets/pdfs/neuraxial/rapm_2024_105766_full.pdf'),
 };
 
-function DataTable({ headers, rows }) {
+function DataTable({ headers, rows, columnWidths }) {
+  const widths = columnWidths || headers.map((_, idx) => (idx === 0 ? 180 : 150));
+
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
       <View style={styles.table}>
         <View style={styles.headerRow}>
-          {headers.map((h, i) => <Text key={i} style={[styles.headerCell, { minWidth: i === 0 ? 120 : 100 }]}>{h}</Text>)}
+          {headers.map((h, i) => (
+            <Text key={i} style={[styles.headerCell, { width: widths[i], minWidth: widths[i] }]}>{h}</Text>
+          ))}
         </View>
         {rows.map((row, i) => (
           <View key={i} style={[styles.dataRow, i % 2 === 0 && styles.altRow]}>
-            {row.map((cell, j) => <Text key={j} style={[styles.dataCell, { minWidth: j === 0 ? 120 : 100 }]}>{cell}</Text>)}
+            {row.map((cell, j) => (
+              <Text key={j} style={[styles.dataCell, { width: widths[j], minWidth: widths[j] }]}>{cell}</Text>
+            ))}
           </View>
         ))}
       </View>
@@ -82,7 +88,7 @@ export default function NeuraxialAnticoagulationScreen() {
       {activeTab === 1 && (
         <View>
           <CollapsibleCard title="Unfractionated Heparin (UFH)">
-            <DataTable headers={['Route/Dose', 'Pre-Procedure', 'Post-Procedure', 'Catheter Removal', 'Monitoring']} rows={[
+            <DataTable headers={['Route/Dose', 'Pre-Procedure', 'Post-Procedure', 'Catheter Removal', 'Monitoring']} columnWidths={[200, 180, 170, 190, 190]} rows={[
               ['IV Therapeutic', '4-6 hours + normal aPTT', '1 hour after removal', '4-6 hours after last dose', 'aPTT, platelet count'],
               ['SC Low Dose (5000 U BID/TID)', '4-6 hours', '1 hour after removal', '4-6 hours after last dose', 'Platelet count if >4 days'],
               ['SC Higher Dose (7500-10000 U BID)', '12 hours + normal aPTT', '2 hours after removal', '4-6 hours', 'aPTT, anti-Xa'],
@@ -90,7 +96,7 @@ export default function NeuraxialAnticoagulationScreen() {
             ]} />
           </CollapsibleCard>
           <CollapsibleCard title="Low Molecular Weight Heparin (LMWH)">
-            <DataTable headers={['Indication', 'Pre-Procedure', 'Post-Procedure', 'Catheter Mgmt', 'Special']} rows={[
+            <DataTable headers={['Indication', 'Pre-Procedure', 'Post-Procedure', 'Catheter Mgmt', 'Special']} columnWidths={[210, 160, 160, 190, 200]} rows={[
               ['Low Dose (e.g. 40mg enox)', '12 hours', '4 hours after removal', 'Remove ≥12h after dose', 'Check anti-Xa if renal impairment'],
               ['High Dose (e.g. 1mg/kg enox)', '24 hours', '4 hours after removal', 'Remove ≥24h after dose', 'Delay if CrCl <30'],
               ['Twice Daily Dosing', '24 hours', '4 hours after removal', 'Remove ≥24h after dose', 'Higher risk — consider alternatives'],
@@ -103,7 +109,7 @@ export default function NeuraxialAnticoagulationScreen() {
       {activeTab === 2 && (
         <View>
           <CollapsibleCard title="Direct Oral Anticoagulants">
-            <DataTable headers={['Drug', 'Low Dose', 'High Dose', 'Pre-Procedure', 'Post-Procedure', 'Catheter Removal']} rows={[
+            <DataTable headers={['Drug', 'Low Dose', 'High Dose', 'Pre-Procedure', 'Post-Procedure', 'Catheter Removal']} columnWidths={[170, 150, 150, 150, 150, 170]} rows={[
               ['Rivaroxaban (Xarelto)', '10mg daily', '15-20mg daily', '72 hours', '6h after removal', '6h before restart'],
               ['Apixaban (Eliquis)', '2.5mg BID', '5-10mg BID', '72 hours', '6h after removal', '6h before restart'],
               ['Edoxaban (Lixiana)', 'N/A', '30-60mg daily', '72 hours', '6h after removal', '6h before restart'],
@@ -125,7 +131,7 @@ export default function NeuraxialAnticoagulationScreen() {
       {activeTab === 3 && (
         <View>
           <CollapsibleCard title="Antiplatelet Agents">
-            <DataTable headers={['Drug Class', 'Examples', 'Pre-Procedure', 'Notes']} rows={[
+            <DataTable headers={['Drug Class', 'Examples', 'Pre-Procedure', 'Notes']} columnWidths={[170, 220, 170, 220]} rows={[
               ['COX-1 Inhibitors', 'Aspirin, NSAIDs', 'No precautions', 'Safe to continue'],
               ['P2Y12 Inhibitors', 'Clopidogrel, Prasugrel, Ticagrelor', '5-7 days', 'Check platelet function if urgent'],
               ['Ticlopidine', 'Ticlopidine', '10 days', 'Rarely used now'],
@@ -139,7 +145,7 @@ export default function NeuraxialAnticoagulationScreen() {
       {activeTab === 4 && (
         <View>
           <CollapsibleCard title="Warfarin Management">
-            <DataTable headers={['Timing', 'INR Requirement', 'Notes']} rows={[
+            <DataTable headers={['Timing', 'INR Requirement', 'Notes']} columnWidths={[150, 170, 240]} rows={[
               ['Pre-procedure', 'INR <1.4-1.5', 'Stop 5 days before'],
               ['Catheter placement', 'INR <1.4-1.5', 'Check on day of procedure'],
               ['Catheter removal', 'INR <1.5', 'Check same day'],
@@ -147,7 +153,7 @@ export default function NeuraxialAnticoagulationScreen() {
             ]} />
           </CollapsibleCard>
           <CollapsibleCard title="Bridging Therapy">
-            <DataTable headers={['Risk Level', 'Annual Risk', 'Recommendation']} rows={[
+            <DataTable headers={['Risk Level', 'Annual Risk', 'Recommendation']} columnWidths={[170, 250, 180]} rows={[
               ['High (>10%/yr)', 'Mech valve, recent VTE, severe thrombophilia', 'Bridging Recommended'],
               ['Moderate (5-10%/yr)', 'AF with risk factors, prior VTE', 'Consider Bridging'],
               ['Low (<5%/yr)', 'AF without risk factors, single VTE >12mo', 'No Bridging'],
@@ -161,7 +167,7 @@ export default function NeuraxialAnticoagulationScreen() {
             ]} color={COLORS.primary} />
           </CollapsibleCard>
           <CollapsibleCard title="Special Situations">
-            <DataTable headers={['Situation', 'Approach']} rows={[
+            <DataTable headers={['Situation', 'Approach']} columnWidths={[180, 380]} rows={[
               ['Emergency Surgery', 'Vitamin K 2-5mg IV + 4-factor PCC; FFP if PCC unavailable'],
               ['Renal Impairment', 'Extend intervals; prefer UFH over LMWH'],
               ['Pregnancy', 'LMWH preferred; warfarin contraindicated in 1st trimester'],
@@ -193,12 +199,13 @@ const styles = StyleSheet.create({
   infoBox: { borderLeftWidth: 4, backgroundColor: '#f8f9fa', borderRadius: 6, padding: SPACING.sm, marginBottom: SPACING.md },
   infoTitle: { fontWeight: '700', fontSize: 14, color: COLORS.text, marginBottom: 4 },
   infoItem: { fontSize: 13, color: COLORS.text, marginBottom: 2 },
-  table: { minWidth: '100%' },
+  tableScrollContent: { paddingBottom: 2 },
+  table: { minWidth: '100%', borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, overflow: 'hidden' },
   headerRow: { flexDirection: 'row', backgroundColor: COLORS.medicalBlue },
-  headerCell: { padding: 8, color: COLORS.white, fontWeight: '700', fontSize: 11 },
+  headerCell: { padding: 8, color: COLORS.white, fontWeight: '700', fontSize: 11, textAlignVertical: 'top' },
   dataRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: COLORS.border },
   altRow: { backgroundColor: '#f8f9fa' },
-  dataCell: { padding: 8, fontSize: 11, color: COLORS.text },
+  dataCell: { padding: 8, fontSize: 11, color: COLORS.text, lineHeight: 15, textAlignVertical: 'top' },
   noteText: { fontSize: 12, color: COLORS.textMuted, fontStyle: 'italic', marginTop: SPACING.sm, paddingHorizontal: SPACING.xs },
   refBox: { backgroundColor: '#e8f4fd', borderRadius: BORDER_RADIUS, padding: SPACING.md, marginTop: SPACING.md },
   refTitle: { fontWeight: '700', fontSize: 14, color: COLORS.medicalBlue, marginBottom: 4 },

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, BORDER_RADIUS, SHADOW, SPACING } from '../utils/theme';
 
 function getIconName(icon) {
@@ -14,23 +15,25 @@ export default function CollapsibleCard({ title, icon, rightContent, children, d
 
   return (
     <View style={[styles.card, SHADOW]}>
-      <TouchableOpacity
-        style={[styles.header, !open && styles.headerClosed]}
-        onPress={() => setOpen(!open)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.headerTitleRow}>
-          {iconName ? <FontAwesome5 name={iconName} size={15} color={COLORS.primary} style={styles.headerIcon} /> : null}
-          <Text style={styles.headerText}>{title}</Text>
-        </View>
-        {rightContent ? <View style={styles.rightContent}>{rightContent}</View> : null}
-        <FontAwesome5
-          name={open ? 'chevron-up' : 'chevron-down'}
-          size={12}
-          color={COLORS.primary}
-          style={styles.chevron}
-        />
-      </TouchableOpacity>
+      <LinearGradient colors={[COLORS.light, '#e9ecef']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+        <TouchableOpacity
+          style={[styles.header, !open && styles.headerClosed]}
+          onPress={() => setOpen(!open)}
+          activeOpacity={0.7}
+        >
+          <View style={styles.headerTitleRow}>
+            {iconName ? <FontAwesome5 name={iconName} size={15} color={COLORS.medicalBlue} style={styles.headerIcon} /> : null}
+            <Text style={styles.headerText}>{title}</Text>
+          </View>
+          {rightContent ? <View style={styles.rightContent}>{rightContent}</View> : null}
+          <FontAwesome5
+            name={open ? 'chevron-up' : 'chevron-down'}
+            size={12}
+            color={COLORS.primary}
+            style={styles.chevron}
+          />
+        </TouchableOpacity>
+      </LinearGradient>
       {open && <View style={styles.body}>{children}</View>}
     </View>
   );
@@ -48,7 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: SPACING.md,
-    backgroundColor: '#f0f2f5',
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.text,
+    color: COLORS.medicalBlue,
     flex: 1,
   },
   headerTitleRow: {
