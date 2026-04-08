@@ -1,62 +1,60 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
-import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
-import { openPdf, downloadPdf } from '../utils/pdfUtils';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
-const MIDWIFE_DOC = {
-  title: 'Midwife Monitoring Guide',
-  fileName: 'midwife_monitoring_guide.pdf',
-  source: require('../../assets/pdfs/obstetric/midwife_monitoring_guide.pdf'),
-};
-
-function InfoSection({ title, items }) {
+function SectionHeader({ icon, title, color = COLORS.primary }) {
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={styles.sectionHeaderRow}>
+      <FontAwesome5 name={icon} size={14} color={color} style={styles.sectionHeaderIcon} />
+      <Text style={styles.sectionHeaderText}>{title}</Text>
+    </View>
+  );
+}
+
+function BulletCard({ title, items, borderColor = COLORS.primary }) {
+  return (
+    <View style={[styles.bulletCard, { borderLeftColor: borderColor }]}>
+      <Text style={styles.bulletCardTitle}>{title}</Text>
       {items.map((item, i) => (
-        <Text key={i} style={styles.sectionItem}>• {item}</Text>
+        <Text key={i} style={styles.bulletItem}>• {item}</Text>
       ))}
     </View>
   );
 }
 
-function DataTable({ headers, rows, columnWidths, columnFlex }) {
-  if (columnFlex?.length === headers.length) {
-    return (
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          {headers.map((h, i) => (
-            <Text key={i} style={[styles.tableHeaderText, { flex: columnFlex[i] }]}>{h}</Text>
-          ))}
-        </View>
-        {rows.map((row, i) => (
-          <View key={i} style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}>
-            {row.map((cell, j) => (
-              <Text key={j} style={[styles.tableCell, { flex: columnFlex[j] }]}>{cell}</Text>
-            ))}
-          </View>
-        ))}
+function SafetyCard({ title, icon, items, headerBg, headerTextColor, borderColor }) {
+  return (
+    <View style={[styles.safetyCard, { borderColor }]}>
+      <View style={[styles.safetyHeader, { backgroundColor: headerBg }]}>
+        <FontAwesome5 name={icon} size={14} color={headerTextColor} style={styles.safetyHeaderIcon} />
+        <Text style={[styles.safetyHeaderText, { color: headerTextColor }]}>{title}</Text>
       </View>
-    );
-  }
+      {items.map((item, i) => (
+        <Text key={i} style={[styles.safetyItem, i > 0 && styles.safetyItemBorder]}>{item}</Text>
+      ))}
+    </View>
+  );
+}
 
-  const widths = columnWidths || headers.map(() => 140);
+function DataTable({ headers, rows, columnWidths }) {
+  const widths = columnWidths || headers.map(() => 150);
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          {headers.map((h, i) => (
-            <Text key={i} style={[styles.tableHeaderText, { width: widths[i], minWidth: widths[i] }]}>{h}</Text>
+      <View style={styles.tableWrap}>
+        <View style={styles.tableHeaderRow}>
+          {headers.map((header, i) => (
+            <Text key={`${header}-${i}`} style={[styles.tableHeaderCell, { width: widths[i], minWidth: widths[i] }]}>{header}</Text>
           ))}
         </View>
-        {rows.map((row, i) => (
-          <View key={i} style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}>
-            {row.map((cell, j) => (
-              <Text key={j} style={[styles.tableCell, { width: widths[j], minWidth: widths[j] }]}>{cell}</Text>
+        {rows.map((row, rowIndex) => (
+          <View key={`row-${rowIndex}`} style={[styles.tableDataRow, rowIndex % 2 === 1 && styles.tableDataRowAlt]}>
+            {row.map((cell, cellIndex) => (
+              <Text key={`cell-${rowIndex}-${cellIndex}`} style={[styles.tableDataCell, { width: widths[cellIndex], minWidth: widths[cellIndex] }]}>{cell}</Text>
             ))}
           </View>
         ))}
@@ -65,322 +63,627 @@ function DataTable({ headers, rows, columnWidths, columnFlex }) {
   );
 }
 
-function ChecklistItem({ text }) {
-  const [checked, setChecked] = useState(false);
+function IconList({ items }) {
   return (
-    <Text style={styles.checklistItem} onPress={() => setChecked(!checked)}>
-      {checked ? '[x]' : '[ ]'} {text}
-    </Text>
+    <View style={styles.iconListCard}>
+      {items.map((item, i) => (
+        <View key={i} style={[styles.iconRow, i > 0 && styles.iconRowBorder]}>
+          <FontAwesome5 name={item.icon} size={13} color={item.color} style={styles.iconRowIcon} />
+          <Text style={styles.iconRowText}>{item.text}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function MiniAccordionItem({ title, icon, color, open, onPress, items }) {
+  return (
+    <View style={styles.miniAccordionCard}>
+      <TouchableOpacity style={styles.miniAccordionHeader} onPress={onPress} activeOpacity={0.8}>
+        <View style={styles.miniAccordionTitleRow}>
+          <FontAwesome5 name={icon} size={13} color={color} style={styles.miniAccordionIcon} />
+          <Text style={styles.miniAccordionTitle}>{title}</Text>
+        </View>
+        <FontAwesome5 name={open ? 'chevron-up' : 'chevron-down'} size={12} color={COLORS.primary} />
+      </TouchableOpacity>
+      {open ? (
+        <View style={styles.miniAccordionBody}>
+          {items.map((item, i) => (
+            <Text key={i} style={styles.bulletItem}>{`${i + 1}. ${item}`}</Text>
+          ))}
+        </View>
+      ) : null}
+    </View>
   );
 }
 
 export default function LabourAnalgesiaScreen() {
+  const navigation = useNavigation();
+  const { width } = useWindowDimensions();
+  const twoColumn = width >= 860;
+  const [activeCard, setActiveCard] = useState(null);
+  const [activeTrouble, setActiveTrouble] = useState(null);
+
+  const toggleCard = (card, nextOpen) => {
+    setActiveCard(nextOpen ? card : null);
+  };
+
+  const toggleTrouble = (panel) => {
+    setActiveTrouble((prev) => (prev === panel ? null : panel));
+  };
+
   return (
-    <ScreenWrapper title="Labour Analgesia" subtitle="Epidural & Remifentanil PCA guidelines">
+    <ScreenWrapper title="Labour Analgesia" subtitle="Obstetric analgesia protocols and safety checklists">
+      <CollapsibleCard
+        title="Epidural Analgesia"
+        icon="syringe"
+        open={activeCard === 'epidural'}
+        onToggle={(nextOpen) => toggleCard('epidural', nextOpen)}
+      >
+        <SectionHeader icon="user-md" title="NCHD Responsibilities (1st On-Call)" />
+        <IconList
+          items={[
+            { icon: 'clock', color: '#ffc107', text: 'Attend within 30 minutes of being informed' },
+            { icon: 'phone-alt', color: COLORS.info, text: 'If long delay anticipated, coordinate with 2nd on-call' },
+            { icon: 'file-signature', color: COLORS.success, text: 'Obtain consent and give explanation' },
+            { icon: 'check-circle', color: COLORS.primary, text: 'Establish effective epidural analgesia' },
+            { icon: 'prescription-bottle', color: COLORS.textMuted, text: 'Prepare infusion and connect line' },
+            { icon: 'stethoscope', color: COLORS.danger, text: 'Respond to midwife concerns and review as needed' },
+          ]}
+        />
 
-      {/* EPIDURAL SECTION */}
-      <CollapsibleCard title="Epidural Analgesia" defaultOpen>
-        <View style={styles.respIntroRow}>
-          <FontAwesome5 name="user-md" size={18} color={COLORS.primary} style={styles.respIntroIcon} />
-          <Text style={styles.respIntroTitle}>NCHD Responsibilities (1st On-Call)</Text>
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <SafetyCard
+              title="Seek Advice BEFORE Siting"
+              icon="exclamation-triangle"
+              headerBg={COLORS.warning}
+              headerTextColor={COLORS.dark}
+              borderColor={COLORS.warning}
+              items={[
+                'Obese patient',
+                'Previous back problems',
+                'Previous epidural/spinal problems',
+                'Cardiac/respiratory pathology',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <SafetyCard
+              title="Seek Help DURING Procedure"
+              icon="phone-alt"
+              headerBg={COLORS.danger}
+              headerTextColor={COLORS.white}
+              borderColor={COLORS.danger}
+              items={[
+                'Dural tap - inform consultant within 24hrs',
+                'Failed after 2 attempts at 2 spaces',
+                'Patient becoming distressed',
+                'Blood or CSF in catheter',
+                'Cardiac/respiratory history',
+              ]}
+            />
+          </View>
         </View>
 
-        <View style={styles.respListCard}>
-          {[
-            ['clock', '#ffc107', 'Attend within 30 minutes of being informed'],
-            ['phone', '#17a2b8', 'If long delay anticipated, coordinate with 2nd on-call'],
-            ['file-signature', '#28a745', 'Obtain consent and give explanation'],
-            ['check-circle', '#0066cc', 'Establish effective epidural analgesia'],
-            ['prescription-bottle', '#6c757d', 'Prepare infusion and connect line'],
-            ['stethoscope', '#dc3545', 'Respond to midwife concerns and review as needed'],
-          ].map(([icon, color, text], i) => (
-            <View key={i} style={[styles.respItemRow, i > 0 && styles.respItemBorder]}>
-              <FontAwesome5 name={icon} size={16} color={color} style={styles.respItemIcon} />
-              <Text style={styles.respItemText}>{text}</Text>
+        <SectionHeader icon="check" title="Indications" color={COLORS.success} />
+        <BulletCard
+          title="When to Consider"
+          borderColor={COLORS.success}
+          items={[
+            'Maternal request for analgesia',
+            'Blood pressure control in hypertensive disorders of pregnancy',
+          ]}
+        />
+
+        <SectionHeader icon="times" title="Contraindications" color={COLORS.danger} />
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Absolute"
+              borderColor={COLORS.danger}
+              items={[
+                'Maternal refusal',
+                'Prophylactic LMWH within 12 hours',
+                'Therapeutic LMWH within 24 hours',
+                'Coagulopathy (INR >1.3, APTTR >1.5)',
+                'Platelets <70',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Relative"
+              borderColor={COLORS.warning}
+              items={[
+                'Allergy to (levo)bupivacaine or fentanyl',
+                'Platelets 80-100 (discuss with consultant)',
+                'Trend of falling platelets',
+                'Local or systemic sepsis',
+                'IUFD - need FBC/coag within 6 hours',
+              ]}
+            />
+          </View>
+        </View>
+
+        <SectionHeader icon="file-signature" title="Consent (Verbal, with Midwife)" color={COLORS.info} />
+        <View style={styles.infoAlert}>
+          <View style={styles.splitRow}>
+            <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+              <Text style={styles.bulletItem}>• Failure or incomplete block</Text>
+              <Text style={styles.bulletItem}>• Headache</Text>
+              <Text style={styles.bulletItem}>• Back pain</Text>
             </View>
-          ))}
-        </View>
-
-        <View style={styles.protocolCardWarning}>
-          <View style={styles.protocolHeaderWarning}>
-            <FontAwesome5 name="exclamation-triangle" size={16} color={COLORS.dark} style={styles.protocolHeaderIcon} />
-            <Text style={styles.protocolHeaderWarningText}>Seek Advice BEFORE Siting</Text>
+            <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+              <Text style={styles.bulletItem}>• Hypotension</Text>
+              <Text style={styles.bulletItem}>• Infection</Text>
+              <Text style={styles.bulletItem}>• Nerve injury</Text>
+            </View>
           </View>
-          {['Obese patient', 'Previous back problems', 'Previous epidural/spinal problems', 'Cardiac/respiratory pathology'].map((item, i) => (
-            <Text key={i} style={[styles.protocolItem, i > 0 && styles.protocolItemBorder]}>{item}</Text>
+        </View>
+
+        <SectionHeader icon="tasks" title="Pre-Procedure Checklist" />
+        <IconList
+          items={[
+            { icon: 'history', color: COLORS.textMuted, text: 'Focused history and physical examination' },
+            { icon: 'vial', color: COLORS.danger, text: 'Platelet count based on history; routine count not needed in healthy low-risk with normal antenatal values' },
+            { icon: 'tint', color: COLORS.danger, text: 'Blood type/screen not routine; base on maternal history and hemorrhage risk' },
+            { icon: 'prescription-bottle-alt', color: COLORS.primary, text: 'IV cannula and fluids connected' },
+            { icon: 'heartbeat', color: COLORS.primary, text: 'Record baseline BP, maternal HR, and fetal HR' },
+          ]}
+        />
+
+        <SectionHeader icon="first-aid" title="Emergency Drugs (Must Be Available)" color={COLORS.danger} />
+        <View style={styles.emergencyDrugBox}>
+          {['Phenylephrine', 'Ephedrine', 'Atropine', 'Adrenaline', 'Naloxone'].map((drug, i) => (
+            <Text key={i} style={styles.emergencyDrugText}>{drug}</Text>
           ))}
         </View>
 
-        <View style={styles.protocolCardDanger}>
-          <View style={styles.protocolHeaderDanger}>
-            <FontAwesome5 name="phone-alt" size={16} color={COLORS.white} style={styles.protocolHeaderIcon} />
-            <Text style={styles.protocolHeaderDangerText}>Seek Help DURING Procedure</Text>
-          </View>
-          {[
-            'Dural tap - inform consultant within 24hrs',
-            'Failed after 2 attempts at 2 spaces',
-            'Patient becoming distressed',
-            'Blood or CSF in catheter',
-            'Cardiac/respiratory history',
-          ].map((item, i) => (
-            <Text key={i} style={[styles.protocolItem, i > 0 && styles.protocolItemBorder]}>{item}</Text>
-          ))}
-        </View>
+        <SectionHeader icon="procedures" title="Insertion Technique" color={COLORS.success} />
+        <BulletCard
+          title="Core Steps"
+          borderColor={COLORS.success}
+          items={[
+            'Position patient correctly',
+            'Aseptic precautions (hat, gloves, facemask, antiseptic)',
+            'Site epidural - loss of resistance to saline or air',
+            'Leave 3-5cm catheter in epidural space',
+          ]}
+        />
 
-        <InfoSection title="Seek Advice/Help When" items={[
-          'Morbid obesity (BMI > 40)',
-          'Previous spinal surgery',
-          'Severe pre-eclampsia',
-          'Thrombocytopenia (Plt < 75)',
-          'Coagulopathy or anticoagulant use',
-          'Sepsis or local infection',
-          'Significant spinal deformity',
-        ]} />
-
-        <InfoSection title="Indications" items={[
-          'Maternal request during labour',
-          'Augmented/induced labour (oxytocin)',
-          'Multiple pregnancy',
-          'Preterm labour',
-          'Pre-eclampsia/hypertensive disorders',
-          'Anticipated difficult airway (early epidural placement)',
-          'Medical conditions requiring sympathetic stability',
-        ]} />
-
-        <InfoSection title="Absolute Contraindications" items={[
-          'Patient refusal or inability to consent',
-          'Local infection at insertion site',
-          'Uncorrected coagulopathy',
-          'Raised intracranial pressure',
-          'True allergy to local anaesthetics',
-          'Severe uncorrected hypovolaemia',
-        ]} />
-
-        <InfoSection title="Relative Contraindications" items={[
-          'Thrombocytopenia (platelets 50-75 × 10⁹/L)',
-          'Prophylactic anticoagulation (time appropriately)',
-          'Systemic sepsis without local infection',
-          'Anatomical spinal abnormalities',
-          'Neurological disease (case-by-case)',
-        ]} />
-
-        <InfoSection title="Consent Points" items={[
-          'Common: hypotension (10-20%), motor block, shivering, pruritus, urinary retention',
-          'Uncommon: PDPH (<1%), incomplete block, epidural blood patch',
-          'Rare: epidural abscess/haematoma, nerve injury, high block/total spinal',
-          'Document consent in notes',
-        ]} />
-
-        <Text style={styles.sectionTitle}>Pre-Procedure Checklist</Text>
-        {['Informed consent obtained','IV access established — minimum 16G','Fluid bolus: 500 mL crystalloid co-loading','Monitoring: BP, HR, SpO2, CTG','Check equipment and drugs available','Allergy status confirmed','Platelet count reviewed (within 4 hours if pre-eclampsia)','Anticoagulant timing checked'].map((c, i) => (
-          <ChecklistItem key={i} text={c} />
-        ))}
-
-        <InfoSection title="Emergency Drugs (Immediately Available)" items={[
-          'Ephedrine 30mg syringe (6mg boluses)',
-          'Phenylephrine 100mcg/mL syringe',
-          'Atropine 0.6mg',
-          'Intralipid 20% (if LAST protocol needed)',
-          'Adrenaline 1:10,000',
-        ]} />
-
-        <InfoSection title="Insertion Technique" items={[
-          'Position: sitting or lateral (sitting preferred)',
-          'Level: L3/4 or L4/5 interspace',
-          'Loss of resistance to saline (preferred) or air',
-          'Thread catheter 4-5cm into epidural space',
-          'Secure catheter and label clearly',
-          'Aspirate before every injection — check for blood/CSF',
-        ]} />
-
-        <Text style={styles.sectionTitle}>Drug Doses</Text>
+        <SectionHeader icon="prescription-bottle-alt" title="Drug Doses" />
         <DataTable
           headers={['Stage', 'Drug', 'Dose']}
-          columnFlex={[1.2, 2.2, 1.2]}
+          columnWidths={[130, 290, 150]}
           rows={[
             ['Test Dose', '0.25% or 0.5% bupi/levobupivacaine', '3 mL'],
             ['Loading Dose', '0.125% bupi/levobupivacaine + fentanyl', '10-15 mL + 50-100 mcg'],
-            ['Top-up', '0.1% levobupivacaine + fentanyl 2 mcg/mL', '10-15 mL'],
             ['Infusion', '0.1% levobupivacaine + fentanyl 2 mcg/mL', '10 mL/hr (max 15 mL/hr)'],
           ]}
         />
-        <Text style={styles.note}>Loading dose given in 5mL increments with aspiration between each. Wait 5 minutes before next increment.</Text>
 
-        <InfoSection title="Troubleshooting" items={[
-          'Unilateral block → Withdraw catheter 1cm, top up in lateral position',
-          'Inadequate analgesia → Check catheter position, consider replacing if 2 top-ups ineffective',
-          'Breakthrough pain → Check level, bolus and consider CSE (combined spinal-epidural)',
-          'Hypotension → Left lateral tilt, fluid bolus, vasopressor (ephedrine or phenylephrine)',
-          'High block → Stop infusion, assess, support airway if needed, call for help',
-          'Post-dural puncture headache → Conservative initially, blood patch if persistent',
-        ]} />
-      </CollapsibleCard>
-
-      {/* REMIFENTANIL PCA SECTION */}
-      <CollapsibleCard title="Remifentanil PCA">
-        <View style={styles.alertBox}>
-          <Text style={styles.alertTitle}>One-to-One Midwifery Care Required</Text>
-          <Text style={styles.alertText}>Remifentanil PCA requires continuous 1:1 midwifery monitoring. SpO2 monitoring is mandatory throughout.</Text>
-        </View>
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(MIDWIFE_DOC.source, MIDWIFE_DOC.fileName, MIDWIFE_DOC.title)}>
-            <Text style={styles.primaryBtnText}>Open Midwife PDF</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.outlineBtn} onPress={() => downloadPdf(MIDWIFE_DOC.source, MIDWIFE_DOC.fileName, MIDWIFE_DOC.title)}>
-            <Text style={styles.outlineBtnText}>Download</Text>
-          </TouchableOpacity>
-        </View>
-
-        <InfoSection title="Description" items={[
-          'Ultra-short-acting synthetic opioid (t½ = 3-4 min)',
-          'Alternative when epidural is contraindicated or refused',
-          'Patient-controlled bolus delivery only — NO background infusion',
-        ]} />
-
-        <InfoSection title="Benefits" items={[
-          'Rapid onset within one contraction',
-          'Rapid offset — no neonatal accumulation',
-          'Effective analgesia for many patients',
-          'No motor block',
-        ]} />
-
-        <InfoSection title="Side Effects" items={[
-          'Respiratory depression (most significant)',
-          'Nausea & vomiting',
-          'Sedation / dizziness',
-          'Pruritus',
-          'Desaturation episodes',
-        ]} />
-
-        <InfoSection title="Inclusion Criteria" items={[
-          'Active labour with pain requiring intervention',
-          'Epidural contraindicated, failed, or refused',
-          'Patient able to understand and operate PCA device',
-          'Consultant anaesthetist aware and approves',
-        ]} />
-
-        <InfoSection title="Exclusion Criteria" items={[
-          'Known remifentanil/fentanyl allergy',
-          'Chronic opioid use / opioid dependency',
-          'Severe respiratory compromise / OSA',
-          'Unable to cooperate with PCA / cannot self-administer',
-          'No available 1:1 midwifery care',
-        ]} />
-
-        <Text style={styles.sectionTitle}>PCA Settings</Text>
-        <DataTable
-          headers={['Parameter', 'Setting']}
-          columnFlex={[1.4, 2.1]}
-          rows={[
-            ['Bolus dose', '20 mcg'],
-            ['Lockout interval', '2 minutes'],
-            ['Background infusion', 'NONE (0 mcg/hr)'],
-            ['Dose limit', '200 mcg/hr (4-hourly limit)'],
-            ['Concentration', '20 mcg/mL'],
+        <SectionHeader icon="wrench" title="Troubleshooting" color={COLORS.warning} />
+        <MiniAccordionItem
+          title="Inadequate Pain Relief"
+          icon="exclamation-circle"
+          color={COLORS.warning}
+          open={activeTrouble === 'pain'}
+          onPress={() => toggleTrouble('pain')}
+          items={[
+            'Check block height with ethyl chloride spray',
+            'If block below umbilicus, give bolus',
+            'One-sided block: position unblocked side down, give bolus, consider withdrawing catheter 1-2cm',
+            'Inadequate height: bolus 10ml bag mix OR 10ml 0.25% levobupivacaine (2 doses, 5 minutes apart)',
+            'Rectal pressure with OP position: top-up 10ml 0.25% levobupivacaine +/- fentanyl in sitting position',
+          ]}
+        />
+        <MiniAccordionItem
+          title="High Sensory Block (Above T8/Xiphisternum)"
+          icon="arrow-up"
+          color={COLORS.danger}
+          open={activeTrouble === 'high'}
+          onPress={() => toggleTrouble('high')}
+          items={[
+            'STOP epidural infusion immediately',
+            'Check sensory level with ethyl chloride every 15 minutes',
+            'Restart infusion only when block has regressed below T10',
           ]}
         />
 
-        <Text style={styles.sectionTitle}>Preparation Checklist</Text>
-        {[
-          'Confirm consultant anaesthetist approval',
-          'Confirm 1:1 midwifery care available',
-          'Prepare: Remifentanil 1mg in 50mL NaCl 0.9% (20 mcg/mL)',
-          'Dedicated IV cannula (do not share with other infusions)',
-          'PCA pump programmed and double-checked by 2 staff',
-          'SpO2 monitoring applied and alarmed (alarm < 94%)',
-          'Supplemental O₂ and suction available at bedside',
-          'Naloxone drawn up (400mcg) and immediately available',
-          'Bag-valve-mask at bedside',
-          'Resuscitation equipment checked',
-        ].map((c, i) => (
-          <ChecklistItem key={i} text={c} />
-        ))}
+        <View style={styles.secondaryAlert}>
+          <Text style={styles.secondaryAlertTitle}>After Completion - Seek Advice If:</Text>
+          <Text style={styles.bulletItem}>• Pain relief remains inadequate after catheter adjustment/top-up</Text>
+          <Text style={styles.bulletItem}>• Complications develop (for example profound hypotension)</Text>
+        </View>
+      </CollapsibleCard>
 
-        <InfoSection title="Starting the PCA" items={[
-          'Instruct patient: press button at START of contraction',
-          'Advise medication will peak in 30-60 seconds',
-          'First 30 minutes: anaesthetist present',
-          'Assess pain, sedation, respiratory rate, SpO2 at 5 minutes',
-          'If inadequate at 20mcg → consult re: increasing to 30mcg bolus',
-        ]} />
-
-        <InfoSection title="Monitoring (Every 15 Minutes)" items={[
-          'Respiratory rate (target ≥ 10)',
-          'SpO2 (target ≥ 94% — continuous monitoring)',
-          'Sedation score (Ramsay or local scale)',
-          'Pain score (NRS 0-10)',
-          'Nausea/vomiting',
-          'Cumulative dose used',
-          'CTG assessment',
-        ]} />
-
-        <View style={[styles.alertBox, { backgroundColor: '#f8d7da', borderLeftColor: COLORS.danger }]}>
-          <Text style={[styles.alertTitle, { color: COLORS.danger }]}>Emergency STOP Criteria</Text>
-          <Text style={styles.alertTextDanger}>Immediately STOP PCA and call anaesthetist if:</Text>
-          {['Respiratory rate < 8/min', 'SpO2 < 94% not responding to O₂', 'Excessive sedation (unable to rouse)', 'Apnoea (any duration)', 'Patient request to stop'].map((e, i) => (
-            <Text key={i} style={styles.alertTextDanger}>• {e}</Text>
-          ))}
+      <CollapsibleCard
+        title="Remifentanil Analgesia"
+        icon="syringe"
+        open={activeCard === 'remi'}
+        onToggle={(nextOpen) => toggleCard('remi', nextOpen)}
+      >
+        <View style={styles.primaryAlert}>
+          <Text style={styles.primaryAlertTitle}>What is Remifentanil?</Text>
+          <Text style={styles.primaryAlertText}>
+            A strong, fast-acting opioid painkiller similar to morphine. It acts quickly and wears off quickly,
+            can be timed with contractions, and has minimal risk of affecting the baby.
+          </Text>
         </View>
 
-        <InfoSection title="Stopping the PCA" items={[
-          'Stop 30 minutes before anticipated delivery (if possible)',
-          'Monitor for 30 minutes after discontinuation',
-          'Remove dedicated IV cannula line',
-          'Document total dose administered',
-          'Brief neonatology if delivery within 15 minutes of last bolus',
-        ]} />
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Benefits"
+              borderColor={COLORS.success}
+              items={[
+                'Effective pain relief for many women',
+                'Patient controls their own pain relief',
+                'Can still use Gas and Air',
+                'Epidural still possible later',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Side Effects"
+              borderColor={COLORS.warning}
+              items={[
+                'Drowsiness/sedation',
+                'Nausea and vomiting',
+                'Itching',
+                'Dizziness',
+                'Slowed breathing',
+              ]}
+            />
+          </View>
+        </View>
 
-        <InfoSection title="Post-Delivery Documentation" items={[
-          'Total remifentanil administered (mcg)',
-          'Duration of PCA use',
-          'Any adverse events (desaturation, apnoea)',
-          'Interventions required',
-          'Neonatal APGAR scores',
-          'Complete clinical incident form if adverse events occurred',
-        ]} />
+        <SectionHeader icon="check-circle" title="Inclusion Criteria" color={COLORS.success} />
+        <BulletCard
+          title="Eligible Patients"
+          borderColor={COLORS.success}
+          items={[
+            'Request for pain relief and not suitable for epidural',
+            'Failed epidural (multiple attempts or ineffective)',
+            'Contraindication to epidural (coagulopathy, spinal abnormalities, site infection, local anaesthetic allergy, specific neurological disorders)',
+            'Gestational age >= 37 weeks',
+            'Able to understand and operate PCA device',
+            'Informed consent obtained',
+            'Reassuring CTG at initiation',
+            'Stable maternal cardiorespiratory status',
+          ]}
+        />
+
+        <SectionHeader icon="times-circle" title="Exclusion Criteria" color={COLORS.danger} />
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Maternal Factors"
+              borderColor={COLORS.danger}
+              items={[
+                'Unable to understand or use PCA device',
+                'Allergy to remifentanil or opioids',
+                'Severe respiratory disease (SpO2 <95%)',
+                'Haemodynamic instability',
+                'Severe hepatic or renal impairment',
+                'Recent sedatives or opioids',
+                'Opioid dependence',
+                'Neurological impairment (GCS <15)',
+                'Difficult airway or high aspiration risk',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Obstetric/Fetal Factors"
+              borderColor={COLORS.danger}
+              items={[
+                'Non-reassuring fetal status (abnormal CTG)',
+                'IUGR or small for gestational age',
+                'Imminent urgent delivery',
+                'Multiple gestation with anticipated neonatal compromise',
+                'Labour not established',
+                'No IV access available',
+                'No continuous monitoring available',
+                'No trained staff for one-to-one care',
+              ]}
+            />
+          </View>
+        </View>
+
+        <SectionHeader icon="cogs" title="PCA Settings" />
+        <DataTable
+          headers={['Setting', 'Value', 'Notes']}
+          columnWidths={[150, 150, 220]}
+          rows={[
+            ['Concentration', '20 mcg/mL', '2mg in 100mL saline'],
+            ['Bolus Dose', '20 mcg (start)', 'Titrate up to max 40 mcg if needed'],
+            ['Lockout Interval', '2 minutes', 'Do NOT reduce below 2 minutes'],
+            ['Background Infusion', 'NONE (0 mL/hr)', 'Not recommended - respiratory depression risk'],
+            ['Maximum Dose', '40 mcg/bolus', 'Do not exceed'],
+          ]}
+        />
+
+        <SectionHeader icon="list-alt" title="Preparation Checklist" color={COLORS.info} />
+        <IconList
+          items={[
+            { icon: 'check', color: COLORS.success, text: 'IV cannula (20G/22G), not at a joint (dose trapping risk)' },
+            { icon: 'check', color: COLORS.success, text: 'No flush or fluid line connected' },
+            { icon: 'check', color: COLORS.success, text: 'Remifentanil is incompatible with Syntocinon' },
+            { icon: 'check', color: COLORS.success, text: 'Baseline bloods if required (FBC/coag profile)' },
+            { icon: 'check', color: COLORS.success, text: 'Informed consent documented' },
+            { icon: 'check', color: COLORS.success, text: 'Remifentanil prescription completed' },
+            { icon: 'check', color: COLORS.success, text: 'Observation chart attached' },
+            { icon: 'check', color: COLORS.success, text: 'Pulse oximeter and oxygen available' },
+            { icon: 'check', color: COLORS.success, text: 'Naloxone available at bedside' },
+            { icon: 'clock', color: COLORS.warning, text: 'Last dose of pethidine was at least 4 hours ago' },
+          ]}
+        />
+
+        <SectionHeader icon="play" title="Starting PCA" color={COLORS.success} />
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Essential Steps"
+              borderColor={COLORS.success}
+              items={[
+                'Oxygen 2-5 L/min via nasal prongs',
+                'Continuous SpO2 monitoring',
+                'Continuous CTG monitoring',
+                'Patient must stay in bed',
+                'Inform obstetric and paediatric teams',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Critical Safety Rules"
+              borderColor={COLORS.danger}
+              items={[
+                'Only the patient presses the PCA button',
+                'Not midwives, partners, or visitors',
+                'Press at START of contraction',
+                'STOP during active pushing (second stage)',
+                'Wait 4 hours after pethidine before starting',
+              ]}
+            />
+          </View>
+        </View>
+
+        <View style={styles.warningAlert}>
+          <Text style={styles.warningAlertText}>BMI >=40: use with caution. Enhanced monitoring and senior anaesthetic involvement required.</Text>
+        </View>
+
+        <SectionHeader icon="clipboard-list" title="Monitoring (Every 15 Minutes)" />
+        <DataTable
+          headers={['Parameter', 'Record']}
+          columnWidths={[170, 350]}
+          rows={[
+            ['Respiratory Rate', 'Document every 15 minutes'],
+            ['Pain Score', '0=None, 1=Mild, 2=Moderate, 3=Severe'],
+            ['SpO2 (%)', 'Continuous monitoring'],
+            ['AVPU Score', 'A=Awake, V=Voice, P=Pain, U=Unrousable'],
+            ['O2/Entonox use', 'Document if used'],
+            ['Volume Delivered', 'From PCA pump'],
+          ]}
+        />
+
+        <SectionHeader icon="users" title="Ongoing Care Requirements" color={COLORS.warning} />
+        <BulletCard
+          title="At All Times"
+          borderColor={COLORS.warning}
+          items={[
+            'One-to-one midwifery care continuously',
+            'Equipment ready: oxygen, suction, resus trolley, naloxone',
+            'Observe for respiratory depression, sedation, nausea/vomiting, pruritus',
+            'Do not leave woman unattended',
+          ]}
+        />
+
+        <View style={styles.dangerAlert}>
+          <Text style={styles.dangerAlertTitle}>EMERGENCY - STOP PCA Immediately If:</Text>
+          <Text style={styles.bulletItem}>• Patient is unresponsive</Text>
+          <Text style={styles.bulletItem}>• SpO2 drops / low saturations</Text>
+          <Text style={styles.bulletItem}>• Respiratory rate {'<'} 8/min</Text>
+          <Text style={styles.dangerAlertAction}>Action: Start resuscitation and call anaesthesiologist.</Text>
+        </View>
+
+        <SectionHeader icon="stop-circle" title="Stopping PCA" color={COLORS.textMuted} />
+        <BulletCard
+          title="Discontinuation"
+          borderColor={COLORS.textMuted}
+          items={[
+            'Discontinue when delivery is imminent or clinically indicated',
+            'Cannot be used post-delivery or during suturing',
+            'Flush IV cannula after stopping',
+            'Continue monitoring for at least 30 minutes after stopping',
+            'Monitor newborn according to opioid exposure guidance',
+            'Paediatrician should attend delivery',
+          ]}
+        />
+
+        <SectionHeader icon="file" title="Post-Delivery Documentation" color={COLORS.info} />
+        <View style={styles.splitRow}>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Core Details"
+              borderColor={COLORS.info}
+              items={[
+                'Time of delivery',
+                'Mode of delivery (NVD/Instrumental/LSCS)',
+                'Time PCA stopped',
+                'Cannula removed without flush',
+              ]}
+            />
+          </View>
+          <View style={[styles.splitCol, !twoColumn && styles.splitColFull]}>
+            <BulletCard
+              title="Adverse Events & Record"
+              borderColor={COLORS.info}
+              items={[
+                'Adverse events: sedation, dizziness, nausea/vomiting, itching, low RR, low sats',
+                'Patient satisfaction score (1-10)',
+                'Complete all sections of anaesthetic form',
+              ]}
+            />
+          </View>
+        </View>
       </CollapsibleCard>
+
+      <TouchableOpacity style={styles.homeBtn} onPress={() => navigation.navigate('Home')}>
+        <FontAwesome5 name="home" size={13} color={COLORS.white} style={styles.homeBtnIcon} />
+        <Text style={styles.homeBtnText}>Back to Home</Text>
+      </TouchableOpacity>
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  section: { marginBottom: SPACING.md },
-  respIntroRow: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.sm },
-  respIntroIcon: { marginRight: 8 },
-  respIntroTitle: { fontSize: 18, fontWeight: '700', color: COLORS.primary, flex: 1 },
-  respListCard: { borderWidth: 1, borderColor: '#ced4da', borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.md, overflow: 'hidden' },
-  respItemRow: { flexDirection: 'row', alignItems: 'flex-start', padding: 12 },
-  respItemBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
-  respItemIcon: { width: 24, marginTop: 2 },
-  respItemText: { fontSize: 13, color: COLORS.dark, flex: 1, lineHeight: 20 },
-  protocolCardWarning: { borderWidth: 1, borderColor: COLORS.warning, borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.xs, overflow: 'hidden' },
-  protocolHeaderWarning: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.warning, padding: 12 },
-  protocolHeaderWarningText: { fontSize: 16, fontWeight: '600', color: COLORS.dark },
-  protocolCardDanger: { borderWidth: 1, borderColor: COLORS.danger, borderRadius: BORDER_RADIUS, backgroundColor: COLORS.white, marginBottom: SPACING.md, overflow: 'hidden' },
-  protocolHeaderDanger: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.danger, padding: 12 },
-  protocolHeaderDangerText: { fontSize: 16, fontWeight: '600', color: COLORS.white },
-  protocolHeaderIcon: { marginRight: 8 },
-  protocolItem: { fontSize: 13, color: COLORS.dark, padding: 12, lineHeight: 20 },
-  protocolItemBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
-  buttonRow: { flexDirection: 'row', marginBottom: SPACING.sm },
-  primaryBtn: { backgroundColor: COLORS.primary, borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12, marginRight: 8 },
-  primaryBtnText: { color: COLORS.white, fontSize: 12, fontWeight: '600' },
-  outlineBtn: { borderColor: COLORS.primary, borderWidth: 1, borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12 },
-  outlineBtnText: { color: COLORS.primary, fontSize: 12, fontWeight: '600' },
-  sectionTitle: { fontWeight: '700', fontSize: 14, color: COLORS.medicalBlue, marginBottom: SPACING.xs, marginTop: SPACING.sm },
-  sectionItem: { fontSize: 13, color: COLORS.text, marginBottom: 3, paddingLeft: 4 },
-  alertBox: { backgroundColor: '#fff3cd', borderLeftWidth: 4, borderLeftColor: '#ffc107', padding: SPACING.sm, borderRadius: 4, marginBottom: SPACING.md },
-  alertTitle: { fontWeight: '700', fontSize: 13, color: '#856404', marginBottom: 4 },
-  alertText: { fontSize: 13, color: '#856404' },
-  alertTextDanger: { fontSize: 13, color: COLORS.danger, marginBottom: 2 },
-  checklistItem: { fontSize: 14, color: COLORS.text, paddingVertical: 6, paddingHorizontal: 4, borderBottomWidth: 0.5, borderBottomColor: COLORS.border },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    paddingBottom: 6,
+  },
+  sectionHeaderIcon: { marginRight: 7 },
+  sectionHeaderText: { fontSize: 15, fontWeight: '700', color: COLORS.primary },
+  bulletCard: {
+    borderRadius: BORDER_RADIUS,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    borderLeftWidth: 4,
+    backgroundColor: '#f8f9fa',
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  bulletCardTitle: { fontSize: 13, fontWeight: '700', color: COLORS.text, marginBottom: 4 },
+  bulletItem: { fontSize: 13, color: COLORS.text, marginBottom: 3, lineHeight: 18 },
+  splitRow: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4 },
+  splitCol: { width: '50%', paddingHorizontal: 4 },
+  splitColFull: { width: '100%' },
+  iconListCard: {
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: BORDER_RADIUS,
+    backgroundColor: COLORS.white,
+    marginBottom: SPACING.md,
+    overflow: 'hidden',
+  },
+  iconRow: { flexDirection: 'row', alignItems: 'flex-start', padding: 12 },
+  iconRowBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
+  iconRowIcon: { width: 20, marginTop: 2, marginRight: 8 },
+  iconRowText: { flex: 1, fontSize: 13, color: COLORS.text, lineHeight: 19 },
+  safetyCard: {
+    borderWidth: 1,
+    borderRadius: BORDER_RADIUS,
+    backgroundColor: COLORS.white,
+    marginBottom: SPACING.md,
+    overflow: 'hidden',
+  },
+  safetyHeader: { flexDirection: 'row', alignItems: 'center', padding: 10 },
+  safetyHeaderIcon: { marginRight: 7 },
+  safetyHeaderText: { fontSize: 14, fontWeight: '700', flex: 1 },
+  safetyItem: { fontSize: 13, color: COLORS.text, lineHeight: 18, padding: 10 },
+  safetyItemBorder: { borderTopWidth: 1, borderTopColor: '#dee2e6' },
+  infoAlert: {
+    backgroundColor: '#e8f4fd',
+    borderWidth: 1,
+    borderColor: '#cfe8ff',
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  emergencyDrugBox: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    backgroundColor: '#f8d7da',
+    borderRadius: BORDER_RADIUS,
+    borderWidth: 1,
+    borderColor: '#f5c2c7',
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  emergencyDrugText: { fontSize: 12, color: COLORS.danger, fontWeight: '700', marginVertical: 3, marginRight: 8 },
   tableScrollContent: { paddingBottom: 2 },
-  table: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 4, overflow: 'hidden', marginBottom: SPACING.md },
-  tableHeader: { flexDirection: 'row', backgroundColor: COLORS.medicalBlue, padding: 8 },
-  tableHeaderText: { color: COLORS.white, fontWeight: '700', fontSize: 12, paddingRight: 8 },
-  tableRow: { flexDirection: 'row', padding: 8, borderTopWidth: 0.5, borderTopColor: COLORS.border },
-  tableRowAlt: { backgroundColor: '#f8f9fa' },
-  tableCell: { fontSize: 12, color: COLORS.text, paddingRight: 8, lineHeight: 18 },
-  note: { fontSize: 11, color: COLORS.textMuted, fontStyle: 'italic', marginTop: 4, marginBottom: SPACING.md },
+  tableWrap: { borderWidth: 1, borderColor: COLORS.border, borderRadius: BORDER_RADIUS, overflow: 'hidden', marginBottom: SPACING.md },
+  tableHeaderRow: { flexDirection: 'row', backgroundColor: COLORS.medicalBlue },
+  tableHeaderCell: { padding: 8, color: COLORS.white, fontWeight: '700', fontSize: 12, lineHeight: 17 },
+  tableDataRow: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: COLORS.border },
+  tableDataRowAlt: { backgroundColor: '#f8f9fa' },
+  tableDataCell: { padding: 8, fontSize: 12, color: COLORS.text, lineHeight: 17 },
+  miniAccordionCard: {
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: BORDER_RADIUS,
+    marginBottom: SPACING.sm,
+    overflow: 'hidden',
+  },
+  miniAccordionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 10,
+    backgroundColor: '#f8f9fa',
+  },
+  miniAccordionTitleRow: { flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 8 },
+  miniAccordionIcon: { marginRight: 7 },
+  miniAccordionTitle: { fontSize: 13, color: COLORS.text, fontWeight: '700', flex: 1 },
+  miniAccordionBody: { backgroundColor: COLORS.white, padding: SPACING.sm },
+  secondaryAlert: {
+    backgroundColor: '#f1f3f5',
+    borderRadius: BORDER_RADIUS,
+    borderWidth: 1,
+    borderColor: '#dee2e6',
+    padding: SPACING.sm,
+    marginTop: SPACING.xs,
+    marginBottom: SPACING.md,
+  },
+  secondaryAlertTitle: { fontSize: 13, fontWeight: '700', color: COLORS.text, marginBottom: 4 },
+  primaryAlert: {
+    backgroundColor: '#e8f4fd',
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.info,
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  primaryAlertTitle: { fontSize: 14, fontWeight: '700', color: COLORS.primary, marginBottom: 4 },
+  primaryAlertText: { fontSize: 13, color: COLORS.text, lineHeight: 18 },
+  warningAlert: {
+    backgroundColor: '#fff3cd',
+    borderWidth: 1,
+    borderColor: '#ffe69c',
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  warningAlertText: { fontSize: 13, color: '#856404', lineHeight: 18, fontWeight: '600' },
+  dangerAlert: {
+    backgroundColor: '#f8d7da',
+    borderWidth: 1,
+    borderColor: '#f5c2c7',
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  dangerAlertTitle: { fontSize: 13, fontWeight: '700', color: COLORS.danger, marginBottom: 4 },
+  dangerAlertAction: { fontSize: 13, color: COLORS.danger, fontWeight: '700', marginTop: 4 },
+  homeBtn: {
+    marginTop: SPACING.md,
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    ...SHADOW,
+  },
+  homeBtnIcon: { marginRight: 8 },
+  homeBtnText: { color: COLORS.white, fontWeight: '700', fontSize: 14 },
 });

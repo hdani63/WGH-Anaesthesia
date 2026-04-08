@@ -218,12 +218,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   pageTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '700',
     color: COLORS.medicalBlue,
   },
   pageSubtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.textMuted,
     marginTop: 4,
   },

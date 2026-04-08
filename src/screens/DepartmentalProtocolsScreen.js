@@ -1,24 +1,78 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
-function InfoSection({ title, items }) {
+function DataTable({ headers, rows, columnWidths }) {
+  const widths = columnWidths || headers.map((_, i) => (i === 0 ? 180 : 160));
+
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+      <View style={styles.tableWrapper}>
+        <View style={styles.tableRow}>
+          {headers.map((header, i) => (
+            <Text key={`${header}-${i}`} style={[styles.tableHeader, { width: widths[i], minWidth: widths[i] }]}>
+              {header}
+            </Text>
+          ))}
+        </View>
+
+        {rows.map((row, rowIndex) => (
+          <View key={`row-${rowIndex}`} style={[styles.tableRow, rowIndex % 2 === 1 && styles.tableRowAlt]}>
+            {row.map((cell, cellIndex) => (
+              <Text key={`cell-${rowIndex}-${cellIndex}`} style={[styles.tableCell, { width: widths[cellIndex], minWidth: widths[cellIndex] }]}>
+                {cell}
+              </Text>
+            ))}
+          </View>
+        ))}
+      </View>
+    </ScrollView>
+  );
+}
+
+function SectionHeader({ title, icon, color = COLORS.primary }) {
+  return (
+    <View style={styles.sectionHeaderRow}>
+      <FontAwesome5 name={icon} size={13} color={color} style={styles.sectionHeaderIcon} />
+      <Text style={styles.sectionHeaderTitle}>{title}</Text>
+    </View>
+  );
+}
+
+function InfoSection({ title, items, icon = 'list-alt' }) {
+  return (
+    <View style={styles.infoCard}>
+      <View style={styles.infoCardTitleRow}>
+        <FontAwesome5 name={icon} size={12} color={COLORS.success} style={styles.infoCardIcon} />
+        <Text style={styles.infoCardTitle}>{title}</Text>
+      </View>
       {items.map((item, i) => <Text key={i} style={styles.sectionItem}>• {item}</Text>)}
     </View>
   );
 }
 
-function ContactCard({ title, detail, icon }) {
+function StepCard({ step, title, intro, items }) {
   return (
-    <View style={styles.contactCard}>
+    <View style={styles.stepCard}>
+      <View style={styles.stepTitleRow}>
+        <View style={styles.stepNumberBadge}><Text style={styles.stepNumberText}>{step}</Text></View>
+        <Text style={styles.stepTitle}>{title}</Text>
+      </View>
+      <Text style={styles.stepIntro}>{intro}</Text>
+      {items.map((item, i) => <Text key={i} style={styles.sectionItem}>• {item}</Text>)}
+    </View>
+  );
+}
+
+function ContactCard({ title, detail, icon, borderColor }) {
+  return (
+    <View style={[styles.contactCard, { borderLeftColor: borderColor || COLORS.primary }]}>
       <FontAwesome5 name={icon} size={18} color={COLORS.primary} style={styles.contactIcon} />
-      <View>
+      <View style={styles.contactTextWrap}>
         <Text style={styles.contactTitle}>{title}</Text>
         <Text style={styles.contactDetail}>{detail}</Text>
       </View>
@@ -26,113 +80,259 @@ function ContactCard({ title, detail, icon }) {
   );
 }
 
-export default function DepartmentalProtocolsScreen() {
+function MetricCard({ icon, label, value }) {
   return (
-    <ScreenWrapper title="Departmental Protocols" subtitle="WGH Anaesthesia department protocols">
+    <View style={styles.metricCard}>
+      <FontAwesome5 name={icon} size={20} color={COLORS.primary} style={styles.metricIcon} />
+      <Text style={styles.metricLabel}>{label}</Text>
+      <Text style={styles.metricValue}>{value}</Text>
+    </View>
+  );
+}
+
+export default function DepartmentalProtocolsScreen() {
+  const navigation = useNavigation();
+
+  return (
+    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
       <CollapsibleCard title="IV Cannulation Request Protocol" icon="iv-drip">
-        <View style={styles.protocolHeader}>
-          <Text style={styles.effectiveDate}>Effective Date: 13 May 2024</Text>
-          <Text style={styles.hours}>Operating Hours: 09:00 – 17:00</Text>
+        <SectionHeader title="Protocol Overview" icon="info-circle" />
+        <View style={styles.protocolAlertInfo}>
+          <Text style={styles.alertLine}><Text style={styles.alertStrong}>Effective Date:</Text> Monday 13th May 2024</Text>
+          <Text style={styles.alertLine}><Text style={styles.alertStrong}>Purpose:</Text> New system for managing requests for assistance with difficult peripheral venous cannulation at ward level.</Text>
+          <Text style={styles.alertLine}><Text style={styles.alertStrong}>Operating Hours:</Text> 09:00 - 17:00 on weekdays (period of greatest frequency of requests)</Text>
         </View>
 
-        <InfoSection title="Key Principles" items={[
-          'Peripheral IV cannulation is a core medical skill',
-          'All NCHDs should be competent in IV cannulation',
-          'Anaesthesia department assists when standard approaches fail',
-          'Structured referral pathway ensures appropriate use of resources',
-          'Documentation supports audit and quality improvement',
+        <SectionHeader title="Key Principles" icon="lightbulb" color={COLORS.success} />
+        <InfoSection title="Rationale" icon="check-circle" items={[
+          'Optimizes Anaesthesiology resource utilization',
+          'Ensures appropriate escalation pathway',
+          'Provides consultant-level oversight for difficult cases',
+          'Maintains audit trail for quality improvement',
+          'Reduces delays through proper coordination',
+        ]} />
+        <InfoSection title="Benefits" icon="star" items={[
+          'Consultant awareness of difficult cases',
+          'Coordinated response from best available person',
+          'Continuous audit and feedback loop',
+          'Clear escalation pathway for all teams',
+          'Improved patient care and safety',
         ]} />
 
-        <InfoSection title="Step 1: Initial Consultation Within Specialty" items={[
-          'Requesting NCHD must attempt cannulation first',
-          'Seek assistance from senior colleague within own specialty',
-          'Document number of attempts and sites tried',
+        <SectionHeader title="Step-by-Step Request Process" icon="clipboard-check" color={COLORS.warning} />
+        <StepCard
+          step="1"
+          title="Initial Consultation Within Specialty"
+          intro="The primary team in difficulty should consult among their own specialty colleagues first."
+          items={[
+            'Medical teams: 10 teams of Medical NCHDs operating at ward level',
+            'Surgical teams: 4 teams of Surgical NCHDs operating at ward level',
+            'At least one person per shift should possess the required cannulation skills',
+            'Attempt cannulation within your specialty before involving Anaesthesiology',
+          ]}
+        />
+
+        <StepCard
+          step="2"
+          title="Notify Admitting Consultant"
+          intro="If not successful, the primary team must notify the patient\'s admitting consultant."
+          items={[
+            'Admitting consultant is made aware of a sick patient with no IV access',
+            'Confirms registrar-level cannulation attempts have failed',
+            'Triggers formal cross-specialty request for assistance',
+          ]}
+        />
+
+        <StepCard
+          step="3"
+          title="Contact Consultant Anaesthesiologist"
+          intro="The admitting consultant should contact the consultant anaesthesiologist on-call."
+          items={[
+            'Who to contact: duty consultant of the day, based in theatre',
+            'How to contact: dial O and request switchboard connection',
+            'Duty consultant coordinates available anaesthesia staff response',
+            'Best placed to identify the least-delay response clinician',
+          ]}
+        />
+
+        <StepCard
+          step="4"
+          title="Complete Audit Documentation"
+          intro="A member of the admitting team should complete the audit process in parallel."
+          items={[
+            'Bring a patient sticker to theatre reception',
+            'Locate the IV Cannulation Request Audit Book',
+            'Record patient details, requesting team, location, request time, and requester',
+            'Data contributes to rolling feedback and quality improvement',
+          ]}
+        />
+
+        <SectionHeader title="Operating Hours & Out-of-Hours Procedure" icon="clock" />
+        <DataTable
+          headers={['Time Period', 'Contact Method', 'Process', 'Audit Requirements']}
+          columnWidths={[170, 220, 220, 200]}
+          rows={[
+            [
+              'WEEKDAYS\n09:00 - 17:00',
+              'Admitting consultant contacts anaesthesiology duty consultant via switchboard (dial O)',
+              'Follow 4-step process, duty consultant coordinates and deploys best available anaesthesiologist',
+              'Required: bring patient sticker to theatre reception and complete audit book',
+            ],
+            [
+              'OUT OF HOURS\n17:00 - 09:00\nWeekends',
+              'Team registrar contacts 1st-on-call anaesthesiologist directly',
+              'Direct on-call response without duty consultant coordination',
+              'Still required: attend theatre and complete same audit documentation',
+            ],
+          ]}
+        />
+
+        <SectionHeader title="Documentation & Follow-up" icon="file-medical" color={COLORS.info} />
+        <InfoSection title="Required Documentation" icon="clipboard-list" items={[
+          'Date and time of request',
+          'Requesting clinician details',
+          'Clinical indication for IV access',
+          'Previous attempts and outcomes',
+          'Patient consent documentation',
+          'Procedure notes and complications',
         ]} />
 
-        <InfoSection title="Step 2: Notify Admitting Consultant" items={[
-          'Inform admitting consultant of failed attempts',
-          'Consultant reviews clinical urgency and alternative access',
+        <InfoSection title="Post-Procedure Actions" icon="tasks" items={[
+          'Document successful cannulation site and size',
+          'Record any complications or difficulties',
+          'Provide care instructions to nursing staff',
+          'Schedule follow-up if required',
+          'Update patient medical record',
+          'Communicate outcomes with primary team',
         ]} />
 
-        <InfoSection title="Step 3: Contact Consultant Anaesthesiologist" items={[
-          'Dial \'O\' — request Consultant Anaesthesiologist on call',
-          'Provide patient details, number of failed attempts, clinical urgency',
-          'Anaesthesiologist will assess and arrange assistance',
-        ]} />
-
-        <InfoSection title="Step 4: Complete Audit Documentation" items={[
-          'Record referral in patient notes',
-          'Complete audit form for departmental tracking',
-        ]} />
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
-          <View style={styles.tableWrapper}>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableHeader, { width: 220, minWidth: 220 }]}>Weekdays 09:00-17:00</Text>
-              <Text style={[styles.tableHeader, { width: 220, minWidth: 220 }]}>Out of Hours</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, { width: 220, minWidth: 220 }]}>Contact Consultant Anaesthesiologist via switchboard</Text>
-              <Text style={[styles.tableCell, { width: 220, minWidth: 220 }]}>Contact On-Call Anaesthesia NCHD / Registrar</Text>
-            </View>
-          </View>
-        </ScrollView>
-
-        <InfoSection title="Documentation Required" items={[
-          'Patient details and clinical need',
-          'Number of attempts and sites',
-          'Referring doctor and specialty',
-          'Outcome of anaesthesia assessment',
-          'Type of access achieved',
-          'Any complications',
-        ]} />
-
+        <SectionHeader title="Central Venous Cannulation" icon="heartbeat" color={COLORS.danger} />
         <View style={styles.importantNoteBox}>
           <FontAwesome5 name="exclamation-triangle" size={14} color="#856404" style={styles.importantNoteIcon} />
           <Text style={styles.importantNote}>
             <Text style={styles.importantNoteStrong}>Important Distinction: </Text>
-            Central Venous Cannulation requires formal consultation with Anaesthesiology in the existing manner and is not covered by this protocol.
+            If central venous cannulation is required, this must continue as a formal consultation with Anaesthesiology in the existing manner and be performed in theatre under sterile conditions.
           </Text>
         </View>
 
-        <View style={styles.contactRow}>
-          <ContactCard title="Weekdays" detail="Dial 'O' → Consultant Anaesthesiologist" icon="phone-alt" />
-          <ContactCard title="Out of Hours" detail="On-Call Anaesthesia Team" icon="moon" />
+        <SectionHeader title="Key Contact Information" icon="phone" />
+        <View style={styles.contactColumn}>
+          <ContactCard
+            title="Weekdays 09:00-17:00"
+            detail="Anaesthesiology Duty Consultant via Hospital Switchboard. Dial 0 and request Anaesthesiology Duty Consultant."
+            icon="user-md"
+            borderColor={COLORS.success}
+          />
+          <ContactCard
+            title="Out of Hours"
+            detail="1st-on-call Anaesthesiologist direct contact via Switchboard. Available 17:00-09:00 and weekends."
+            icon="clock"
+            borderColor={COLORS.warning}
+          />
+          <ContactCard
+            title="Audit Documentation"
+            detail="Theatre Reception IV Cannulation Request Audit Book. Patient sticker required at all hours, including out-of-hours."
+            icon="book"
+            borderColor={COLORS.primary}
+          />
+        </View>
+
+        <SectionHeader title="Quality Assurance & Review" icon="star" color={COLORS.warning} />
+        <View style={styles.qualityBox}>
+          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anaesthesia Department.</Text>
+          <Text style={styles.sectionItem}>• All IV cannulation requests are logged for quality improvement purposes.</Text>
+          <Text style={styles.sectionItem}>• Feedback on protocol effectiveness should be directed to the department lead.</Text>
+          <Text style={styles.sectionItem}>• Training updates are communicated through departmental meetings and bulletins.</Text>
         </View>
       </CollapsibleCard>
 
-      <CollapsibleCard title="Paediatric Surgery Cut-off Limit" icon="baby">
-        <View style={styles.cutoffCard}>
-          <Text style={styles.cutoffTitle}>Eligibility Criteria</Text>
-          <View style={styles.cutoffRow}>
-            <Text style={styles.cutoffLabel}>Age:</Text>
-            <Text style={styles.cutoffValue}>4 years and over</Text>
+      <CollapsibleCard title="Paediatric Surgery Cut-off Limit" icon="child">
+        <View style={styles.paediatricAlert}>
+          <Text style={styles.cutoffTitle}>Paediatric Surgery Cut-off Limit</Text>
+          <Text style={styles.cutoffLead}>The cut-off for non-life-threatening paediatric surgery is:</Text>
+          <View style={styles.metricRow}>
+            <MetricCard icon="birthday-cake" label="Age" value="4 years and over" />
+            <MetricCard icon="weight" label="Weight" value="15 kg and over" />
           </View>
-          <View style={styles.cutoffRow}>
-            <Text style={styles.cutoffLabel}>Weight:</Text>
-            <Text style={styles.cutoffValue}>15 kg and over</Text>
-          </View>
-          <Text style={styles.cutoffNote}>For non-life-threatening surgery only</Text>
+          <Text style={styles.cutoffNote}>Applies to non-life-threatening paediatric surgery.</Text>
         </View>
       </CollapsibleCard>
 
-      <CollapsibleCard title="Additional Protocols" icon="list">
-        <Text style={styles.placeholderText}>Additional protocols will be added here as they become available.</Text>
+      <CollapsibleCard title="Additional Protocols" icon="plus-circle">
+        <View style={styles.placeholderCard}>
+          <FontAwesome5 name="folder-plus" size={32} color={COLORS.textMuted} style={styles.placeholderIcon} />
+          <Text style={styles.placeholderText}>Additional departmental protocols will be added here as they become available.</Text>
+        </View>
       </CollapsibleCard>
+
+      <TouchableOpacity style={styles.homeBtn} onPress={() => navigation.navigate('Home')}>
+        <FontAwesome5 name="home" size={13} color={COLORS.white} style={styles.homeBtnIcon} />
+        <Text style={styles.homeBtnText}>Back to Home</Text>
+      </TouchableOpacity>
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  protocolHeader: { backgroundColor: '#e8f4fd', borderRadius: 6, padding: SPACING.sm, marginBottom: SPACING.md },
-  effectiveDate: { fontSize: 13, fontWeight: '600', color: COLORS.medicalBlue },
-  hours: { fontSize: 13, color: COLORS.text },
-  section: { marginBottom: SPACING.md },
-  sectionTitle: { fontWeight: '700', fontSize: 14, color: COLORS.primary, marginBottom: 4 },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e8f5e9',
+    paddingBottom: 6,
+  },
+  sectionHeaderIcon: { marginRight: 7 },
+  sectionHeaderTitle: { fontWeight: '700', fontSize: 14, color: '#2e7d32' },
+  protocolAlertInfo: {
+    backgroundColor: '#e8f4fd',
+    borderRadius: 6,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: '#cfe8ff',
+  },
+  alertLine: { fontSize: 13, color: COLORS.text, marginBottom: 4, lineHeight: 19 },
+  alertStrong: { fontWeight: '700' },
+  infoCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2e7d32',
+  },
+  infoCardTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+  infoCardIcon: { marginRight: 6 },
+  infoCardTitle: { fontWeight: '700', fontSize: 14, color: COLORS.text },
   sectionItem: { fontSize: 13, color: COLORS.text, marginBottom: 2, paddingLeft: 4 },
+  stepCard: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    borderRadius: 8,
+    padding: SPACING.sm,
+    marginBottom: SPACING.sm,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2e7d32',
+  },
+  stepTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  stepNumberBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#2e7d32',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  stepNumberText: { color: COLORS.white, fontWeight: '700', fontSize: 12 },
+  stepTitle: { fontWeight: '700', fontSize: 14, color: COLORS.text, flex: 1 },
+  stepIntro: { fontSize: 13, color: COLORS.text, marginBottom: 6, fontWeight: '600', lineHeight: 18 },
   tableScrollContent: { paddingBottom: 2 },
   tableWrapper: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, overflow: 'hidden', marginBottom: SPACING.md },
   tableRow: { flexDirection: 'row' },
+  tableRowAlt: { backgroundColor: '#f8f9fa' },
   tableHeader: { backgroundColor: COLORS.medicalBlue, color: COLORS.white, padding: 8, fontWeight: '700', fontSize: 12, lineHeight: 17 },
   tableCell: { padding: 8, fontSize: 12, color: COLORS.text, borderTopWidth: 1, borderTopColor: COLORS.border, lineHeight: 17 },
   importantNoteBox: {
@@ -148,16 +348,72 @@ const styles = StyleSheet.create({
   importantNoteIcon: { marginRight: 8, marginTop: 2 },
   importantNote: { fontSize: 13, color: '#856404', lineHeight: 19, flex: 1 },
   importantNoteStrong: { fontWeight: '700', color: '#856404' },
-  contactRow: { flexDirection: 'row', gap: SPACING.sm },
-  contactCard: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#f8f9fa', borderRadius: 6, padding: SPACING.sm },
+  contactColumn: { marginBottom: SPACING.sm },
+  contactCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 6,
+    padding: SPACING.sm,
+    borderLeftWidth: 4,
+    marginBottom: SPACING.sm,
+  },
   contactIcon: { width: 22, marginRight: 4 },
+  contactTextWrap: { flex: 1 },
   contactTitle: { fontWeight: '700', fontSize: 12, color: COLORS.text },
-  contactDetail: { fontSize: 11, color: COLORS.textMuted },
-  cutoffCard: { backgroundColor: '#f0fdf4', borderRadius: 6, padding: SPACING.md, borderWidth: 1, borderColor: '#86efac' },
+  contactDetail: { fontSize: 11, color: COLORS.textMuted, lineHeight: 16 },
+  qualityBox: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 6,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+    borderLeftWidth: 4,
+    borderLeftColor: '#adb5bd',
+  },
+  paediatricAlert: {
+    backgroundColor: '#e8f0ff',
+    borderRadius: 8,
+    padding: SPACING.md,
+    borderWidth: 1,
+    borderColor: '#cfe0ff',
+  },
   cutoffTitle: { fontWeight: '700', fontSize: 16, color: COLORS.success, marginBottom: SPACING.sm },
-  cutoffRow: { flexDirection: 'row', marginBottom: 4 },
-  cutoffLabel: { fontWeight: '700', fontSize: 14, color: COLORS.text, width: 80 },
-  cutoffValue: { fontSize: 14, color: COLORS.text },
+  cutoffLead: { fontSize: 13, color: COLORS.text, marginBottom: SPACING.sm },
+  metricRow: { flexDirection: 'row' },
+  metricCard: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#86b6ff',
+    borderRadius: 8,
+    alignItems: 'center',
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
+    backgroundColor: COLORS.white,
+  },
+  metricIcon: { marginBottom: 6 },
+  metricLabel: { fontSize: 12, color: COLORS.primary, fontWeight: '600', marginBottom: 2 },
+  metricValue: { fontSize: 13, color: COLORS.text, fontWeight: '700', textAlign: 'center' },
   cutoffNote: { fontSize: 13, color: COLORS.textMuted, fontStyle: 'italic', marginTop: SPACING.sm },
-  placeholderText: { fontSize: 14, color: COLORS.textMuted, fontStyle: 'italic', textAlign: 'center', padding: SPACING.lg },
+  placeholderCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.md,
+  },
+  placeholderIcon: { marginBottom: SPACING.sm },
+  placeholderText: { fontSize: 14, color: COLORS.textMuted, fontStyle: 'italic', textAlign: 'center' },
+  homeBtn: {
+    marginTop: SPACING.md,
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    ...SHADOW,
+  },
+  homeBtnIcon: { marginRight: 8 },
+  homeBtnText: { color: COLORS.white, fontWeight: '700', fontSize: 14 },
 });

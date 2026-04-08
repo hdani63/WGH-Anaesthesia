@@ -7,17 +7,17 @@ import CalcButton from '../components/CalcButton';
 import ResultDisplay from '../components/ResultDisplay';
 import { PickerSelect, CheckboxItem } from '../components/FormControls';
 import { COLORS, SPACING } from '../utils/theme';
-import * as Calc from '../utils/calculators';
 
 export default function SpecializedScreen() {
   const [patient, setPatient] = useState({ weight: '', age: '', height: '', gender: 'male' });
 
   // Pediatric
   const [pedAge, setPedAge] = useState('');
-  const [pedResult, setPedResult] = useState(null);
+  const [pedWeightResult, setPedWeightResult] = useState(null);
+  const [pedVitalsResult, setPedVitalsResult] = useState(null);
 
   // Obstetric - Bishop
-  const [bishop, setBishop] = useState({ dilation: '', effacement: '', station: '' });
+  const [bishop, setBishop] = useState({ dilation: '0', effacement: '0', station: '0' });
   const [bishopResult, setBishopResult] = useState(null);
 
   // Gestational Age
@@ -25,7 +25,7 @@ export default function SpecializedScreen() {
   const [gestResult, setGestResult] = useState(null);
 
   // Frailty
-  const [frailty, setFrailty] = useState('');
+  const [frailty, setFrailty] = useState('1');
   const [frailtyResult, setFrailtyResult] = useState(null);
 
   // Fall Risk
@@ -44,24 +44,81 @@ export default function SpecializedScreen() {
   const [crossClampResult, setCrossClampResult] = useState(null);
 
   // GCS
-  const [gcsState, setGcsState] = useState({ eye: '', verbal: '', motor: '' });
+  const [gcsState, setGcsState] = useState({ eye: '4', verbal: '5', motor: '6' });
   const [gcsResult, setGcsResult] = useState(null);
 
+  const [activeCard, setActiveCard] = useState(null);
+
+  const toggleCard = (cardKey, nextOpen) => {
+    setActiveCard(nextOpen ? cardKey : null);
+  };
+
+  const calculatePediatricWeight = (age) => {
+    const a = parseInt(age, 10);
+    if (!a) return { text: 'Please enter age', type: 'warning' };
+
+    const estimatedWeight = (a * 2) + 8;
+    return {
+      text: `Estimated Weight: ${estimatedWeight} kg\nFormula: (Age × 2) + 8 kg\nAlways verify with actual weight when possible`,
+      type: 'success',
+    };
+  };
+
   const assessGestationalAge = (weeks) => {
-    const w = parseFloat(weeks);
+    const w = parseInt(weeks, 10);
     if (!w) return { text: 'Please enter gestational age', type: 'warning' };
-    if (w < 28) return { text: `${w} weeks: Extremely preterm\nHigh risk — NICU required`, type: 'danger' };
-    if (w < 32) return { text: `${w} weeks: Very preterm\nHigh risk — NICU support needed`, type: 'danger' };
-    if (w < 37) return { text: `${w} weeks: Preterm\nModerate risk — Monitor closely`, type: 'warning' };
-    if (w <= 42) return { text: `${w} weeks: Term\nNormal gestational age`, type: 'success' };
-    return { text: `${w} weeks: Post-term\nConsider induction`, type: 'warning' };
+
+    if (w < 28) {
+      return {
+        text: `${w} weeks: Extremely preterm\nHigh-risk pregnancy, specialized care required`,
+        type: 'danger',
+      };
+    }
+    if (w < 32) {
+      return {
+        text: `${w} weeks: Very preterm\nPreterm delivery risk, monitor closely`,
+        type: 'danger',
+      };
+    }
+    if (w < 37) {
+      return {
+        text: `${w} weeks: Preterm\nConsider steroid administration, prepare for preterm delivery`,
+        type: 'warning',
+      };
+    }
+    if (w <= 42) {
+      return {
+        text: `${w} weeks: Term\nNormal gestational age range`,
+        type: 'success',
+      };
+    }
+
+    return {
+      text: `${w} weeks: Post-term\nConsider induction of labor`,
+      type: 'warning',
+    };
   };
 
   const calcBishop = () => {
     const total = Object.values(bishop).reduce((s, v) => s + (parseInt(v) || 0), 0);
-    if (total >= 8) return { text: `Bishop Score: ${total}\nFavorable for induction`, type: 'success' };
-    if (total >= 5) return { text: `Bishop Score: ${total}\nModerately favorable`, type: 'warning' };
-    return { text: `Bishop Score: ${total}\nUnfavorable — consider cervical ripening`, type: 'warning' };
+
+    if (total >= 8) {
+      return {
+        text: `Bishop Score: ${total}/13\nFavorable cervix - high success rate for induction`,
+        type: 'success',
+      };
+    }
+    if (total >= 5) {
+      return {
+        text: `Bishop Score: ${total}/13\nModerately favorable cervix`,
+        type: 'warning',
+      };
+    }
+
+    return {
+      text: `Bishop Score: ${total}/13\nUnfavorable cervix - consider cervical ripening`,
+      type: 'warning',
+    };
   };
 
   const assessFrailtyScale = (val) => {
@@ -124,31 +181,115 @@ export default function SpecializedScreen() {
   const showPediatricVitals = () => {
     const a = parseFloat(patient.age);
     if (!a && a !== 0) return { text: 'Please enter patient age', type: 'warning' };
-    let range;
-    if (a < 1) range = 'Neonate: HR 120-160, RR 30-60, SBP 60-90';
-    else if (a < 3) range = 'Toddler: HR 100-150, RR 24-40, SBP 80-100';
-    else if (a < 6) range = 'Preschooler: HR 80-120, RR 22-34, SBP 80-110';
-    else if (a < 12) range = 'School Age: HR 70-110, RR 18-30, SBP 85-120';
-    else range = 'Adolescent: HR 60-100, RR 12-20, SBP 100-130';
-    return { text: `Pediatric Vital Signs (Age ${a}yr):\n${range}`, type: 'info' };
+
+    if (a < 1) {
+      return {
+        text: 'Neonate/Infant (0-12 months):\nHR: 100-160 bpm\nRR: 30-60 /min\nSBP: 60-90 mmHg\nDBP: 30-60 mmHg',
+        type: 'info',
+      };
+    }
+    if (a < 3) {
+      return {
+        text: 'Toddler (1-3 years):\nHR: 90-150 bpm\nRR: 24-40 /min\nSBP: 80-110 mmHg\nDBP: 50-80 mmHg',
+        type: 'info',
+      };
+    }
+    if (a < 6) {
+      return {
+        text: 'Preschooler (3-6 years):\nHR: 80-140 bpm\nRR: 22-34 /min\nSBP: 90-110 mmHg\nDBP: 50-80 mmHg',
+        type: 'info',
+      };
+    }
+    if (a < 12) {
+      return {
+        text: 'School Age (6-12 years):\nHR: 70-120 bpm\nRR: 18-30 /min\nSBP: 90-120 mmHg\nDBP: 60-80 mmHg',
+        type: 'info',
+      };
+    }
+
+    return {
+      text: 'Adolescent (12+ years):\nHR: 60-100 bpm\nRR: 12-20 /min\nSBP: 100-130 mmHg\nDBP: 60-85 mmHg',
+      type: 'info',
+    };
+  };
+
+  const calculateCPP = () => {
+    if (!mapNeuro || !icp) return { text: 'Please enter MAP and ICP values', type: 'warning' };
+
+    const cpp = parseFloat(mapNeuro) - parseFloat(icp);
+
+    if (cpp >= 70) {
+      return {
+        text: `CPP: ${cpp.toFixed(0)} mmHg\nAdequate cerebral perfusion\nTarget CPP: 60-70 mmHg`,
+        type: 'success',
+      };
+    }
+    if (cpp >= 60) {
+      return {
+        text: `CPP: ${cpp.toFixed(0)} mmHg\nBorderline cerebral perfusion\nTarget CPP: 60-70 mmHg`,
+        type: 'warning',
+      };
+    }
+
+    return {
+      text: `CPP: ${cpp.toFixed(0)} mmHg\nInadequate cerebral perfusion - urgent intervention needed\nTarget CPP: 60-70 mmHg`,
+      type: 'danger',
+    };
+  };
+
+  const calculateGCS = () => {
+    const eye = parseInt(gcsState.eye, 10) || 0;
+    const verbal = parseInt(gcsState.verbal, 10) || 0;
+    const motor = parseInt(gcsState.motor, 10) || 0;
+
+    const total = eye + verbal + motor;
+
+    if (total >= 13) {
+      return {
+        text: `GCS: ${total}/15 (E${eye}V${verbal}M${motor})\nMild brain injury`,
+        type: 'success',
+      };
+    }
+    if (total >= 9) {
+      return {
+        text: `GCS: ${total}/15 (E${eye}V${verbal}M${motor})\nModerate brain injury`,
+        type: 'warning',
+      };
+    }
+
+    return {
+      text: `GCS: ${total}/15 (E${eye}V${verbal}M${motor})\nSevere brain injury`,
+      type: 'danger',
+    };
   };
 
   return (
-    <ScreenWrapper title="Specialized Fields" subtitle="Pediatric, obstetric, geriatric, cardiac, neuro">
+    <ScreenWrapper title="Specialized Fields" subtitle="Pediatric, obstetric, and specialized medical assessments">
       <PatientInfoCard patient={patient} setPatient={setPatient} />
 
-      <CollapsibleCard title="Pediatric Calculations" icon="baby">
-        <Text style={styles.sectionTitle}>Weight Estimation (Age 1-10)</Text>
-        <Text style={styles.label}>Child Age (years)</Text>
+      <CollapsibleCard
+        title="Pediatric Calculations"
+        icon="baby"
+        open={activeCard === 'pediatric'}
+        onToggle={(nextOpen) => toggleCard('pediatric', nextOpen)}
+      >
+        <Text style={styles.sectionTitle}>Weight Estimation (Age 1-10 years)</Text>
+        <Text style={styles.label}>Age (years)</Text>
         <TextInput style={styles.input} keyboardType="numeric" placeholder="5" value={pedAge} onChangeText={setPedAge} />
-        <CalcButton title="Estimate Weight" onPress={() => setPedResult(Calc.calculatePediatricWeight(pedAge))} />
-        {pedResult && <ResultDisplay result={pedResult.text} type={pedResult.type} />}
+        <CalcButton title="Estimate Weight" onPress={() => setPedWeightResult(calculatePediatricWeight(pedAge))} />
+        {pedWeightResult && <ResultDisplay result={pedWeightResult.text} type={pedWeightResult.type} />}
         <View style={styles.divider} />
-        <Text style={styles.sectionTitle}>Normal Vital Signs by Age</Text>
-        <CalcButton title="Show Vital Signs" onPress={() => setPedResult(showPediatricVitals())} />
+        <Text style={styles.sectionTitle}>Pediatric Vital Signs Normal Ranges</Text>
+        <CalcButton title="Show Normal Ranges" onPress={() => setPedVitalsResult(showPediatricVitals())} />
+        {pedVitalsResult && <ResultDisplay result={pedVitalsResult.text} type={pedVitalsResult.type} />}
       </CollapsibleCard>
 
-      <CollapsibleCard title="Obstetric Calculations & Assessments" icon="female">
+      <CollapsibleCard
+        title="Obstetric Calculations & Assessments"
+        icon="female"
+        open={activeCard === 'obstetric'}
+        onToggle={(nextOpen) => toggleCard('obstetric', nextOpen)}
+      >
         <Text style={styles.sectionTitle}>Gestational Age Assessment</Text>
         <Text style={styles.label}>Gestational Age (weeks)</Text>
         <TextInput style={styles.input} keyboardType="numeric" placeholder="32" value={gestAge} onChangeText={setGestAge} />
@@ -169,7 +310,12 @@ export default function SpecializedScreen() {
         {bishopResult && <ResultDisplay result={bishopResult.text} type={bishopResult.type} />}
       </CollapsibleCard>
 
-      <CollapsibleCard title="Geriatric Assessments" icon="user-friends">
+      <CollapsibleCard
+        title="Geriatric Assessments"
+        icon="user-clock"
+        open={activeCard === 'geriatric'}
+        onToggle={(nextOpen) => toggleCard('geriatric', nextOpen)}
+      >
         <Text style={styles.sectionTitle}>Frailty Assessment (Clinical Frailty Scale)</Text>
         <PickerSelect label="Frailty Scale" options={[
           { value: '1', label: '1 — Very Fit' }, { value: '2', label: '2 — Well' }, { value: '3', label: '3 — Managing Well' },
@@ -188,7 +334,12 @@ export default function SpecializedScreen() {
         {fallResult && <ResultDisplay result={fallResult.text} type={fallResult.type} />}
       </CollapsibleCard>
 
-      <CollapsibleCard title="Cardiac Anesthesia Calculations" icon="heart">
+      <CollapsibleCard
+        title="Cardiac Anesthesia Calculations"
+        icon="heart"
+        open={activeCard === 'cardiac'}
+        onToggle={(nextOpen) => toggleCard('cardiac', nextOpen)}
+      >
         <Text style={styles.sectionTitle}>Cardiopulmonary Bypass Calculations</Text>
         <Text style={styles.label}>Body Surface Area (m²)</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="1.8" value={bsa} onChangeText={setBsa} />
@@ -203,13 +354,18 @@ export default function SpecializedScreen() {
         {crossClampResult && <ResultDisplay result={crossClampResult.text} type={crossClampResult.type} />}
       </CollapsibleCard>
 
-      <CollapsibleCard title="Neuroanesthesia Calculations" icon="user-check">
+      <CollapsibleCard
+        title="Neuroanesthesia Calculations"
+        icon="brain"
+        open={activeCard === 'neuro'}
+        onToggle={(nextOpen) => toggleCard('neuro', nextOpen)}
+      >
         <Text style={styles.sectionTitle}>Cerebral Perfusion Pressure</Text>
         <Text style={styles.label}>Mean Arterial Pressure (mmHg)</Text>
         <TextInput style={styles.input} keyboardType="numeric" placeholder="80" value={mapNeuro} onChangeText={setMapNeuro} />
         <Text style={styles.label}>Intracranial Pressure (mmHg)</Text>
         <TextInput style={styles.input} keyboardType="numeric" placeholder="15" value={icp} onChangeText={setIcp} />
-        <CalcButton title="Calculate CPP" onPress={() => setCppResult(Calc.calculateCPP(mapNeuro, icp))} />
+        <CalcButton title="Calculate CPP" onPress={() => setCppResult(calculateCPP())} />
         {cppResult && <ResultDisplay result={cppResult.text} type={cppResult.type} />}
         <View style={styles.divider} />
         <Text style={styles.sectionTitle}>Glasgow Coma Scale</Text>
@@ -224,7 +380,7 @@ export default function SpecializedScreen() {
           { value: '6', label: '6 — Obeys commands' }, { value: '5', label: '5 — Localizes pain' }, { value: '4', label: '4 — Withdraws' },
           { value: '3', label: '3 — Flexion' }, { value: '2', label: '2 — Extension' }, { value: '1', label: '1 — None' },
         ]} selected={gcsState.motor} onSelect={v => setGcsState(p => ({ ...p, motor: v }))} />
-        <CalcButton title="Calculate GCS" onPress={() => setGcsResult(Calc.calculateGCS(gcsState.eye, gcsState.verbal, gcsState.motor))} />
+        <CalcButton title="Calculate GCS" onPress={() => setGcsResult(calculateGCS())} />
         {gcsResult && <ResultDisplay result={gcsResult.text} type={gcsResult.type} />}
       </CollapsibleCard>
     </ScreenWrapper>

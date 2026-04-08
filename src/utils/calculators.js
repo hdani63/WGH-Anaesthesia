@@ -304,7 +304,7 @@ export function calculateDantrolenes(weight) {
   const max = w * 10;
   const vials = Math.ceil(max / 20);
   return {
-    text: `Warning: DANTROLENE DOSING:\nInitial dose: ${initial.toFixed(0)} mg IV\nRepeat: ${initial.toFixed(0)} mg every 5 minutes PRN\nMaximum total: ${max.toFixed(0)} mg\nVials needed: ${vials} vials (20mg each)\nEach vial requires 60mL sterile water for reconstitution`,
+    text: `DANTROLENE DOSING:\nInitial dose: ${initial.toFixed(0)} mg IV\nRepeat: ${initial.toFixed(0)} mg every 5 minutes PRN\nMaximum total: ${max.toFixed(0)} mg\n\nVials needed: ${vials} vials (20mg each)\nEach vial requires 60mL sterile water for reconstitution`,
     type: 'danger',
   };
 }
@@ -316,7 +316,7 @@ export function calculateLipidRescue(weight) {
   const infusion = w * 0.25;
   const max = w * 12;
   return {
-    text: `Warning: LIPID RESCUE (20% Intralipid):\n1. Initial bolus: ${bolus.toFixed(0)} mL IV\n2. Infusion: ${infusion.toFixed(1)} mL/min\n3. Repeat bolus: ${bolus.toFixed(0)} mL (if needed)\n4. Maximum total: ${max.toFixed(0)} mL\nContinue infusion until hemodynamic stability`,
+    text: `LIPID RESCUE THERAPY (20% Intralipid):\n1. Initial bolus: ${bolus.toFixed(0)} mL IV\n2. Infusion: ${infusion.toFixed(1)} mL/min\n3. Repeat bolus: ${bolus.toFixed(0)} mL (if needed)\n4. Maximum total: ${max.toFixed(0)} mL\n\nContinue infusion until hemodynamic stability`,
     type: 'warning',
   };
 }
@@ -324,24 +324,67 @@ export function calculateLipidRescue(weight) {
 export function calculateAnaphylaxis(weight, ageGroup) {
   if (!weight) return { text: 'Please enter patient weight', type: 'warning' };
   const w = parseFloat(weight);
-  const imDose = Math.min(w * 0.01, 0.5);
-  const ivDose = w * 0.001;
+  const fluidBolus = w * 20;
+  const diphenhydramine = Math.min(w * 1, 50);
+  const methylpred = w * 1;
+
+  let epiDose = '';
+  switch (ageGroup) {
+    case 'adult':
+      epiDose = '0.5 mg (0.5 mL of 1:1000) IM';
+      break;
+    case 'child': {
+      const childDose = Math.min(w * 0.01, 0.5);
+      epiDose = `${childDose.toFixed(2)} mg (${childDose.toFixed(2)} mL of 1:1000) IM`;
+      break;
+    }
+    case 'infant': {
+      const infantDose = w * 0.01;
+      epiDose = `${infantDose.toFixed(2)} mg (${infantDose.toFixed(2)} mL of 1:1000) IM`;
+      break;
+    }
+    default:
+      epiDose = '0.5 mg (0.5 mL of 1:1000) IM';
+  }
+
   return {
-    text: `Warning: EPINEPHRINE FOR ANAPHYLAXIS:\nIM (preferred): ${imDose.toFixed(2)} mg (${(imDose * 1000).toFixed(0)} mcg)\nIV (if severe): ${ivDose.toFixed(3)} mg (${(ivDose * 1000).toFixed(0)} mcg)\nRepeat every 5-15 minutes PRN\nIM route preferred for initial treatment`,
+    text: `ANAPHYLAXIS EMERGENCY DOSES:\n1. Epinephrine IM: ${epiDose}\n2. Fluid bolus: ${fluidBolus.toFixed(0)} mL crystalloid\n3. Diphenhydramine: ${diphenhydramine.toFixed(0)} mg IV\n4. Methylprednisolone: ${methylpred.toFixed(0)} mg IV\n\nRepeat epinephrine every 5-15 minutes if needed`,
     type: 'danger',
   };
 }
 
 export function getACLSProtocol(rhythm, weight) {
   if (!rhythm) return { text: 'Please select rhythm', type: 'warning' };
-  const protocols = {
-    'vf_vt': 'VF/Pulseless VT Protocol:\n1. CPR 2 min → Shock 200J biphasic\n2. Epinephrine 1mg IV q3-5min\n3. Amiodarone 300mg IV, then 150mg\n4. Continue CPR between shocks',
-    'asystole': 'Asystole/PEA Protocol:\n1. CPR 2 min\n2. Epinephrine 1mg IV q3-5min\n3. Treat reversible causes (H\'s & T\'s)\n4. No shock indicated',
-    'pea': 'PEA Protocol:\n1. CPR 2 min\n2. Epinephrine 1mg IV q3-5min\n3. Treat reversible causes\n4. Consider H\'s & T\'s',
-    'bradycardia': 'Bradycardia:\n1. Atropine 1mg IV q3-5min (max 3mg)\n2. If ineffective: Transcutaneous pacing\n3. Dopamine 5-20 mcg/kg/min\n4. Epinephrine 2-10 mcg/min',
-    'tachycardia': 'Tachycardia with Pulse:\n1. Stable: Vagal maneuvers → Adenosine 6mg → 12mg\n2. Unstable: Synchronized cardioversion\n3. Wide-complex: Amiodarone or procainamide',
-  };
-  return { text: protocols[rhythm] || 'Select a valid rhythm', type: 'danger' };
+  const epiDose = '1 mg IV/IO';
+  const amiodarone = '300 mg IV/IO';
+  const atropine = '0.5 mg IV/IO';
+
+  switch (rhythm) {
+    case 'vfvt':
+    case 'vf_vt':
+      return {
+        text: `VF/VT Algorithm:\n1. CPR + Defibrillation - 2 J/kg (pediatric) or 200-360 J (adult)\n2. Epinephrine - ${epiDose} every 3-5 minutes\n3. Amiodarone - ${amiodarone}, then 150 mg\n4. Continue CPR - Minimize interruptions\n5. Treat reversible causes - H's and T's`,
+        type: 'danger',
+      };
+    case 'asystole':
+    case 'pea':
+      return {
+        text: `Asystole/PEA Algorithm:\n1. High-quality CPR - 30:2 ratio\n2. Epinephrine - ${epiDose} every 3-5 minutes\n3. No defibrillation for asystole/PEA\n4. Treat reversible causes:\n   - Hypovolemia, Hypoxia, H+ (acidosis)\n   - Hypo/hyperkalemia, Hypothermia\n   - Tension pneumothorax, Tamponade\n   - Toxins, Thrombosis (coronary/pulmonary)`,
+        type: 'danger',
+      };
+    case 'bradycardia':
+      return {
+        text: `Bradycardia with Pulse:\n1. Assess symptoms - Hypotension, altered mental status\n2. Atropine - ${atropine}, may repeat\n3. Consider transcutaneous pacing\n4. Dopamine - 2-10 mcg/kg/min\n5. Epinephrine - 2-10 mcg/min infusion`,
+        type: 'warning',
+      };
+    case 'tachycardia':
+      return {
+        text: 'Tachycardia with Pulse:\n1. Assess stability - Check BP, consciousness\n2. If unstable: Synchronized cardioversion\n3. If stable SVT: Vagal maneuvers, adenosine\n4. If stable VT: Amiodarone 150 mg IV\n5. Treat underlying causes',
+        type: 'warning',
+      };
+    default:
+      return { text: 'Select a valid rhythm', type: 'warning' };
+  }
 }
 
 // =============== SPECIALIZED ===============
@@ -543,7 +586,7 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
   const a = parseInt(age) || 40;
 
   let ageFactor = 1.0;
-  if (ageGroup === 'elderly' || a > 65) ageFactor = 0.8;
+  if (ageGroup === 'elderly') ageFactor = 0.8;
   else if (ageGroup === 'neonate' || ageGroup === 'infant') ageFactor = 0.6;
   else if (ageGroup === 'toddler' || ageGroup === 'preschool') ageFactor = 0.7;
   else if (ageGroup === 'school' || ageGroup === 'adolescent') ageFactor = 0.9;
@@ -553,19 +596,19 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
   else if (a < 1) macFactor = 0.7;
   else if (a < 5) macFactor = 1.2;
 
-  const dose = (min, max, factor = ageFactor) => ({
-    min: (w * min * factor).toFixed(1),
-    max: (w * max * factor).toFixed(1),
+  const dose = (min, max, factor = ageFactor, decimals = 1) => ({
+    min: (w * min * factor).toFixed(decimals),
+    max: (w * max * factor).toFixed(decimals),
   });
 
-  const singleDose = (perKg, factor = ageFactor) => (w * perKg * factor).toFixed(1);
+  const singleDose = (perKg, factor = ageFactor, decimals = 1) => (w * perKg * factor).toFixed(decimals);
   const fixedDose = (val) => val.toFixed(0);
 
   return {
     ageFactor,
     macFactor,
     iv: {
-      propofol: { induction: dose(1.5, 2.5), maintenance: dose(100, 200), sedation: dose(25, 75) },
+      propofol: { induction: dose(1.5, 2.5), maintenance: dose(100, 200, ageFactor, 0), sedation: dose(25, 75, ageFactor, 0) },
       ketamine: { iv: dose(1, 2), im: dose(4, 8), analgesic: dose(0.1, 0.5) },
       etomidate: { induction: dose(0.2, 0.3) },
       dexmedetomidine: { load: singleDose(1), maintenance: dose(0.2, 1) },
@@ -573,24 +616,24 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
       remimazolam: { induction: dose(0.2, 0.35), maintenance: dose(1, 2) },
     },
     inhalational: {
-      sevoflurane: { mac: (2.0 * macFactor).toFixed(2) },
-      desflurane: { mac: (6.0 * macFactor).toFixed(2) },
-      isoflurane: { mac: (1.2 * macFactor).toFixed(2) },
+      sevoflurane: { mac: (2.0 * macFactor).toFixed(1) },
+      desflurane: { mac: (6.0 * macFactor).toFixed(1) },
+      isoflurane: { mac: (1.2 * macFactor).toFixed(1) },
     },
     opioids: {
       fentanyl: { bolus: dose(1, 3), infusion: dose(0.5, 3), epidural: dose(2, 4) },
       morphine: { iv: dose(0.1, 0.15), im: dose(0.1, 0.15), epidural: dose(0.05, 0.1) },
       sufentanil: { bolus: dose(0.2, 0.5), infusion: dose(0.1, 0.5) },
-      remifentanil: { bolus: dose(0.5, 1.5), infusion: dose(6, 30) },
-      hydromorphone: { iv: dose(0.015, 0.03), im: dose(0.02, 0.04) },
-      tramadol: { dose: w > 50 ? '100 mg' : '50 mg' },
+      remifentanil: { bolus: dose(0.5, 1.5), infusion: dose(6, 30, ageFactor, 0) },
+      hydromorphone: { iv: dose(0.015, 0.03, ageFactor, 2), im: dose(0.02, 0.04, ageFactor, 2) },
+      tramadol: { ivIm: w > 50 ? '100' : '50', oral: w > 50 ? '100' : '50' },
     },
     nmb: {
       succinylcholine: { iv: dose(1, 1.5, 1), im: dose(3, 4, 1) },
-      rocuronium: { intubation: singleDose(0.6, 1), maintenance: singleDose(0.15, 1), rsi: dose(1, 1.2, 1) },
-      vecuronium: { intubation: singleDose(0.1, 1), maintenance: singleDose(0.02, 1) },
-      cisatracurium: { intubation: dose(0.15, 0.2, 1), maintenance: singleDose(0.03, 1) },
-      atracurium: { intubation: singleDose(0.5, 1), maintenance: singleDose(0.1, 1) },
+      rocuronium: { intubation: singleDose(0.6, 1), maintenance: singleDose(0.15, 1, 2), rsi: dose(1, 1.2, 1) },
+      vecuronium: { intubation: singleDose(0.1, 1, 2), maintenance: singleDose(0.02, 1, 2) },
+      cisatracurium: { intubation: dose(0.15, 0.2, 1, 2), maintenance: singleDose(0.03, 1, 2) },
+      atracurium: { intubation: singleDose(0.5, 1), maintenance: singleDose(0.1, 1, 2) },
     },
     local: {
       lidocaine: { max: fixedDose(300) },
@@ -602,18 +645,21 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
       lorazepam: { premed: singleDose(0.03) },
     },
     vasopressors: {
-      phenylephrine: { infusion: dose(0.2, 2, 1) },
-      norepinephrine: { infusion: dose(0.6, 180, 1) },
-      epinephrine: { infusion: dose(0.6, 18, 1) },
-      dopamine: { infusion: dose(120, 1200, 1) },
-      dobutamine: { infusion: dose(150, 900, 1) },
+      phenylephrine: { infusion: dose(0.2, 2, 1, 0) },
+      ephedrine: { bolus: '5-25' },
+      norepinephrine: { infusion: dose(0.6, 180, 1, 0) },
+      epinephrine: { infusion: dose(0.6, 18, 1, 0) },
+      dopamine: { infusion: dose(120, 1200, 1, 0) },
+      dobutamine: { infusion: dose(150, 900, 1, 0) },
     },
     reversal: {
-      sugammadex: { routine: singleDose(2, 1), deep: singleDose(4, 1), immediate: singleDose(16, 1) },
+      naloxone: { initial: '0.04-0.4 mg IV (up to 2 mg)', infusion: '0.25-0.4 mg/hr' },
+      flumazenil: { initial: '0.1-0.2 mg IV', additional: '0.1 mg q60sec (max 1 mg)' },
+      sugammadex: { routine: singleDose(2, 1, 0), deep: singleDose(4, 1, 0), immediate: singleDose(16, 1, 0) },
       neostigmine: { dose: singleDose(0.05, 1) },
-      glycopyrrolate: { dose: singleDose(0.01, 1) },
-      atropine: { premed: (w * 0.5 * ageFactor / 1000).toFixed(2), bradycardia: (w * 6 * ageFactor / 1000).toFixed(2) },
-      dantrolene: { dose: singleDose(2.5, 1) },
+      glycopyrrolate: { dose: singleDose(0.01, 1, 2) },
+      atropine: { premed: singleDose(0.5, 1, 0), bradycardia: singleDose(6, 1, 0) },
+      dantrolene: { dose: singleDose(2.5, 1, 0) },
     },
     antiemetics: {
       ondansetron: { dose: singleDose(0.04, 1) },

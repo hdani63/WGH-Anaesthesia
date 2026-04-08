@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { PickerSelect } from './FormControls';
 import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
 
-export default function PatientInfoCard({ patient, setPatient }) {
+export default function PatientInfoCard({ patient, setPatient, showGender = true, children }) {
   const update = (field, value) => {
     setPatient(prev => ({ ...prev, [field]: value }));
   };
@@ -51,17 +51,21 @@ export default function PatientInfoCard({ patient, setPatient }) {
           />
         </View>
 
-        <View style={styles.field}>
-          <PickerSelect
-            label="Gender"
-            options={[
-              { value: 'male', label: 'Male' },
-              { value: 'female', label: 'Female' },
-            ]}
-            selected={patient.gender}
-            onSelect={v => update('gender', v)}
-          />
-        </View>
+        {children}
+
+        {showGender && (
+          <View style={styles.field}>
+            <PickerSelect
+              label="Gender"
+              options={[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+              ]}
+              selected={patient.gender}
+              onSelect={v => update('gender', v)}
+            />
+          </View>
+        )}
       </View>
     </View>
   );

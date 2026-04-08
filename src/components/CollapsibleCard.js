@@ -9,20 +9,41 @@ function getIconName(icon) {
   return icon;
 }
 
-export default function CollapsibleCard({ title, icon, rightContent, children, defaultOpen = false }) {
-  const [open, setOpen] = useState(defaultOpen);
+export default function CollapsibleCard({
+  title,
+  icon,
+  iconColor,
+  rightContent,
+  children,
+  defaultOpen = false,
+  open: controlledOpen,
+  onToggle,
+}) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = typeof controlledOpen === 'boolean';
+  const open = isControlled ? controlledOpen : internalOpen;
   const iconName = getIconName(icon);
+
+  const handleToggle = () => {
+    const next = !open;
+    if (!isControlled) {
+      setInternalOpen(next);
+    }
+    if (onToggle) {
+      onToggle(next);
+    }
+  };
 
   return (
     <View style={[styles.card, SHADOW]}>
       <LinearGradient colors={[COLORS.light, '#e9ecef']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
         <TouchableOpacity
           style={[styles.header, !open && styles.headerClosed]}
-          onPress={() => setOpen(!open)}
+          onPress={handleToggle}
           activeOpacity={0.7}
         >
           <View style={styles.headerTitleRow}>
-            {iconName ? <FontAwesome5 name={iconName} size={15} color={COLORS.medicalBlue} style={styles.headerIcon} /> : null}
+            {iconName ? <FontAwesome5 name={iconName} size={15} color={iconColor || COLORS.medicalBlue} style={styles.headerIcon} /> : null}
             <Text style={styles.headerText}>{title}</Text>
           </View>
           {rightContent ? <View style={styles.rightContent}>{rightContent}</View> : null}
