@@ -178,7 +178,7 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* Framingham */}
-      <CollapsibleCard title="Framingham Cardiovascular Risk" icon="chart-line">
+      <CollapsibleCard title="Framingham Cardiovascular Risk" icon="chart-bar">
         <Text style={styles.label}>Total Cholesterol (mg/dL)</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" value={totalChol} onChangeText={setTotalChol} placeholder="200" />
         <Text style={styles.label}>HDL Cholesterol (mg/dL)</Text>
@@ -214,7 +214,7 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* Child-Pugh */}
-      <CollapsibleCard title="Child-Pugh Score" icon="liver">
+      <CollapsibleCard title="Child-Pugh Score" icon="vial">
         {[
           ['Bilirubin', cpBili, setCpBili, [{ v: '1', l: '<2 (1pt)' }, { v: '2', l: '2-3 (2pt)' }, { v: '3', l: '>3 (3pt)' }]],
           ['Albumin', cpAlbumin, setCpAlbumin, [{ v: '1', l: '>3.5 (1pt)' }, { v: '2', l: '2.8-3.5 (2pt)' }, { v: '3', l: '<2.8 (3pt)' }]],
@@ -229,7 +229,7 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* MELD */}
-      <CollapsibleCard title="MELD Score" icon="liver">
+      <CollapsibleCard title="MELD Score" icon="vial">
         <Text style={styles.label}>Bilirubin (mg/dL)</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" value={meldBili} onChangeText={setMeldBili} placeholder="1.0" />
         <Text style={styles.label}>Creatinine (mg/dL)</Text>
@@ -250,7 +250,7 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* Body Weights */}
-      <CollapsibleCard title="Ideal & Lean Body Weight" icon="weight">
+      <CollapsibleCard title="Ideal & Lean Body Weight" icon="balance-scale">
         <Text style={styles.hint}>Uses patient information above</Text>
         <CalcButton title="Calculate Body Weights" onPress={() => setBwResult(Calc.calculateBodyWeights(patient))} />
         {bwResult && <ResultDisplay result={bwResult.text} type={bwResult.type} />}
@@ -271,6 +271,40 @@ export default function PreoperativeScreen() {
         <CalcButton title="Calculate Caprini" onPress={() => setCapriniResult(Calc.calculateCaprini(capriniFactors, patient))} />
         {capriniResult && <ResultDisplay result={capriniResult.text} type={capriniResult.type} />}
       </CollapsibleCard>
+
+      {/* Quick Reference Guide */}
+      <View style={styles.quickRef}>
+        <View style={styles.quickRefHeader}>
+          <FontAwesome5 name="info-circle" size={14} color={COLORS.white} style={{ marginRight: 8 }} />
+          <Text style={styles.quickRefTitle}>Preoperative Assessment Quick Reference</Text>
+        </View>
+        <View style={styles.quickRefBody}>
+          <View style={styles.quickRefCol}>
+            <Text style={styles.quickRefHeading}>High-Risk Indicators</Text>
+            {['ASA ≥ III', 'RCRI ≥ 2', 'METs < 4', 'Mallampati III-IV', 'STOP-BANG ≥ 3'].map(i => (
+              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
+            ))}
+          </View>
+          <View style={styles.quickRefCol}>
+            <Text style={styles.quickRefHeading}>Cardiac Risk Factors</Text>
+            {['Known CAD/CHF', 'CVA history', 'Insulin-dependent DM', 'Creatinine > 2 mg/dL', 'High-risk surgery'].map(i => (
+              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
+            ))}
+          </View>
+          <View style={styles.quickRefCol}>
+            <Text style={styles.quickRefHeading}>Airway Concerns</Text>
+            {['Mallampati III-IV', 'Thyromental < 6cm', 'Limited neck mobility', 'Previous difficult airway', 'OSA (STOP-BANG ≥ 3)'].map(i => (
+              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
+            ))}
+          </View>
+          <View style={styles.quickRefCol}>
+            <Text style={styles.quickRefHeading}>Special Considerations</Text>
+            {['Liver disease (Child-Pugh B/C)', 'Renal impairment (CrCl < 60)', 'Poor functional status', 'Emergency procedures', 'Multiple comorbidities'].map(i => (
+              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
+            ))}
+          </View>
+        </View>
+      </View>
     </ScreenWrapper>
   );
 }
@@ -284,4 +318,11 @@ const styles = StyleSheet.create({
   label: { fontSize: 13, color: COLORS.textMuted, marginBottom: 4, marginTop: SPACING.sm },
   input: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, padding: SPACING.sm, fontSize: 14, backgroundColor: COLORS.white },
   hint: { fontSize: 12, color: COLORS.textMuted, fontStyle: 'italic' },
+  quickRef: { borderRadius: 8, overflow: 'hidden', marginTop: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  quickRefHeader: { backgroundColor: COLORS.medicalBlue, flexDirection: 'row', alignItems: 'center', padding: SPACING.sm + 2 },
+  quickRefTitle: { fontSize: 13, fontWeight: '700', color: COLORS.white, flexShrink: 1 },
+  quickRefBody: { backgroundColor: COLORS.white, padding: SPACING.sm },
+  quickRefCol: { marginBottom: SPACING.sm },
+  quickRefHeading: { fontSize: 13, fontWeight: '700', color: COLORS.text, marginBottom: 4 },
+  quickRefItem: { fontSize: 12, color: COLORS.textMuted, lineHeight: 20 },
 });

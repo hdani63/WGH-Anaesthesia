@@ -13,7 +13,7 @@ export default function PostoperativeScreen() {
   const [patient, setPatient] = useState({ weight: '', age: '', height: '', gender: 'male' });
 
   // Aldrete
-  const [aldrete, setAldrete] = useState({ activity: '', respiration: '', circulation: '', consciousness: '', oxygen: '' });
+  const [aldrete, setAldrete] = useState({ activity: '', respiration: '', circulation: '', consciousness: '', color: '' });
   const [aldreteResult, setAldreteResult] = useState(null);
 
   // PONV
@@ -29,29 +29,61 @@ export default function PostoperativeScreen() {
   const [padss, setPadss] = useState({ vitals: '', activity: '', nausea: '', pain: '', bleeding: '' });
   const [padssResult, setPadssResult] = useState(null);
 
-  const aldreteOpts = (label, key) => (
-    <PickerSelect
-      label={label}
-      options={[
-        { value: '0', label: '0 points' },
-        { value: '1', label: '1 point' },
-        { value: '2', label: '2 points' },
-      ]}
-      selected={aldrete[key]}
-      onSelect={v => setAldrete(p => ({ ...p, [key]: v }))}
-    />
-  );
-
   return (
     <ScreenWrapper title="Postoperative & Recovery Tools" subtitle="Recovery assessment and discharge planning">
       <PatientInfoCard patient={patient} setPatient={setPatient} />
 
       <CollapsibleCard title="Aldrete Score (PACU Discharge)" icon="clipboard-list">
-        {aldreteOpts('Activity', 'activity')}
-        {aldreteOpts('Respiration', 'respiration')}
-        {aldreteOpts('Circulation', 'circulation')}
-        {aldreteOpts('Consciousness', 'consciousness')}
-        {aldreteOpts('Oxygen Saturation', 'oxygen')}
+        <PickerSelect
+          label="Activity"
+          options={[
+            { value: '2', label: 'Able to move 4 extremities voluntarily (2 pts)' },
+            { value: '1', label: 'Able to move 2 extremities voluntarily (1 pt)' },
+            { value: '0', label: 'Unable to move extremities voluntarily (0 pts)' },
+          ]}
+          selected={aldrete.activity}
+          onSelect={v => setAldrete(p => ({ ...p, activity: v }))}
+        />
+        <PickerSelect
+          label="Respiration"
+          options={[
+            { value: '2', label: 'Able to breathe deeply and cough freely (2 pts)' },
+            { value: '1', label: 'Dyspnea or limited breathing (1 pt)' },
+            { value: '0', label: 'Apneic (0 pts)' },
+          ]}
+          selected={aldrete.respiration}
+          onSelect={v => setAldrete(p => ({ ...p, respiration: v }))}
+        />
+        <PickerSelect
+          label="Circulation"
+          options={[
+            { value: '2', label: 'BP within 20% of pre-anesthetic level (2 pts)' },
+            { value: '1', label: 'BP 20-50% of pre-anesthetic level (1 pt)' },
+            { value: '0', label: 'BP >50% of pre-anesthetic level (0 pts)' },
+          ]}
+          selected={aldrete.circulation}
+          onSelect={v => setAldrete(p => ({ ...p, circulation: v }))}
+        />
+        <PickerSelect
+          label="Consciousness"
+          options={[
+            { value: '2', label: 'Fully awake (2 pts)' },
+            { value: '1', label: 'Arousable on calling (1 pt)' },
+            { value: '0', label: 'Not responding (0 pts)' },
+          ]}
+          selected={aldrete.consciousness}
+          onSelect={v => setAldrete(p => ({ ...p, consciousness: v }))}
+        />
+        <PickerSelect
+          label="Color"
+          options={[
+            { value: '2', label: 'Pink (2 pts)' },
+            { value: '1', label: 'Pale, dusky, blotchy (1 pt)' },
+            { value: '0', label: 'Cyanotic (0 pts)' },
+          ]}
+          selected={aldrete.color}
+          onSelect={v => setAldrete(p => ({ ...p, color: v }))}
+        />
         <CalcButton title="Calculate Aldrete" onPress={() => setAldreteResult(Calc.calculateAldrete(aldrete))} />
         {aldreteResult && <ResultDisplay result={aldreteResult.text} type={aldreteResult.type} />}
       </CollapsibleCard>
@@ -85,11 +117,10 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Pain Location"
           options={[
-            { value: 'surgical_site', label: 'Surgical Site' },
+            { value: 'surgical', label: 'Surgical site' },
+            { value: 'throat', label: 'Throat (post-intubation)' },
             { value: 'back', label: 'Back' },
-            { value: 'head', label: 'Head' },
-            { value: 'chest', label: 'Chest' },
-            { value: 'abdomen', label: 'Abdomen' },
+            { value: 'headache', label: 'Headache' },
             { value: 'other', label: 'Other' },
           ]}
           selected={painLocation}
@@ -100,25 +131,56 @@ export default function PostoperativeScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="PADSS (Ambulatory Discharge)" icon="sign-out-alt">
-        {[
-          ['Vital Signs', 'vitals'],
-          ['Activity Level', 'activity'],
-          ['Nausea/Vomiting', 'nausea'],
-          ['Pain', 'pain'],
-          ['Surgical Bleeding', 'bleeding'],
-        ].map(([label, key]) => (
-          <PickerSelect
-            key={key}
-            label={label}
-            options={[
-              { value: '0', label: '0 points' },
-              { value: '1', label: '1 point' },
-              { value: '2', label: '2 points' },
-            ]}
-            selected={padss[key]}
-            onSelect={v => setPadss(p => ({ ...p, [key]: v }))}
-          />
-        ))}
+        <PickerSelect
+          label="Vital Signs"
+          options={[
+            { value: '2', label: 'Within 20% of baseline (2 pts)' },
+            { value: '1', label: '20-40% of baseline (1 pt)' },
+            { value: '0', label: '>40% of baseline (0 pts)' },
+          ]}
+          selected={padss.vitals}
+          onSelect={v => setPadss(p => ({ ...p, vitals: v }))}
+        />
+        <PickerSelect
+          label="Activity Level"
+          options={[
+            { value: '2', label: 'Steady gait, no dizziness (2 pts)' },
+            { value: '1', label: 'Requires assistance (1 pt)' },
+            { value: '0', label: 'Unable to ambulate (0 pts)' },
+          ]}
+          selected={padss.activity}
+          onSelect={v => setPadss(p => ({ ...p, activity: v }))}
+        />
+        <PickerSelect
+          label="Nausea/Vomiting"
+          options={[
+            { value: '2', label: 'Minimal (2 pts)' },
+            { value: '1', label: 'Moderate (1 pt)' },
+            { value: '0', label: 'Severe (0 pts)' },
+          ]}
+          selected={padss.nausea}
+          onSelect={v => setPadss(p => ({ ...p, nausea: v }))}
+        />
+        <PickerSelect
+          label="Pain"
+          options={[
+            { value: '2', label: 'Minimal (2 pts)' },
+            { value: '1', label: 'Moderate (1 pt)' },
+            { value: '0', label: 'Severe (0 pts)' },
+          ]}
+          selected={padss.pain}
+          onSelect={v => setPadss(p => ({ ...p, pain: v }))}
+        />
+        <PickerSelect
+          label="Surgical Bleeding"
+          options={[
+            { value: '2', label: 'Minimal (2 pts)' },
+            { value: '1', label: 'Moderate (1 pt)' },
+            { value: '0', label: 'Severe (0 pts)' },
+          ]}
+          selected={padss.bleeding}
+          onSelect={v => setPadss(p => ({ ...p, bleeding: v }))}
+        />
         <CalcButton title="Calculate PADSS" onPress={() => setPadssResult(Calc.calculatePADSS(padss))} />
         {padssResult && <ResultDisplay result={padssResult.text} type={padssResult.type} />}
       </CollapsibleCard>

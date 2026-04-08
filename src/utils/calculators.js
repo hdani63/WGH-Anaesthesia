@@ -194,40 +194,42 @@ export function calculateCaprini(factors, patient) {
 export function calculateAldrete(scores) {
   const total = Object.values(scores).reduce((s, v) => s + (parseInt(v) || 0), 0);
   let type, interp;
-  if (total >= 9) { type = 'success'; interp = 'Ready for PACU discharge'; }
-  else if (total >= 7) { type = 'warning'; interp = 'Continue monitoring in PACU'; }
-  else { type = 'danger'; interp = 'Requires continued intensive monitoring'; }
-  return { text: `Aldrete Score: ${total}/10\n${interp}`, type };
+  if (total >= 9) { type = 'success'; interp = 'Ready for discharge from PACU'; }
+  else if (total >= 7) { type = 'warning'; interp = 'Requires continued monitoring'; }
+  else { type = 'danger'; interp = 'Not ready for discharge'; }
+  return { text: `Aldrete Score: ${total}/10\n${interp}\nScore ≥9 typically required for PACU discharge`, type };
 }
 
 export function calculatePONV(factors) {
   const score = factors.filter(Boolean).length;
-  let type, risk;
-  if (score <= 1) { type = 'success'; risk = 'Low risk (~10%)'; }
-  else if (score === 2) { type = 'warning'; risk = 'Moderate risk (~40%)'; }
-  else { type = 'danger'; risk = 'High risk (~80%)'; }
-  return {
-    text: `PONV Risk Score: ${score}/4\n${risk}${score >= 2 ? '\nConsider antiemetic prophylaxis' : ''}`,
-    type,
-  };
+  const map = [
+    [0, 'Low risk (10% incidence)', 'No prophylaxis needed', 'success'],
+    [1, 'Low-moderate risk (21% incidence)', 'Consider single antiemetic', 'success'],
+    [2, 'Moderate risk (39% incidence)', 'Combination antiemetic therapy', 'warning'],
+    [3, 'High risk (61% incidence)', 'Multimodal antiemetic approach', 'warning'],
+    [4, 'Very high risk (79% incidence)', 'Aggressive multimodal prophylaxis', 'danger'],
+  ];
+  const [, risk, rec, type] = map[score] || map[4];
+  return { text: `Apfel Score: ${score}/4\n${risk}\n${rec}`, type };
 }
 
 export function assessPain(painScore, location) {
   const score = parseInt(painScore) || 0;
-  let type, interp;
-  if (score <= 3) { type = 'success'; interp = 'Mild pain - Consider non-opioid analgesia'; }
-  else if (score <= 6) { type = 'warning'; interp = 'Moderate pain - Consider multimodal analgesia'; }
-  else { type = 'danger'; interp = 'Severe pain - Immediate intervention required'; }
-  return { text: `Pain Score: ${score}/10\nLocation: ${location || 'Not specified'}\n${interp}`, type };
+  let type, severity, management;
+  if (score === 0) { type = 'success'; severity = 'No pain'; management = 'Continue monitoring'; }
+  else if (score <= 3) { type = 'success'; severity = 'Mild pain'; management = 'Non-opioid analgesics, reassess in 30 minutes'; }
+  else if (score <= 6) { type = 'warning'; severity = 'Moderate pain'; management = 'Consider opioid analgesics, multimodal approach'; }
+  else { type = 'danger'; severity = 'Severe pain'; management = 'Urgent pain management, consider regional techniques'; }
+  return { text: `Pain Score: ${score}/10 (${severity})\nLocation: ${location || 'Not specified'}\n${management}`, type };
 }
 
 export function calculatePADSS(scores) {
   const total = Object.values(scores).reduce((s, v) => s + (parseInt(v) || 0), 0);
   let type, interp;
-  if (total >= 9) { type = 'success'; interp = 'Suitable for discharge'; }
-  else if (total >= 7) { type = 'warning'; interp = 'Continue monitoring'; }
-  else { type = 'danger'; interp = 'Not suitable for discharge'; }
-  return { text: `PADSS Score: ${total}/10\n${interp}`, type };
+  if (total >= 9) { type = 'success'; interp = 'Ready for ambulatory discharge'; }
+  else if (total >= 7) { type = 'warning'; interp = 'Requires extended observation'; }
+  else { type = 'danger'; interp = 'Not ready for discharge'; }
+  return { text: `PADSS Score: ${total}/10\n${interp}\nScore ≥9 required for safe ambulatory discharge`, type };
 }
 
 // =============== ICU ===============

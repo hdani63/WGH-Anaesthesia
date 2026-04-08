@@ -112,7 +112,7 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
               {showBack && canGoBack ? (
                 <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
                   <FontAwesome5 name="arrow-left" size={14} color={COLORS.primary} style={styles.backIcon} />
-                  <Text style={styles.backText}>Back to Home</Text>
+                  <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
               ) : null}
             </View>
