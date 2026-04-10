@@ -8,14 +8,14 @@ import { openPdf, downloadPdf } from '../utils/pdfUtils';
 
 const DAS_DOC = {
   title: 'DAS Unanticipated Difficult Airway Guideline',
-  fileName: 'das_unanticipated_guidelines.pdf',
-  source: require('../../assets/pdfs/airway/das_unanticipated_guidelines.pdf'),
+  fileName: 'das_unanticipated_guidelines_new.pdf',
+  source: require('../../assets/pdfs/archive/das_unanticipated_guidelines_new.pdf'),
 };
 
 const OBSTETRIC_DOC = {
   title: 'Obstetric GA and Failed Intubation Guideline',
-  fileName: 'obstetric_guidelines.pdf',
-  source: require('../../assets/pdfs/obstetric/obstetric_guidelines.pdf'),
+  fileName: 'obstetric_guidelines_new.pdf',
+  source: require('../../assets/pdfs/archive/obstetric_guidelines_new.pdf'),
 };
 
 const AIRWAY_IMAGES = {
