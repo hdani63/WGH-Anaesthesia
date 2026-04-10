@@ -37,9 +37,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Activity"
           options={[
-            { value: '2', label: 'Able to move 4 extremities voluntarily (2 pts)' },
-            { value: '1', label: 'Able to move 2 extremities voluntarily (1 pt)' },
-            { value: '0', label: 'Unable to move extremities voluntarily (0 pts)' },
+            { value: '2', label: 'Able to move 4 extremities voluntarily (2 points)' },
+            { value: '1', label: 'Able to move 2 extremities voluntarily (1 point)' },
+            { value: '0', label: 'Unable to move extremities voluntarily (0 points)' },
           ]}
           selected={aldrete.activity}
           onSelect={v => setAldrete(p => ({ ...p, activity: v }))}
@@ -47,9 +47,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Respiration"
           options={[
-            { value: '2', label: 'Able to breathe deeply and cough freely (2 pts)' },
-            { value: '1', label: 'Dyspnea or limited breathing (1 pt)' },
-            { value: '0', label: 'Apneic (0 pts)' },
+            { value: '2', label: 'Able to breathe deeply and cough freely (2 points)' },
+            { value: '1', label: 'Dyspnea or limited breathing (1 point)' },
+            { value: '0', label: 'Apneic (0 points)' },
           ]}
           selected={aldrete.respiration}
           onSelect={v => setAldrete(p => ({ ...p, respiration: v }))}
@@ -57,9 +57,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Circulation"
           options={[
-            { value: '2', label: 'BP within 20% of pre-anesthetic level (2 pts)' },
-            { value: '1', label: 'BP 20-50% of pre-anesthetic level (1 pt)' },
-            { value: '0', label: 'BP >50% of pre-anesthetic level (0 pts)' },
+            { value: '2', label: 'BP within 20% of pre-anesthetic level (2 points)' },
+            { value: '1', label: 'BP 20-50% of pre-anesthetic level (1 point)' },
+            { value: '0', label: 'BP >50% of pre-anesthetic level (0 points)' },
           ]}
           selected={aldrete.circulation}
           onSelect={v => setAldrete(p => ({ ...p, circulation: v }))}
@@ -67,9 +67,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Consciousness"
           options={[
-            { value: '2', label: 'Fully awake (2 pts)' },
-            { value: '1', label: 'Arousable on calling (1 pt)' },
-            { value: '0', label: 'Not responding (0 pts)' },
+            { value: '2', label: 'Fully awake (2 points)' },
+            { value: '1', label: 'Arousable on calling (1 point)' },
+            { value: '0', label: 'Not responding (0 points)' },
           ]}
           selected={aldrete.consciousness}
           onSelect={v => setAldrete(p => ({ ...p, consciousness: v }))}
@@ -77,14 +77,14 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Color"
           options={[
-            { value: '2', label: 'Pink (2 pts)' },
-            { value: '1', label: 'Pale, dusky, blotchy (1 pt)' },
-            { value: '0', label: 'Cyanotic (0 pts)' },
+            { value: '2', label: 'Pink (2 points)' },
+            { value: '1', label: 'Pale, dusky, blotchy (1 point)' },
+            { value: '0', label: 'Cyanotic (0 points)' },
           ]}
           selected={aldrete.color}
           onSelect={v => setAldrete(p => ({ ...p, color: v }))}
         />
-        <CalcButton title="Calculate Aldrete" onPress={() => setAldreteResult(Calc.calculateAldrete(aldrete))} />
+        <CalcButton title="Calculate Aldrete Score" onPress={() => setAldreteResult(Calc.calculateAldrete(aldrete))} />
         {aldreteResult && <ResultDisplay result={aldreteResult.text} type={aldreteResult.type} />}
       </CollapsibleCard>
 

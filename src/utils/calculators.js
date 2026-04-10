@@ -194,10 +194,10 @@ export function calculateCaprini(factors, patient) {
 export function calculateAldrete(scores) {
   const total = Object.values(scores).reduce((s, v) => s + (parseInt(v) || 0), 0);
   let type, interp;
-  if (total >= 9) { type = 'success'; interp = 'Ready for discharge from PACU'; }
-  else if (total >= 7) { type = 'warning'; interp = 'Requires continued monitoring'; }
-  else { type = 'danger'; interp = 'Not ready for discharge'; }
-  return { text: `Aldrete Score: ${total}/10\n${interp}\nScore ≥9 typically required for PACU discharge`, type };
+  if (total >= 9) { type = 'success'; interp = 'Ready for PACU discharge'; }
+  else if (total >= 7) { type = 'warning'; interp = 'Continue monitoring in PACU'; }
+  else { type = 'danger'; interp = 'Requires continued intensive monitoring'; }
+  return { text: `Aldrete Score: ${total}/10\n${interp}`, type };
 }
 
 export function calculatePONV(factors) {
