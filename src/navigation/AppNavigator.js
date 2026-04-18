@@ -5,6 +5,7 @@ import { COLORS } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 import HomeScreen from '../screens/HomeScreen';
+import AnaesthesiaCalculatorsScreen from '../screens/AnaesthesiaCalculatorsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import PreoperativeScreen from '../screens/PreoperativeScreen';
@@ -56,6 +57,7 @@ function MainNavigator() {
       }}
     >
       <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'WGH Anaesthesia' }} />
+      <MainStack.Screen name="AnaesthesiaCalculators" component={AnaesthesiaCalculatorsScreen} options={{ title: 'Anaesthesia Calculators' }} />
       <MainStack.Screen name="Preoperative" component={PreoperativeScreen} options={{ title: 'Preoperative Assessment' }} />
       <MainStack.Screen name="Postoperative" component={PostoperativeScreen} options={{ title: 'Postoperative & Recovery' }} />
       <MainStack.Screen name="ICUCalculators" component={ICUCalculatorsScreen} options={{ title: 'ICU Calculators' }} />

@@ -8,19 +8,13 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
-  { key: 'Preoperative', icon: 'clipboard-list', title: 'Preoperative Assessment' },
-  { key: 'Postoperative', icon: 'bed', title: 'Postoperative & Recovery' },
+  { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
-  { key: 'ICUCalculators', icon: 'procedures', title: 'ICU Calculators' },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
-  { key: 'QualitySafety', icon: 'check-circle', title: 'Quality & Safety' },
-  { key: 'GeneralMedical', icon: 'calculator', title: 'General Medical' },
   { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
   { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
-  { key: 'CriticalTransfer', icon: 'shuttle-van', title: 'Critical Transfer', badge: 'New', highlight: true },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
   { key: 'PerioperativeMedication', icon: 'pills', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },

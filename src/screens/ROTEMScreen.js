@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Image, Modal, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
+import FullScreenWebModal from '../components/common/FullScreenWebModal';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
 const JOTFORM_URL = 'https://form.jotform.com/230693021348048';
@@ -32,19 +35,6 @@ const ROTEM_SECTIONS = [
   },
 ];
 
-async function openExternalUrl(url) {
-  try {
-    const canOpen = await Linking.canOpenURL(url);
-    if (!canOpen) {
-      Alert.alert('Unable to open link', 'Please open this tool in your browser.');
-      return;
-    }
-    await Linking.openURL(url);
-  } catch (error) {
-    Alert.alert('Unable to open link', 'Please open this tool in your browser.');
-  }
-}
-
 function ProtocolImage({ source, alt }) {
   return (
     <View style={styles.imageWrap}>
@@ -55,10 +45,13 @@ function ProtocolImage({ source, alt }) {
 
 export default function ROTEMScreen() {
   const navigation = useNavigation();
+  const { top: topInset, bottom: bottomInset } = useSafeAreaInsets();
   const [activeCard, setActiveCard] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalImage, setModalImage] = useState(null);
   const [modalTitle, setModalTitle] = useState('');
+  const [decisionToolVisible, setDecisionToolVisible] = useState(false);
+  const [decisionToolKey, setDecisionToolKey] = useState(0);
 
   const toggleCard = (key, nextOpen) => {
     setActiveCard(nextOpen ? key : null);
@@ -68,6 +61,11 @@ export default function ROTEMScreen() {
     setModalImage(source);
     setModalTitle(title);
     setModalVisible(true);
+  };
+
+  const openDecisionTool = () => {
+    setDecisionToolKey((previous) => previous + 1);
+    setDecisionToolVisible(true);
   };
 
   const closeImageModal = () => {
@@ -102,9 +100,9 @@ export default function ROTEMScreen() {
         onToggle={(nextOpen) => toggleCard('decisionTool', nextOpen)}
       >
         <View style={styles.toolBox}>
-          <Text style={styles.toolText}>The ROTEM decision tool opens in your browser on mobile.</Text>
-          <TouchableOpacity style={styles.openBtn} onPress={() => openExternalUrl(JOTFORM_URL)}>
-            <FontAwesome5 name="external-link-alt" size={12} color={COLORS.white} style={styles.openBtnIcon} />
+          <Text style={styles.toolText}>Open the ROTEM decision tool directly inside the app.</Text>
+          <TouchableOpacity style={styles.openBtn} onPress={openDecisionTool}>
+            <FontAwesome5 name="calculator" size={12} color={COLORS.white} style={styles.openBtnIcon} />
             <Text style={styles.openBtnText}>Open ROTEM Decision Tool</Text>
           </TouchableOpacity>
         </View>
@@ -125,6 +123,22 @@ export default function ROTEMScreen() {
           {modalTitle ? <Text style={styles.modalTitle}>{modalTitle}</Text> : null}
         </View>
       </Modal>
+
+      <FullScreenWebModal
+        visible={decisionToolVisible}
+        title="ROTEM Decision Tool"
+        onClose={() => setDecisionToolVisible(false)}
+      >
+        <WebView
+          key={decisionToolKey}
+          source={{ uri: JOTFORM_URL }}
+          startInLoadingState
+          style={styles.webView}
+          cacheEnabled={false}
+          javaScriptEnabled
+          originWhitelist={['*']}
+        />
+      </FullScreenWebModal>
     </ScreenWrapper>
   );
 }
@@ -202,5 +216,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  webView: {
+    flex: 1,
   },
 });

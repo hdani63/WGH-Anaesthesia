@@ -66,10 +66,6 @@ export default function EmergencyScreen() {
   const [anaAge, setAnaAge] = useState('adult');
   const [anaResult, setAnaResult] = useState(null);
 
-  const [rhythm, setRhythm] = useState('');
-  const [aclsWeight, setAclsWeight] = useState('');
-  const [aclsResult, setAclsResult] = useState(null);
-
   const [activeCard, setActiveCard] = useState(null);
 
   const toggleCard = (cardKey, nextOpen) => {
@@ -183,25 +179,6 @@ export default function EmergencyScreen() {
         <CalcButton title="Calculate Emergency Doses" color={COLORS.danger} onPress={() => setAnaResult(Calc.calculateAnaphylaxis(anaWeight, anaAge))} />
         {anaResult && <ResultDisplay result={anaResult.text} type={anaResult.type} />}
         <ProtocolSteps title="Anaphylaxis Treatment Protocol:" steps={protocolSteps.anaphylaxis} />
-      </CollapsibleCard>
-
-      <CollapsibleCard
-        title="ACLS Algorithms"
-        icon="heartbeat"
-        open={activeCard === 'acls'}
-        onToggle={(nextOpen) => toggleCard('acls', nextOpen)}
-      >
-        <PickerSelect label="Rhythm" options={[
-          { value: 'vfvt', label: 'VF/VT (Shockable)' },
-          { value: 'asystole', label: 'Asystole' },
-          { value: 'pea', label: 'PEA (Pulseless Electrical Activity)' },
-          { value: 'bradycardia', label: 'Bradycardia (with pulse)' },
-          { value: 'tachycardia', label: 'Tachycardia (with pulse)' },
-        ]} selected={rhythm} onSelect={setRhythm} />
-        <Text style={styles.label}>Patient Weight (kg)</Text>
-        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="70" value={aclsWeight} onChangeText={setAclsWeight} />
-        <CalcButton title="Get ACLS Protocol" color={COLORS.danger} onPress={() => setAclsResult(Calc.getACLSProtocol(rhythm, aclsWeight))} />
-        {aclsResult && <ResultDisplay result={aclsResult.text} type={aclsResult.type} />}
       </CollapsibleCard>
     </ScreenWrapper>
   );

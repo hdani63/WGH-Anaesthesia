@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Modal, ActivityIndicator, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { WebView } from 'react-native-webview';
 import ScreenWrapper from '../components/ScreenWrapper';
+import FullScreenWebModal from '../components/common/FullScreenWebModal';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
-import { openPdf, downloadPdf } from '../utils/pdfUtils';
+import { getLocalPdfUri } from '../utils/pdfUtils';
 
 const algorithms = [
   {
@@ -68,14 +70,34 @@ const algorithms = [
 const notes = [
   'All algorithms are based on American Heart Association 2020 Guidelines',
   'These are quick reference guides - always follow your institution\'s protocols',
-  'Click any algorithm to view the full PDF in a new tab',
-  'Algorithms can be downloaded for offline access',
+  'Click any algorithm to view the full PDF inside the app',
   'For emergencies, refer to your institution\'s emergency response system',
 ];
 
 export default function ACLSScreen() {
   const { width } = useWindowDimensions();
   const isTwoColumn = width >= 768;
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [viewerUri, setViewerUri] = useState('');
+  const [viewerTitle, setViewerTitle] = useState('ACLS Algorithm');
+  const [loadingViewer, setLoadingViewer] = useState(false);
+  const [viewerKey, setViewerKey] = useState(0);
+
+  const handleOpenAlgorithm = async (algo) => {
+    setLoadingViewer(true);
+    setViewerTitle(algo.title);
+    setViewerKey((previous) => previous + 1);
+
+    try {
+      const localUri = await getLocalPdfUri(algo.source, algo.fileName);
+      setViewerUri(localUri);
+      setViewerVisible(true);
+    } catch (error) {
+      Alert.alert('Unable to open algorithm', 'Please try again.');
+    } finally {
+      setLoadingViewer(false);
+    }
+  };
 
   return (
     <ScreenWrapper title="ACLS Algorithms" subtitle="American Heart Association ACLS Guidelines & Emergency Protocols">
@@ -92,11 +114,8 @@ export default function ACLSScreen() {
               <View style={styles.cardBody}>
                 <Text style={styles.cardDesc}>{algo.description}</Text>
                 <View style={styles.buttonRow}>
-                  <TouchableOpacity style={[styles.openBtn, { backgroundColor: algo.color }]} onPress={() => openPdf(algo.source, algo.fileName, algo.title)}>
+                  <TouchableOpacity style={[styles.openBtn, { backgroundColor: algo.color }]} onPress={() => handleOpenAlgorithm(algo)}>
                     <Text style={styles.openBtnText}>View Algorithm</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.downloadBtn} onPress={() => downloadPdf(algo.source, algo.fileName, algo.title)}>
-                    <Text style={styles.downloadBtnText}>Download</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -109,6 +128,37 @@ export default function ACLSScreen() {
         <Text style={styles.notesTitle}>Important Notes</Text>
         {notes.map((note, i) => <Text key={i} style={styles.noteItem}>• {note}</Text>)}
       </View>
+
+      <FullScreenWebModal
+        visible={viewerVisible}
+        title={viewerTitle}
+        onClose={() => setViewerVisible(false)}
+      >
+        {loadingViewer ? (
+          <View style={styles.loadingWrap}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+            <Text style={styles.loadingText}>Loading algorithm...</Text>
+          </View>
+        ) : (
+          <WebView
+            key={viewerKey}
+            source={{ uri: viewerUri }}
+            style={styles.viewerPdf}
+            startInLoadingState={true}
+            renderLoading={() => (
+              <View style={styles.loadingWrap}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+              </View>
+            )}
+            onError={() => Alert.alert('Unable to open algorithm', 'Please try again.')}
+            originWhitelist={['*']}
+            scalesPageToFit={true}
+            scrollEnabled={true}
+            javaScriptEnabled={false}
+            cacheEnabled={false}
+          />
+        )}
+      </FullScreenWebModal>
     </ScreenWrapper>
   );
 }
@@ -126,11 +176,22 @@ const styles = StyleSheet.create({
   cardBody: { padding: SPACING.md },
   cardDesc: { fontSize: 13, color: COLORS.text, marginBottom: SPACING.sm },
   buttonRow: { flexDirection: 'row', alignItems: 'center' },
-  openBtn: { borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12, marginRight: 8 },
+  openBtn: { borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12 },
   openBtnText: { color: COLORS.white, fontSize: 12, fontWeight: '600' },
-  downloadBtn: { borderWidth: 1, borderColor: '#6c757d', borderRadius: 6, paddingVertical: 7, paddingHorizontal: 12 },
-  downloadBtnText: { fontSize: 12, fontWeight: '600', color: '#6c757d' },
   notesBox: { backgroundColor: '#e8f4fd', borderRadius: BORDER_RADIUS, padding: SPACING.md, marginTop: SPACING.sm },
   notesTitle: { fontSize: 15, fontWeight: '700', color: COLORS.medicalBlue, marginBottom: SPACING.sm },
   noteItem: { fontSize: 13, color: COLORS.text, marginBottom: 4 },
+  loadingWrap: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: SPACING.sm,
+    color: COLORS.textMuted,
+    fontSize: 13,
+  },
+  viewerPdf: {
+    flex: 1,
+  },
 });
