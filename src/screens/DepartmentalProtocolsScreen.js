@@ -6,6 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { renderProtocolContent } from '../utils/protocolRenderer';
+import { departmentService } from '../services/departmentService';
 
 const ICON_ALIASES = {
   'first-aid-kit': 'first-aid',
@@ -141,8 +142,6 @@ export default function DepartmentalProtocolsScreen() {
   const [apiProtocols, setApiProtocols] = useState([]);
   const [loadingApiProtocols, setLoadingApiProtocols] = useState(false);
 
-  const API_BASE = 'http://localhost:9000/api'; // Change to your backend URL
-
   useEffect(() => {
     fetchApiProtocols();
   }, []);
@@ -150,10 +149,9 @@ export default function DepartmentalProtocolsScreen() {
   const fetchApiProtocols = async () => {
     try {
       setLoadingApiProtocols(true);
-      const response = await fetch(`${API_BASE}/protocols`);
-      const data = await response.json();
-      if (data.success && Array.isArray(data.data)) {
-        setApiProtocols(data.data);
+      const protocols = await departmentService.getProtocols();
+      if (Array.isArray(protocols)) {
+        setApiProtocols(protocols);
       }
     } catch (error) {
       console.error('Error fetching protocols from API:', error);

@@ -41,7 +41,7 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
-env.ts
+# env.ts
 
 # macOS
 .DS_Store

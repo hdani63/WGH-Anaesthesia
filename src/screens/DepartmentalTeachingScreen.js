@@ -6,8 +6,7 @@ import { WebView } from 'react-native-webview';
 import ScreenWrapper from '../components/ScreenWrapper';
 import FullScreenWebModal from '../components/common/FullScreenWebModal';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
-
-const API_BASE = 'http://localhost:9000/api'; // Change to your backend URL
+import { departmentService } from '../services/departmentService';
 
 // Extract Google Sheets ID and convert to embeddable URL
 const formatGoogleSheetsUrl = (url) => {
@@ -39,11 +38,10 @@ export default function DepartmentalTeachingScreen() {
   const fetchTeachingSchedule = async () => {
     try {
       setFetchLoading(true);
-      const response = await fetch(`${API_BASE}/teaching`);
-      const data = await response.json();
+      const teachingSchedule = await departmentService.getTeachingSchedule();
 
-      if (data.success && data.data) {
-        const formattedUrl = formatGoogleSheetsUrl(data.data.url);
+      if (teachingSchedule?.url) {
+        const formattedUrl = formatGoogleSheetsUrl(teachingSchedule.url);
         setSheetUrl(formattedUrl);
       } else {
         Alert.alert('Error', 'Failed to load teaching schedule');
