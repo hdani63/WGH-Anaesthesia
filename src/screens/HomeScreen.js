@@ -1,24 +1,20 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
-  { key: 'Preoperative', icon: 'clipboard-list', title: 'Preoperative Assessment' },
-  { key: 'Postoperative', icon: 'bed', title: 'Postoperative & Recovery' },
+  { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
-  { key: 'ICUCalculators', icon: 'procedures', title: 'ICU Calculators' },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
-  { key: 'QualitySafety', icon: 'check-circle', title: 'Quality & Safety' },
-  { key: 'GeneralMedical', icon: 'calculator', title: 'General Medical' },
   { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
   { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
-  { key: 'CriticalTransfer', icon: 'shuttle-van', title: 'Critical Transfer', badge: 'New', highlight: true },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
   { key: 'PerioperativeMedication', icon: 'pills', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
@@ -28,6 +24,10 @@ const TOOLS = [
 ];
 
 export default function HomeScreen({ navigation }) {
+  const { user, logout } = useAuth();
+  const { width } = useWindowDimensions();
+  const isCompactHeader = width < 768;
+
   return (
     <LinearGradient
       colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
@@ -41,19 +41,30 @@ export default function HomeScreen({ navigation }) {
             colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.header}
+            style={[styles.header, isCompactHeader && styles.headerCompact]}
           >
-          <View style={styles.headerLeft}>
+          <View style={[styles.headerLeft, isCompactHeader && styles.headerLeftCompact]}>
             <View style={styles.headerIconWrap}>
               <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
             </View>
-            <View>
-              <Text style={styles.headerTitle}>WGH Anaesthesia</Text>
-              <Text style={styles.headerSub}>Anaesthesia For Wexford General Hospital</Text>
+            <View style={styles.headerTextWrap}>
+              <Text style={styles.headerTitle} numberOfLines={1}>
+                WGH Anaesthesia
+              </Text>
+              <Text style={styles.headerSub} numberOfLines={2}>
+                Anaesthesia For Wexford General Hospital
+              </Text>
             </View>
           </View>
-          <View style={styles.hospitalLogo}>
-            <FontAwesome5 name="hospital" size={38} color="rgba(255,255,255,0.8)" />
+          <View style={[styles.headerRight, isCompactHeader && styles.headerRightCompact]}>
+            <View style={[styles.userBadge, isCompactHeader && styles.userBadgeCompact]}>
+              <Text style={styles.userNameText}>{user?.fullName || 'WGH User'}</Text>
+              <Text style={styles.userRoleText}>{user?.role || 'paramedical'}</Text>
+            </View>
+            <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
+              <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.white} />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
           </View>
           </LinearGradient>
 
@@ -107,7 +118,12 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.lg,
     marginBottom: SPACING.md,
   },
-  headerLeft: { flexDirection: 'row', alignItems: 'center', flexShrink: 1 },
+  headerCompact: {
+    alignItems: 'stretch',
+    gap: SPACING.md,
+  },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0 },
+  headerLeftCompact: { width: '100%' },
   headerIconWrap: {
     width: 48,
     height: 48,
@@ -118,21 +134,53 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: SPACING.md,
   },
-  hospitalLogo: { marginLeft: SPACING.sm },
+  headerTextWrap: { flex: 1, minWidth: 0 },
+  headerRight: { alignItems: 'flex-end', marginLeft: SPACING.sm, flexShrink: 0 },
+  headerRightCompact: { alignItems: 'flex-start', marginLeft: 0 },
   headerTitle: { fontSize: 22, fontWeight: '700', color: COLORS.white },
-  headerSub: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
-  gridWrap: { paddingHorizontal: SPACING.md },
+  headerSub: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2, lineHeight: 18 },
+  userBadge: {
+    alignItems: 'flex-end',
+    marginBottom: 8,
+  },
+  userBadgeCompact: { alignItems: 'flex-start' },
+  userNameText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.white,
+  },
+  userRoleText: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.85)',
+    textTransform: 'capitalize',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'rgba(255,255,255,0.4)',
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  logoutText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  gridWrap: { paddingHorizontal: SPACING.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   card: {
-    width: '48%',
+    width: '31%',
     backgroundColor: COLORS.cardBg,
     borderRadius: BORDER_RADIUS,
-    padding: SPACING.md,
+    padding: SPACING.sm,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.md,
-    minHeight: 118,
-    borderWidth: 2,
+    minHeight: 110,
+    borderWidth: 1,
     borderColor: 'transparent',
   },
   cardHighlight: {

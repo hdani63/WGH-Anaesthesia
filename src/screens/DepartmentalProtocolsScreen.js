@@ -1,10 +1,57 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+import { renderProtocolContent } from '../utils/protocolRenderer';
+import { departmentService } from '../services/departmentService';
+
+const ICON_ALIASES = {
+  'first-aid-kit': 'first-aid',
+  droplet: 'tint',
+  mask: 'head-side-mask',
+};
+
+const SUPPORTED_PROTOCOL_ICONS = new Set([
+  'file-medical',
+  'syringe',
+  'heartbeat',
+  'brain',
+  'lungs',
+  'pills',
+  'microscope',
+  'flask',
+  'stethoscope',
+  'hospital',
+  'ambulance',
+  'user-md',
+  'bed',
+  'tint',
+  'bone',
+  'tooth',
+  'first-aid',
+  'head-side-mask',
+  'virus',
+]);
+
+const getSafeProtocolIcon = (rawIcon) => {
+  const fallback = 'file-medical';
+
+  if (!rawIcon || typeof rawIcon !== 'string') {
+    return fallback;
+  }
+
+  const normalized = rawIcon.trim().toLowerCase();
+  const mapped = ICON_ALIASES[normalized] || normalized;
+
+  if (SUPPORTED_PROTOCOL_ICONS.has(mapped)) {
+    return mapped;
+  }
+
+  return fallback;
+};
 
 function DataTable({ headers, rows, columnWidths }) {
   const widths = columnWidths || headers.map((_, i) => (i === 0 ? 180 : 160));
@@ -92,10 +139,31 @@ function MetricCard({ icon, label, value }) {
 
 export default function DepartmentalProtocolsScreen() {
   const navigation = useNavigation();
+  const [apiProtocols, setApiProtocols] = useState([]);
+  const [loadingApiProtocols, setLoadingApiProtocols] = useState(false);
+
+  useEffect(() => {
+    fetchApiProtocols();
+  }, []);
+
+  const fetchApiProtocols = async () => {
+    try {
+      setLoadingApiProtocols(true);
+      const protocols = await departmentService.getProtocols();
+      if (Array.isArray(protocols)) {
+        setApiProtocols(protocols);
+      }
+    } catch (error) {
+      console.error('Error fetching protocols from API:', error);
+    } finally {
+      setLoadingApiProtocols(false);
+    }
+  };
 
   return (
     <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
-      <CollapsibleCard title="IV Cannulation Request Protocol" icon="iv-drip">
+      {/* Existing protocols from database */}
+      <CollapsibleCard title="IV Cannulation Request Protocol" icon="syringe">
         <SectionHeader title="Protocol Overview" icon="info-circle" />
         <View style={styles.protocolAlertInfo}>
           <Text style={styles.alertLine}><Text style={styles.alertStrong}>Effective Date:</Text> Monday 13th May 2024</Text>
@@ -259,10 +327,35 @@ export default function DepartmentalProtocolsScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard title="Additional Protocols" icon="plus-circle">
-        <View style={styles.placeholderCard}>
-          <FontAwesome5 name="folder-plus" size={32} color={COLORS.textMuted} style={styles.placeholderIcon} />
-          <Text style={styles.placeholderText}>Additional departmental protocols will be added here as they become available.</Text>
-        </View>
+        {loadingApiProtocols ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+            <Text style={styles.loadingText}>Loading protocols...</Text>
+          </View>
+        ) : apiProtocols.length === 0 ? (
+          <View style={styles.placeholderCard}>
+            <FontAwesome5 name="folder-plus" size={32} color={COLORS.textMuted} style={styles.placeholderIcon} />
+            <Text style={styles.placeholderText}>Additional departmental protocols will be added here as they become available.</Text>
+          </View>
+        ) : (
+          <View>
+            {apiProtocols.map((protocol, idx) => {
+              const iconName = getSafeProtocolIcon(protocol.icon);
+              return (
+                <View key={protocol.id || idx} style={styles.apiProtocolCard}>
+                  <View style={styles.apiProtocolHeader}>
+                    <FontAwesome5 name={iconName} size={16} color={COLORS.primary} style={styles.apiProtocolIcon} />
+                    <Text style={styles.apiProtocolTitle}>{protocol.title || `Protocol ${idx + 1}`}</Text>
+                  </View>
+                  {protocol.category && (
+                    <Text style={styles.apiProtocolCategory}>Category: {protocol.category}</Text>
+                  )}
+                  {renderProtocolContent(protocol.content, styles)}
+                </View>
+              );
+            })}
+          </View>
+        )}
       </CollapsibleCard>
 
       <TouchableOpacity style={styles.homeBtn} onPress={() => navigation.navigate('Home')}>
@@ -416,4 +509,41 @@ const styles = StyleSheet.create({
   },
   homeBtnIcon: { marginRight: 8 },
   homeBtnText: { color: COLORS.white, fontWeight: '700', fontSize: 14 },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: SPACING.md,
+  },
+  loadingText: {
+    marginTop: SPACING.sm,
+    color: COLORS.textMuted,
+    fontSize: 13,
+  },
+  apiProtocolCard: {
+    backgroundColor: COLORS.cardBg,
+    borderRadius: BORDER_RADIUS,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  apiProtocolHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  apiProtocolIcon: {
+    marginRight: SPACING.sm,
+  },
+  apiProtocolTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: COLORS.text,
+    flex: 1,
+  },
+  apiProtocolCategory: {
+    fontSize: 12,
+    color: COLORS.textMuted,
+    marginBottom: SPACING.sm,
+  },
 });

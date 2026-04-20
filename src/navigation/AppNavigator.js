@@ -2,8 +2,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS } from '../utils/theme';
+import { useAuth } from '../context/AuthContext';
 
 import HomeScreen from '../screens/HomeScreen';
+import AnaesthesiaCalculatorsScreen from '../screens/AnaesthesiaCalculatorsScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
 import PreoperativeScreen from '../screens/PreoperativeScreen';
 import PostoperativeScreen from '../screens/PostoperativeScreen';
 import ICUCalculatorsScreen from '../screens/ICUCalculatorsScreen';
@@ -25,42 +29,65 @@ import ROTEMScreen from '../screens/ROTEMScreen';
 import LabourAnalgesiaScreen from '../screens/LabourAnalgesiaScreen';
 import ELibraryScreen from '../screens/ELibraryScreen';
 
-const Stack = createNativeStackNavigator();
+const MainStack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
+
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Signup" component={SignupScreen} />
+    </AuthStack.Navigator>
+  );
+}
+
+function MainNavigator() {
+  return (
+    <MainStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        headerStyle: { backgroundColor: COLORS.medicalBlue },
+        headerTintColor: COLORS.white,
+        headerTitleStyle: { fontWeight: '600', fontSize: 16 },
+        headerBackTitleVisible: false,
+      }}
+    >
+      <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'WGH Anaesthesia' }} />
+      <MainStack.Screen name="AnaesthesiaCalculators" component={AnaesthesiaCalculatorsScreen} options={{ title: 'Anaesthesia Calculators' }} />
+      <MainStack.Screen name="Preoperative" component={PreoperativeScreen} options={{ title: 'Preoperative Assessment' }} />
+      <MainStack.Screen name="Postoperative" component={PostoperativeScreen} options={{ title: 'Postoperative & Recovery' }} />
+      <MainStack.Screen name="ICUCalculators" component={ICUCalculatorsScreen} options={{ title: 'ICU Calculators' }} />
+      <MainStack.Screen name="Emergency" component={EmergencyScreen} options={{ title: 'Emergency & Crisis' }} />
+      <MainStack.Screen name="Specialized" component={SpecializedScreen} options={{ title: 'Specialized Fields' }} />
+      <MainStack.Screen name="QualitySafety" component={QualitySafetyScreen} options={{ title: 'Quality & Safety' }} />
+      <MainStack.Screen name="GeneralMedical" component={GeneralMedicalScreen} options={{ title: 'General Medical' }} />
+      <MainStack.Screen name="DrugDosing" component={DrugDosingScreen} options={{ title: 'Drug Dosing' }} />
+      <MainStack.Screen name="ECMO" component={ECMOScreen} options={{ title: 'ECMO Parameters' }} />
+      <MainStack.Screen name="AnestheticDrugDosing" component={AnestheticDrugDosingScreen} options={{ title: 'Anaesthetic Drugs' }} />
+      <MainStack.Screen name="DifficultAirway" component={DifficultAirwayScreen} options={{ title: 'Difficult Airway' }} />
+      <MainStack.Screen name="ACLS" component={ACLSScreen} options={{ title: 'ACLS Algorithms' }} />
+      <MainStack.Screen name="DepartmentalTeaching" component={DepartmentalTeachingScreen} options={{ title: 'Departmental Teaching' }} />
+      <MainStack.Screen name="CriticalTransfer" component={CriticalTransferScreen} options={{ title: 'Critical Transfer' }} />
+      <MainStack.Screen name="NeuraxialAnticoagulation" component={NeuraxialAnticoagulationScreen} options={{ title: 'Neuraxial & Anticoagulation' }} />
+      <MainStack.Screen name="DepartmentalProtocols" component={DepartmentalProtocolsScreen} options={{ title: 'Departmental Protocols' }} />
+      <MainStack.Screen name="PerioperativeMedication" component={PerioperativeMedicationScreen} options={{ title: 'Perioperative Medication' }} />
+      <MainStack.Screen name="ROTEM" component={ROTEMScreen} options={{ title: 'ROTEM' }} />
+      <MainStack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />
+      <MainStack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
+    </MainStack.Navigator>
+  );
+}
 
 export default function AppNavigator() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          headerStyle: { backgroundColor: COLORS.medicalBlue },
-          headerTintColor: COLORS.white,
-          headerTitleStyle: { fontWeight: '600', fontSize: 16 },
-          headerBackTitleVisible: false,
-        }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'WGH Anaesthesia' }} />
-        <Stack.Screen name="Preoperative" component={PreoperativeScreen} options={{ title: 'Preoperative Assessment' }} />
-        <Stack.Screen name="Postoperative" component={PostoperativeScreen} options={{ title: 'Postoperative & Recovery' }} />
-        <Stack.Screen name="ICUCalculators" component={ICUCalculatorsScreen} options={{ title: 'ICU Calculators' }} />
-        <Stack.Screen name="Emergency" component={EmergencyScreen} options={{ title: 'Emergency & Crisis' }} />
-        <Stack.Screen name="Specialized" component={SpecializedScreen} options={{ title: 'Specialized Fields' }} />
-        <Stack.Screen name="QualitySafety" component={QualitySafetyScreen} options={{ title: 'Quality & Safety' }} />
-        <Stack.Screen name="GeneralMedical" component={GeneralMedicalScreen} options={{ title: 'General Medical' }} />
-        <Stack.Screen name="DrugDosing" component={DrugDosingScreen} options={{ title: 'Drug Dosing' }} />
-        <Stack.Screen name="ECMO" component={ECMOScreen} options={{ title: 'ECMO Parameters' }} />
-        <Stack.Screen name="AnestheticDrugDosing" component={AnestheticDrugDosingScreen} options={{ title: 'Anaesthetic Drugs' }} />
-        <Stack.Screen name="DifficultAirway" component={DifficultAirwayScreen} options={{ title: 'Difficult Airway' }} />
-        <Stack.Screen name="ACLS" component={ACLSScreen} options={{ title: 'ACLS Algorithms' }} />
-        <Stack.Screen name="DepartmentalTeaching" component={DepartmentalTeachingScreen} options={{ title: 'Departmental Teaching' }} />
-        <Stack.Screen name="CriticalTransfer" component={CriticalTransferScreen} options={{ title: 'Critical Transfer' }} />
-        <Stack.Screen name="NeuraxialAnticoagulation" component={NeuraxialAnticoagulationScreen} options={{ title: 'Neuraxial & Anticoagulation' }} />
-        <Stack.Screen name="DepartmentalProtocols" component={DepartmentalProtocolsScreen} options={{ title: 'Departmental Protocols' }} />
-        <Stack.Screen name="PerioperativeMedication" component={PerioperativeMedicationScreen} options={{ title: 'Perioperative Medication' }} />
-        <Stack.Screen name="ROTEM" component={ROTEMScreen} options={{ title: 'ROTEM' }} />
-        <Stack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />
-        <Stack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
-      </Stack.Navigator>
+      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

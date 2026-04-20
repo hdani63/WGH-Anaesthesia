@@ -1,37 +1,83 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { WebView } from 'react-native-webview';
 import ScreenWrapper from '../components/ScreenWrapper';
+import FullScreenWebModal from '../components/common/FullScreenWebModal';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+import { departmentService } from '../services/departmentService';
 
-const SHEETS_BASE_URL = 'https://docs.google.com/spreadsheets/d/1vunHVcoOIxHSirSwmybQofc-t81AJsKV25tZR9008q4/edit';
-const SHEETS_EMBED_URL = `${SHEETS_BASE_URL}?usp=sharing&widget=true&rm=minimal`;
-const SHEETS_DIRECT_URL = `${SHEETS_BASE_URL}?usp=drivesdk`;
-
-async function openExternalUrl(url) {
-  try {
-    const canOpen = await Linking.canOpenURL(url);
-    if (!canOpen) {
-      Alert.alert('Unable to open link', 'Please try again in your browser.');
-      return;
-    }
-    await Linking.openURL(url);
-  } catch (error) {
-    Alert.alert('Unable to open link', 'Please try again in your browser.');
+// Extract Google Sheets ID and convert to embeddable URL
+const formatGoogleSheetsUrl = (url) => {
+  if (!url) return '';
+  
+  // Extract sheet ID from various Google Sheets URL formats
+  const sheetIdMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if (sheetIdMatch && sheetIdMatch[1]) {
+    const sheetId = sheetIdMatch[1];
+    // Return format that works in WebView
+    return `https://docs.google.com/spreadsheets/d/${sheetId}/edit?usp=sharing`;
   }
-}
+  
+  return url;
+};
 
 export default function DepartmentalTeachingScreen() {
   const navigation = useNavigation();
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetUrl, setSheetUrl] = useState('');
+  const [sheetKey, setSheetKey] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [fetchLoading, setFetchLoading] = useState(false);
+
+  useEffect(() => {
+    fetchTeachingSchedule();
+  }, []);
+
+  const fetchTeachingSchedule = async () => {
+    try {
+      setFetchLoading(true);
+      const teachingSchedule = await departmentService.getTeachingSchedule();
+
+      if (teachingSchedule?.url) {
+        const formattedUrl = formatGoogleSheetsUrl(teachingSchedule.url);
+        setSheetUrl(formattedUrl);
+      } else {
+        Alert.alert('Error', 'Failed to load teaching schedule');
+      }
+    } catch (error) {
+      console.error('Error fetching teaching schedule:', error);
+      Alert.alert('Error', 'Unable to connect to server');
+    } finally {
+      setFetchLoading(false);
+      setLoading(false);
+    }
+  };
 
   const handleOpenSchedule = () => {
-    openExternalUrl(SHEETS_DIRECT_URL);
+    if (sheetUrl) {
+      setSheetKey((previous) => previous + 1);
+      setSheetVisible(true);
+    } else {
+      Alert.alert('Error', 'Teaching schedule URL not available');
+    }
   };
 
   const handleRefresh = () => {
-    openExternalUrl(`${SHEETS_EMBED_URL}&t=${Date.now()}`);
+    setSheetUrl(`${sheetUrl}&t=${Date.now()}`);
   };
+
+  if (loading) {
+    return (
+      <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={styles.loadingText}>Loading teaching schedule...</Text>
+        </View>
+      </ScreenWrapper>
+    );
+  }
 
   return (
     <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
@@ -49,7 +95,7 @@ export default function DepartmentalTeachingScreen() {
         <View style={styles.infoBox}>
           <FontAwesome5 name="info-circle" size={14} color={COLORS.info} style={styles.infoIcon} />
           <Text style={styles.infoText}>
-            The embedded spreadsheet view used in the Flask version is not available directly in this native screen. Use the button below to open the full schedule.
+            Open the teaching schedule directly inside the app.
           </Text>
         </View>
       </View>
@@ -60,17 +106,17 @@ export default function DepartmentalTeachingScreen() {
           <Text style={styles.primaryBtnText}>Back to Home</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.outlineBtn} onPress={handleOpenSchedule}>
-          <FontAwesome5 name="external-link-alt" size={13} color={COLORS.primary} style={styles.btnIcon} />
-          <Text style={styles.outlineBtnText}>Open in New Tab</Text>
+        <TouchableOpacity style={styles.outlineBtn} onPress={handleOpenSchedule} disabled={fetchLoading}>
+          <FontAwesome5 name="table" size={13} color={COLORS.primary} style={styles.btnIcon} />
+          <Text style={styles.outlineBtnText}>Open Teaching Schedule</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.infoBtn} onPress={handleRefresh}>
+        <TouchableOpacity style={styles.infoBtn} onPress={handleRefresh} disabled={fetchLoading}>
           <FontAwesome5 name="sync-alt" size={13} color={COLORS.dark} style={styles.btnIcon} />
-          <Text style={styles.infoBtnText}>Refresh</Text>
+          <Text style={styles.infoBtnText}>Refresh Sheet</Text>
         </TouchableOpacity>
 
-        <Text style={styles.hint}>Opens in your default browser or Google Sheets app.</Text>
+        <Text style={styles.hint}>Use Open Teaching Schedule to view the sheet inside the app.</Text>
       </View>
 
       <View style={styles.footerCard}>
@@ -79,11 +125,52 @@ export default function DepartmentalTeachingScreen() {
           Always verify dates and venues in the live sheet before departmental sessions.
         </Text>
       </View>
+
+      <FullScreenWebModal
+        visible={sheetVisible}
+        title="Teaching Schedule"
+        onClose={() => setSheetVisible(false)}
+        headerActions={(
+          <TouchableOpacity style={styles.webViewActionBtn} onPress={handleRefresh}>
+            <FontAwesome5 name="sync-alt" size={12} color={COLORS.white} />
+          </TouchableOpacity>
+        )}
+      >
+        <WebView
+          key={sheetKey}
+          source={{ uri: sheetUrl }}
+          startInLoadingState
+          style={styles.webView}
+          javaScriptEnabled={true}
+          scalesPageToFit={true}
+          scrollEnabled={true}
+          originWhitelist={['*']}
+          cacheEnabled={false}
+          renderLoading={() => (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={COLORS.primary} />
+              <Text style={styles.loadingText}>Loading sheet...</Text>
+            </View>
+          )}
+          onError={() => Alert.alert('Error', 'Failed to load Google Sheet')}
+        />
+      </FullScreenWebModal>
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: SPACING.xl,
+  },
+  loadingText: {
+    marginTop: SPACING.md,
+    color: COLORS.textMuted,
+    fontSize: 14,
+  },
   resourceCard: {
     backgroundColor: COLORS.cardBg,
     borderRadius: BORDER_RADIUS,
@@ -218,5 +305,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6f5a1b',
     lineHeight: 18,
+  },
+  webViewActionBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  webView: {
+    flex: 1,
   },
 });
