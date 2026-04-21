@@ -13,7 +13,7 @@ const TOOLS = [
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
   { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
-  { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
+  { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
@@ -59,7 +59,6 @@ export default function HomeScreen({ navigation }) {
           <View style={[styles.headerRight, isCompactHeader && styles.headerRightCompact]}>
             <View style={[styles.userBadge, isCompactHeader && styles.userBadgeCompact]}>
               <Text style={styles.userNameText}>{user?.fullName || 'WGH User'}</Text>
-              <Text style={styles.userRoleText}>{user?.role || 'paramedical'}</Text>
             </View>
             <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
               <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.white} />
@@ -148,11 +147,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: COLORS.white,
-  },
-  userRoleText: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.85)',
-    textTransform: 'capitalize',
   },
   logoutButton: {
     flexDirection: 'row',

@@ -248,7 +248,7 @@ export default function PerioperativeMedicationScreen() {
             Recommendations from major societies including ACC/AHA, ADA, ACR, ASA, ACCP, and ACOG.
           </Text>
           <Text style={styles.noticeSubText}>
-            Always individualize care and consult anesthesia, surgery, and relevant specialties for complex cases.
+            Always individualize care and consult anaesthesia, surgery, and relevant specialties for complex cases.
           </Text>
         </View>
       </View>
@@ -330,7 +330,7 @@ export default function PerioperativeMedicationScreen() {
           <Text style={styles.updatesTitle}>Key Updates (2024)</Text>
           <Text style={styles.updateItem}>• SGLT2 inhibitors: hold 3 days pre-op (4 days for ertugliflozin) to reduce euglycemic DKA risk.</Text>
           <Text style={styles.updateItem}>• Biologics/DMARDs: most non-biologic DMARDs can continue; biologics often held 1-2 dosing cycles pre-op.</Text>
-          <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anesthesia protocol due to aspiration risk.</Text>
+          <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anaesthesia protocol due to aspiration risk.</Text>
           <Text style={styles.updateItem}>• Oral contraceptives/HRT: hold around 4 weeks before major high-VTE-risk surgery.</Text>
           <Text style={styles.updateItem}>• ACE inhibitors/ARBs: hold morning of surgery and restart when stable.</Text>
           <Text style={styles.updateItem}>• Antiplatelets: individualize around stent/ACS status; consult cardiology when needed.</Text>

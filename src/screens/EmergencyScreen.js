@@ -11,7 +11,7 @@ import * as Calc from '../utils/calculators';
 
 const protocolSteps = {
   mh: [
-    '1. Stop all triggering agents (volatile anesthetics, succinylcholine)',
+    '1. Stop all triggering agents (volatile anaesthetics, succinylcholine)',
     '2. Call for help - Get MH cart',
     '3. Hyperventilate with 100% O2 at 10 L/min',
     '4. Give Dantrolene - 2.5 mg/kg IV bolus, repeat q5min PRN',
@@ -20,7 +20,7 @@ const protocolSteps = {
     '7. Monitor - ABG, electrolytes, CK, temperature',
   ],
   last: [
-    '1. Stop local anesthetic injection',
+    '1. Stop local anaesthetic injection',
     '2. Call for help - Get lipid emulsion',
     '3. Manage airway and breathing',
     '4. Suppress seizures - Small doses of benzodiazepines/propofol',
@@ -148,7 +148,7 @@ export default function EmergencyScreen() {
       >
         <View style={[styles.sectionAlert, styles.sectionAlertWarning]}>
           <Text style={[styles.sectionAlertText, styles.sectionAlertTextWarning]}>
-            LOCAL ANESTHETIC SYSTEMIC TOXICITY
+            LOCAL ANAESTHETIC SYSTEMIC TOXICITY
           </Text>
         </View>
         <Text style={styles.label}>Patient Weight (kg)</Text>

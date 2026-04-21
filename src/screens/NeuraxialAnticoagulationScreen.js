@@ -112,7 +112,7 @@ export default function NeuraxialAnticoagulationScreen() {
             items={[
               'Daily medication review',
               'Neurologic monitoring for at least 24 hours post-catheter removal',
-              'Minimal local anesthetic concentrations for monitoring',
+              'Minimal local anaesthetic concentrations for monitoring',
               'Early epidural hematoma detection protocols',
             ]}
             color={COLORS.success}
@@ -304,7 +304,7 @@ export default function NeuraxialAnticoagulationScreen() {
 
           <CollapsibleCard title="Special Situations">
             <DataTable headers={['Clinical Scenario', 'Recommendation', 'Monitoring', 'Additional Considerations']} columnWidths={[170, 220, 190, 210]} rows={[
-              ['Emergency Surgery', 'Consider vitamin K 2.5-5 mg IV\nFFP or PCC if urgent\nAlternative anesthesia technique', 'Serial INR monitoring\nClose neurologic observation', 'Discuss with hematology\nDocument risk-benefit assessment'],
+              ['Emergency Surgery', 'Consider vitamin K 2.5-5 mg IV\nFFP or PCC if urgent\nAlternative anaesthesia technique', 'Serial INR monitoring\nClose neurologic observation', 'Discuss with hematology\nDocument risk-benefit assessment'],
               ['Renal Impairment\nCrCl <30 mL/min', 'Avoid DOAC where possible\nReduce LMWH dose\nConsider monitored UFH', 'Anti-Xa for LMWH\nFrequent INR checks', 'Nephrology input\nExtended drug clearance awareness'],
               ['Pregnancy', 'LMWH preferred\nWeight-based dosing\nSwitch to UFH near delivery', 'Anti-Xa levels\nPlatelet count\nFetal monitoring', 'Obstetric consultation\nLabor epidural planning'],
               ['Active Cancer', 'LMWH often preferred\nExtended prophylaxis in selected patients', 'Platelet count\nAnti-Xa if indicated', 'Coordinate with oncology\nConsider chemotherapy timing'],
@@ -319,7 +319,7 @@ export default function NeuraxialAnticoagulationScreen() {
             />
 
             <DataTable headers={['Risk Category', 'Recommendation', 'Alternative Approach', 'Timing']} columnWidths={[170, 180, 230, 220]} rows={[
-              ['Very High Risk\nRecent stroke / mechanical valve', 'Consider short-term LMWH bridging', 'Minimize interruption\nEarlier DOAC resumption\nConsider alternative anesthesia', 'Stop DOAC 48-72h pre-op\nStart LMWH 24h later\nResume DOAC 24-48h post-op'],
+              ['Very High Risk\nRecent stroke / mechanical valve', 'Consider short-term LMWH bridging', 'Minimize interruption\nEarlier DOAC resumption\nConsider alternative anaesthesia', 'Stop DOAC 48-72h pre-op\nStart LMWH 24h later\nResume DOAC 24-48h post-op'],
               ['Standard Risk\nStable AF / remote VTE', 'No bridging required', 'Standard interruption\nMechanical prophylaxis\nEarly mobilization', 'Stop DOAC 48-72h pre-op\nNo intermediate therapy\nResume when safe'],
             ]} />
           </CollapsibleCard>

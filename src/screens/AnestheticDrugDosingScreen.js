@@ -241,7 +241,7 @@ export default function AnestheticDrugDosingScreen() {
       </PatientInfoCard>
 
       <CollapsibleCard
-        title="I. Intravenous Anesthetics"
+        title="I. Intravenous Anaesthetics"
         icon="syringe"
         open={activeCard === 'iv'}
         onToggle={() => toggleCard('iv')}
@@ -255,7 +255,7 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="I.B. Inhalational Anesthetics"
+        title="I.B. Inhalational Anaesthetics"
         icon="wind"
         open={activeCard === 'inhalational'}
         onToggle={() => toggleCard('inhalational')}
@@ -297,7 +297,7 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="IV. Local Anesthetics"
+        title="IV. Local Anaesthetics"
         icon="syringe"
         open={activeCard === 'local'}
         onToggle={() => toggleCard('local')}
