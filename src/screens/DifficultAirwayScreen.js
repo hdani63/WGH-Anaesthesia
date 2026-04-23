@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
@@ -36,12 +36,23 @@ const AIRWAY_IMAGES = {
   obstetricTable2: require('../../assets/images/web-protocols/obstetric_table_2.jpg'),
 };
 
-function ProtocolImage({ source, label }) {
-  return (
+function ProtocolImage({ source, label, onPress }) {
+  const imageComponent = (
     <View style={styles.imageWrap}>
       <Image source={source} style={styles.protocolImage} resizeMode="contain" accessibilityLabel={label} />
     </View>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity activeOpacity={0.85} onPress={onPress}>
+        {imageComponent}
+        <Text style={styles.tapHint}>Tap image to enlarge</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  return imageComponent;
 }
 
 function GuidelineSection({ title, items }) {
@@ -72,9 +83,24 @@ function PanelColumns({ panels }) {
 
 export default function DifficultAirwayScreen() {
   const [activeCard, setActiveCard] = useState('unanticipated');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
+  const [modalTitle, setModalTitle] = useState('');
 
   const toggleCard = (cardKey, nextOpen) => {
     setActiveCard(nextOpen ? cardKey : null);
+  };
+
+  const openImageModal = (source, title) => {
+    setModalImage(source);
+    setModalTitle(title);
+    setModalVisible(true);
+  };
+
+  const closeImageModal = () => {
+    setModalVisible(false);
+    setModalImage(null);
+    setModalTitle('');
   };
 
   return (
@@ -89,9 +115,9 @@ export default function DifficultAirwayScreen() {
         onToggle={(nextOpen) => toggleCard('unanticipated', nextOpen)}
       >
         <Text style={styles.desc}>Difficult Airway Society guidelines for unanticipated difficult tracheal intubation in adults.</Text>
-        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedOverview} label="DAS Difficult Intubation Overview" />
-        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedManagement} label="DAS Unanticipated Management Algorithm" />
-        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedCico} label="DAS CICO Emergency Algorithm" />
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedOverview} label="DAS Difficult Intubation Overview" onPress={() => openImageModal(AIRWAY_IMAGES.unanticipatedOverview, "DAS Difficult Intubation Overview")} />
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedManagement} label="DAS Unanticipated Management Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.unanticipatedManagement, "DAS Unanticipated Management Algorithm")} />
+        <ProtocolImage source={AIRWAY_IMAGES.unanticipatedCico} label="DAS CICO Emergency Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.unanticipatedCico, "DAS CICO Emergency Algorithm")} />
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(DAS_DOC.source, DAS_DOC.fileName, DAS_DOC.title)}>
             <Text style={styles.primaryBtnText}>View PDF Guidelines</Text>
@@ -117,7 +143,7 @@ export default function DifficultAirwayScreen() {
         open={activeCard === 'ati'}
         onToggle={(nextOpen) => toggleCard('ati', nextOpen)}
       >
-        <ProtocolImage source={AIRWAY_IMAGES.ati} label="DAS Awake Tracheal Intubation Algorithm" />
+        <ProtocolImage source={AIRWAY_IMAGES.ati} label="DAS Awake Tracheal Intubation Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.ati, "DAS Awake Tracheal Intubation Algorithm")} />
         <PanelColumns panels={[
           {
             title: 'OXYGENATE',
@@ -156,7 +182,7 @@ export default function DifficultAirwayScreen() {
         open={activeCard === 'icu'}
         onToggle={(nextOpen) => toggleCard('icu', nextOpen)}
       >
-        <ProtocolImage source={AIRWAY_IMAGES.icu} label="DAS ICU Tracheal Intubation Algorithm" />
+        <ProtocolImage source={AIRWAY_IMAGES.icu} label="DAS ICU Tracheal Intubation Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.icu, "DAS ICU Tracheal Intubation Algorithm")} />
         <View style={styles.warningBox}>
           <Text style={styles.warningTitle}>Critical Care Considerations</Text>
           <PanelColumns panels={[
@@ -191,7 +217,7 @@ export default function DifficultAirwayScreen() {
         open={activeCard === 'cspine'}
         onToggle={(nextOpen) => toggleCard('cspine', nextOpen)}
       >
-        <ProtocolImage source={AIRWAY_IMAGES.cervical} label="Cervical Spine Airway Management" />
+        <ProtocolImage source={AIRWAY_IMAGES.cervical} label="Cervical Spine Airway Management" onPress={() => openImageModal(AIRWAY_IMAGES.cervical, "Cervical Spine Airway Management")} />
         <View style={styles.infoBox}>
           <Text style={styles.infoTitle}>2024 Multi-Society Guidelines</Text>
           <Text style={styles.infoText}>Collaborating Societies: DAS, AoA, BSOA, ICS, NACCS, Faculty of Prehospital Care, RCEM</Text>
@@ -240,9 +266,9 @@ export default function DifficultAirwayScreen() {
         open={activeCard === 'extubation'}
         onToggle={(nextOpen) => toggleCard('extubation', nextOpen)}
       >
-        <ProtocolImage source={AIRWAY_IMAGES.extubation1} label="DAS Extubation Algorithm 1" />
-        <ProtocolImage source={AIRWAY_IMAGES.extubation2} label="DAS Extubation Algorithm 2" />
-        <ProtocolImage source={AIRWAY_IMAGES.extubation3} label="DAS Extubation Algorithm 3" />
+        <ProtocolImage source={AIRWAY_IMAGES.extubation1} label="DAS Extubation Algorithm 1" onPress={() => openImageModal(AIRWAY_IMAGES.extubation1, "DAS Extubation Algorithm 1")} />
+        <ProtocolImage source={AIRWAY_IMAGES.extubation2} label="DAS Extubation Algorithm 2" onPress={() => openImageModal(AIRWAY_IMAGES.extubation2, "DAS Extubation Algorithm 2")} />
+        <ProtocolImage source={AIRWAY_IMAGES.extubation3} label="DAS Extubation Algorithm 3" onPress={() => openImageModal(AIRWAY_IMAGES.extubation3, "DAS Extubation Algorithm 3")} />
         <PanelColumns panels={[
           {
             title: 'Low Risk Extubation',
@@ -276,12 +302,12 @@ export default function DifficultAirwayScreen() {
         open={activeCard === 'obstetric'}
         onToggle={(nextOpen) => toggleCard('obstetric', nextOpen)}
       >
-        <ProtocolImage source={AIRWAY_IMAGES.obstetricMaster} label="Obstetric Master Algorithm" />
-        <ProtocolImage source={AIRWAY_IMAGES.obstetric1} label="Obstetric Algorithm 1" />
-        <ProtocolImage source={AIRWAY_IMAGES.obstetric2} label="Obstetric Algorithm 2" />
-        <ProtocolImage source={AIRWAY_IMAGES.obstetric3} label="Obstetric Algorithm 3" />
-        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable1} label="Obstetric Table 1" />
-        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable2} label="Obstetric Table 2" />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricMaster} label="Obstetric Master Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricMaster, "Obstetric Master Algorithm")} />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric1} label="Obstetric Algorithm 1" onPress={() => openImageModal(AIRWAY_IMAGES.obstetric1, "Obstetric Algorithm 1")} />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric2} label="Obstetric Algorithm 2" onPress={() => openImageModal(AIRWAY_IMAGES.obstetric2, "Obstetric Algorithm 2")} />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetric3} label="Obstetric Algorithm 3" onPress={() => openImageModal(AIRWAY_IMAGES.obstetric3, "Obstetric Algorithm 3")} />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable1} label="Obstetric Table 1" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable1, "Obstetric Table 1")} />
+        <ProtocolImage source={AIRWAY_IMAGES.obstetricTable2} label="Obstetric Table 2" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable2, "Obstetric Table 2")} />
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title)}>
             <Text style={styles.primaryBtnText}>View PDF Guidelines</Text>
@@ -381,6 +407,31 @@ export default function DifficultAirwayScreen() {
           },
         ]} />
       </View>
+
+      <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={closeImageModal}>
+        <View style={styles.modalBackdrop}>
+          <TouchableOpacity style={styles.modalCloseBtn} onPress={closeImageModal}>
+            <FontAwesome5 name="times" size={16} color={COLORS.white} />
+          </TouchableOpacity>
+
+          <View style={styles.modalContent}>
+            <ScrollView
+              style={styles.modalScrollView}
+              contentContainerStyle={styles.modalScrollContent}
+              maximumZoomScale={3}
+              minimumZoomScale={1}
+              zoomScale={1}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            >
+              {modalImage ? (
+                <Image source={modalImage} style={styles.modalImage} resizeMode="contain" />
+              ) : null}
+            </ScrollView>
+            {modalTitle ? <Text style={styles.modalTitle}>{modalTitle}</Text> : null}
+          </View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 }
@@ -426,4 +477,50 @@ const styles = StyleSheet.create({
   resourceTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.sm },
   resourceTitleIcon: { marginRight: 6 },
   resourceTitle: { fontSize: 15, fontWeight: '700', color: COLORS.danger },
+  tapHint: { fontSize: 12, color: COLORS.textMuted, textAlign: 'center', marginBottom: SPACING.sm },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.lg,
+  },
+  modalCloseBtn: {
+    position: 'absolute',
+    top: 48,
+    right: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  modalContent: {
+    width: '100%',
+    height: '78%',
+    maxHeight: '78%',
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%',
+  },
+  modalScrollView: {
+    width: '100%',
+    height: '100%',
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    marginTop: SPACING.sm,
+    color: COLORS.white,
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
 });

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
-import { openPdf, downloadPdf } from '../utils/pdfUtils';
+import { downloadPdf, getLocalPdfUri } from '../utils/pdfUtils';
 
 const RESOURCE_SECTIONS = [
   {
@@ -63,14 +63,34 @@ const RESOURCE_SECTIONS = [
 ];
 
 function BookCard({ book, categoryColor }) {
+  const navigation = useNavigation();
   const [loadingAction, setLoadingAction] = useState(null);
 
-  const handleAction = async (type, action) => {
+  const handleRead = async () => {
     try {
-      setLoadingAction(type);
-      await action();
+      setLoadingAction('open');
+      // Extract the local URI from assets
+      const uri = await getLocalPdfUri(book.source, book.fileName);
+      
+      // Navigate to your PDF Viewer screen instead of opening system share
+      navigation.navigate('PdfViewerScreen', {
+        uri: uri,
+        title: book.title
+      });
     } catch (error) {
-      // PDF utilities handle user-facing errors.
+      console.error('Read PDF Error:', error);
+      Alert.alert('Error', 'Unable to open the PDF reader.');
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      setLoadingAction('download');
+      await downloadPdf(book.source, book.fileName, book.title);
+    } catch (error) {
+      // Errors handled within utility
     } finally {
       setLoadingAction(null);
     }
@@ -88,27 +108,31 @@ function BookCard({ book, categoryColor }) {
       <View style={styles.bookInfo}>
         <Text style={styles.bookTitle}>{book.title}</Text>
         <View style={styles.metaRow}>
-          <Text style={[styles.smallBadge, book.editionTone === 'success' ? styles.successBadge : styles.secondaryBadge]}>{book.edition}</Text>
-          <Text style={[styles.smallBadge, { backgroundColor: categoryColor }]}>{book.badge}</Text>
+          <Text style={[styles.smallBadge, book.editionTone === 'success' ? styles.successBadge : styles.secondaryBadge]}>
+            {book.edition}
+          </Text>
+          <Text style={[styles.smallBadge, { backgroundColor: categoryColor }]}>
+            {book.badge}
+          </Text>
         </View>
         <Text style={styles.bookDesc}>{book.desc}</Text>
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
             style={[styles.openBtn, { backgroundColor: categoryColor }, disabled && styles.disabledBtn]}
-            onPress={() => handleAction('open', () => openPdf(book.source, book.fileName, book.title))}
+            onPress={handleRead}
             disabled={disabled}
           >
             {openLoading ? <ActivityIndicator color={COLORS.white} size="small" /> : (
               <View style={styles.buttonContent}>
                 <FontAwesome5 name="eye" size={11} color={COLORS.white} style={styles.buttonIcon} />
-                <Text style={styles.openBtnText}>Open</Text>
+                <Text style={styles.openBtnText}>Read</Text>
               </View>
             )}
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.downloadBtn, { borderColor: categoryColor }, disabled && styles.disabledBtn]}
-            onPress={() => handleAction('download', () => downloadPdf(book.source, book.fileName, book.title))}
+            onPress={handleDownload}
             disabled={disabled}
           >
             {downloadLoading ? <ActivityIndicator color={categoryColor} size="small" /> : (

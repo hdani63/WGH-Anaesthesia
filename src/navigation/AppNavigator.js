@@ -28,6 +28,8 @@ import PerioperativeMedicationScreen from '../screens/PerioperativeMedicationScr
 import ROTEMScreen from '../screens/ROTEMScreen';
 import LabourAnalgesiaScreen from '../screens/LabourAnalgesiaScreen';
 import ELibraryScreen from '../screens/ELibraryScreen';
+import ITIVAScreen from '../screens/ITIVAScreen';
+import PdfViewerScreen from '../screens/PdfViewerScreen';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -78,6 +80,8 @@ function MainNavigator() {
       <MainStack.Screen name="ROTEM" component={ROTEMScreen} options={{ title: 'ROTEM' }} />
       <MainStack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />
       <MainStack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
+      <MainStack.Screen name="ITIVA" component={ITIVAScreen} options={{ title: 'iTIVA' }} />
+      <MainStack.Screen name="PdfViewerScreen" component={PdfViewerScreen} options={{ title: 'PDF Viewer' }} />
     </MainStack.Navigator>
   );
 }

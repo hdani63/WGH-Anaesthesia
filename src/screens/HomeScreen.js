@@ -12,15 +12,16 @@ const TOOLS = [
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
+  { key: 'DrugDosing', icon: 'capsules', title: 'Drug Dosing' },
   { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
-  { key: 'PerioperativeMedication', icon: 'pills', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
+  { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
   { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
   { key: 'LabourAnalgesia', icon: 'baby', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
   { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
+  { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
   },
   cardIconWrap: { marginBottom: 8 },
   cardTitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     color: COLORS.text,
     textAlign: 'center',
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   },
   cardTitleHighlight: { color: COLORS.white },
   badge: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#ffc107',
     fontWeight: '600',
     marginTop: 4,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -119,8 +119,22 @@ export default function ROTEMScreen() {
             <FontAwesome5 name="times" size={16} color={COLORS.white} />
           </TouchableOpacity>
 
-          {modalImage ? <Image source={modalImage} style={styles.modalImage} resizeMode="contain" /> : null}
-          {modalTitle ? <Text style={styles.modalTitle}>{modalTitle}</Text> : null}
+          <View style={styles.modalContent}>
+            <ScrollView
+              style={styles.modalScrollView}
+              contentContainerStyle={styles.modalScrollContent}
+              maximumZoomScale={3}
+              minimumZoomScale={1}
+              zoomScale={1}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            >
+              {modalImage ? (
+                <Image source={modalImage} style={styles.modalImage} resizeMode="contain" />
+              ) : null}
+            </ScrollView>
+            {modalTitle ? <Text style={styles.modalTitle}>{modalTitle}</Text> : null}
+          </View>
         </View>
       </Modal>
 
@@ -206,9 +220,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 2,
   },
-  modalImage: {
+  modalContent: {
     width: '100%',
     height: '78%',
+    maxHeight: '78%',
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%',
+  },
+  modalScrollView: {
+    width: '100%',
+    height: '100%',
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalTitle: {
     marginTop: SPACING.sm,

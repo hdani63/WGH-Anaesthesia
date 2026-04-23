@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import PatientInfoCard from '../components/PatientInfoCard';
@@ -21,21 +21,6 @@ export default function GeneralMedicalScreen() {
   // Calories
   const [activityLevel, setActivityLevel] = useState('1.2');
   const [calorieResult, setCalorieResult] = useState(null);
-
-  // BP
-  const [systolic, setSystolic] = useState('');
-  const [diastolic, setDiastolic] = useState('');
-  const [bpResult, setBpResult] = useState(null);
-
-  // Temp
-  const [tempVal, setTempVal] = useState('');
-  const [tempUnit, setTempUnit] = useState('celsius');
-  const [tempResult, setTempResult] = useState(null);
-
-  // Weight
-  const [weightVal, setWeightVal] = useState('');
-  const [weightUnit, setWeightUnit] = useState('kg');
-  const [weightResult, setWeightResult] = useState(null);
 
   const [activeCard, setActiveCard] = useState(null);
 
@@ -150,81 +135,6 @@ export default function GeneralMedicalScreen() {
     });
   };
 
-  const assessBloodPressure = () => {
-    const s = parseInt(systolic, 10);
-    const d = parseInt(diastolic, 10);
-
-    if (!s || !d) {
-      setBpResult({ text: 'Please enter systolic and diastolic BP', type: 'warning' });
-      return;
-    }
-
-    let category = '';
-    let type = 'info';
-    let recommendations = '';
-
-    if (s < 120 && d < 80) {
-      category = 'Normal';
-      type = 'success';
-      recommendations = 'Maintain healthy lifestyle';
-    } else if (s < 130 && d < 80) {
-      category = 'Elevated';
-      type = 'warning';
-      recommendations = 'Lifestyle modifications recommended';
-    } else if ((s >= 130 && s < 140) || (d >= 80 && d < 90)) {
-      category = 'Stage 1 Hypertension';
-      type = 'warning';
-      recommendations = 'Consider antihypertensive therapy';
-    } else if (s >= 140 || d >= 90) {
-      category = 'Stage 2 Hypertension';
-      type = 'danger';
-      recommendations = 'Antihypertensive therapy indicated';
-    } else if (s >= 180 || d >= 120) {
-      category = 'Hypertensive Crisis';
-      type = 'danger';
-      recommendations = 'Immediate medical attention required';
-    }
-
-    setBpResult({
-      text: `BP: ${s}/${d} mmHg\nCategory: ${category}\n${recommendations}`,
-      type,
-    });
-  };
-
-  const convertTemperature = () => {
-    const value = parseFloat(tempVal);
-    if (!value) {
-      setTempResult({ text: 'Please enter temperature', type: 'warning' });
-      return;
-    }
-
-    if (tempUnit === 'celsius') {
-      const converted = (value * 9 / 5) + 32;
-      setTempResult({ text: `${value}°C = ${converted.toFixed(1)}°F`, type: 'success' });
-      return;
-    }
-
-    const converted = (value - 32) * 5 / 9;
-    setTempResult({ text: `${value}°F = ${converted.toFixed(1)}°C`, type: 'success' });
-  };
-
-  const convertWeight = () => {
-    const value = parseFloat(weightVal);
-    if (!value) {
-      setWeightResult({ text: 'Please enter weight', type: 'warning' });
-      return;
-    }
-
-    if (weightUnit === 'kg') {
-      const converted = value * 2.20462;
-      setWeightResult({ text: `${value} kg = ${converted.toFixed(1)} lbs`, type: 'success' });
-      return;
-    }
-
-    const converted = value / 2.20462;
-    setWeightResult({ text: `${value} lbs = ${converted.toFixed(1)} kg`, type: 'success' });
-  };
-
   return (
     <ScreenWrapper title="General Medical Calculators" subtitle="Common medical calculations and clinical assessment tools">
       <PatientInfoCard patient={patient} setPatient={setPatient} />
@@ -258,40 +168,9 @@ export default function GeneralMedicalScreen() {
         <CalcButton title="Calculate Caloric Needs" onPress={calcCalories} />
         {calorieResult && <ResultDisplay result={calorieResult.text} type={calorieResult.type} />}
       </CollapsibleCard>
-
-      <CollapsibleCard title="Blood Pressure Assessment" icon="heartbeat" open={activeCard === 'bp'} onToggle={(nextOpen) => toggleCard('bp', nextOpen)}>
-        <Text style={styles.label}>Systolic BP (mmHg)</Text>
-        <TextInput style={styles.input} keyboardType="numeric" placeholder="120" value={systolic} onChangeText={setSystolic} />
-        <Text style={styles.label}>Diastolic BP (mmHg)</Text>
-        <TextInput style={styles.input} keyboardType="numeric" placeholder="80" value={diastolic} onChangeText={setDiastolic} />
-        <CalcButton title="Assess Blood Pressure" onPress={assessBloodPressure} />
-        {bpResult && <ResultDisplay result={bpResult.text} type={bpResult.type} />}
-      </CollapsibleCard>
-
-      <CollapsibleCard title="Medical Unit Conversions" icon="exchange-alt" open={activeCard === 'conversion'} onToggle={(nextOpen) => toggleCard('conversion', nextOpen)}>
-        <Text style={styles.sectionTitle}>Temperature</Text>
-        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="37" value={tempVal} onChangeText={setTempVal} />
-        <PickerSelect label="Unit" options={[
-          { value: 'celsius', label: 'Celsius' }, { value: 'fahrenheit', label: 'Fahrenheit' },
-        ]} selected={tempUnit} onSelect={setTempUnit} />
-        <CalcButton title="Convert" onPress={convertTemperature} />
-        {tempResult && <ResultDisplay result={tempResult.text} type={tempResult.type} />}
-        <View style={styles.divider} />
-        <Text style={styles.sectionTitle}>Weight</Text>
-        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="70" value={weightVal} onChangeText={setWeightVal} />
-        <PickerSelect label="Unit" options={[
-          { value: 'kg', label: 'Kilograms' }, { value: 'lbs', label: 'Pounds' },
-        ]} selected={weightUnit} onSelect={setWeightUnit} />
-        <CalcButton title="Convert" onPress={convertWeight} />
-        {weightResult && <ResultDisplay result={weightResult.text} type={weightResult.type} />}
-      </CollapsibleCard>
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  label: { fontSize: 14, fontWeight: '600', color: COLORS.text, marginBottom: SPACING.xs },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: COLORS.primary, marginBottom: SPACING.sm },
-  input: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, padding: 10, fontSize: 14, backgroundColor: COLORS.white, marginBottom: SPACING.md },
-  divider: { height: 1, backgroundColor: COLORS.border, marginVertical: SPACING.md },
 });
