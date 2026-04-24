@@ -60,6 +60,7 @@ export default function HomeScreen({ navigation }) {
           <View style={[styles.headerRight, isCompactHeader && styles.headerRightCompact]}>
             <View style={[styles.userBadge, isCompactHeader && styles.userBadgeCompact]}>
               <Text style={styles.userNameText}>{user?.fullName || 'WGH User'}</Text>
+              <Text style={styles.userRoleText}>Consultant Anaesthetist</Text>
             </View>
             <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
               <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.white} />
@@ -148,6 +149,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: COLORS.white,
+  },
+  userRoleText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 2,
   },
   logoutButton: {
     flexDirection: 'row',

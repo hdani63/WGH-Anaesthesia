@@ -5,6 +5,102 @@ import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
+const HERBAL_MEDICATIONS = [
+  { name: 'Garlic', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and when bleeding risk is low', effects: 'Bleeding risk, possible hypotension' },
+  { name: 'Ginger', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and when bleeding risk is low', effects: 'Possible bleeding tendency' },
+  { name: 'Ginkgo biloba', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and when bleeding risk is low', effects: 'Bleeding risk' },
+  { name: 'Ginseng', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia, bleeding concern, haemodynamic effects' },
+  { name: 'Kava (kava-kava)', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anaesthetic recovery and no sedatives needed', effects: 'Sedation, CNS depression' },
+  { name: 'St John\'s Wort', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Drug interactions, enzyme induction, serotonin-related effects' },
+  { name: 'Valerian', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery (ideally tapered)', restart: 'After recovery and reduced sedative need', effects: 'Sedation, withdrawal risk if abrupt stop' },
+  { name: 'Ephedra (ma huang)', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After cardiovascular stability', effects: 'Hypertension, tachycardia, arrhythmia' },
+  { name: 'Echinacea', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery and wound healing', effects: 'Immune effects, hepatotoxicity concern' },
+  { name: 'Saw palmetto', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible bleeding concern' },
+  { name: 'Goldenseal', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Drug interactions' },
+  { name: 'Feverfew', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Platelet inhibition, bleeding risk' },
+  { name: 'Turmeric / curcumin', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible antiplatelet effect' },
+  { name: 'Green tea extract', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and haemodynamic stability', effects: 'Caffeine-related tachycardia, possible coagulation effects' },
+  { name: 'Cannabis-derived herbal / CBD products', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and when clinically appropriate', effects: 'Sedation, airway/haemodynamic effects' },
+  { name: 'Dong quai', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Bleeding risk' },
+  { name: 'Licorice', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and stable electrolytes/BP', effects: 'Hypokalaemia, hypertension, fluid retention' },
+  { name: 'Evening primrose oil', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Bleeding concern, seizure-threshold concerns' },
+  { name: 'Black cohosh', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hypotension, hepatotoxicity concern' },
+  { name: 'Arnica', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Bleeding and cardiovascular effects' },
+  { name: 'Bilberry', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible bleeding concern' },
+  { name: 'Bromelain', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Antiplatelet effect, bleeding concern' },
+  { name: 'Cayenne', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible bleeding effect, GI irritation' },
+  { name: 'Devil\'s claw', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'GI effects, possible bleeding concern' },
+  { name: 'Fenugreek', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia, possible bleeding concern' },
+  { name: 'Flaxseed / flax oil', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and stable GI function', effects: 'Possible bleeding concern, GI effects' },
+  { name: 'Grapefruit / grapefruit extract', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Enzyme inhibition, drug interactions' },
+  { name: 'Guarana', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and haemodynamic stability', effects: 'Tachycardia, hypertension, agitation' },
+  { name: 'Horse chestnut', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible bleeding and vascular effects' },
+  { name: 'Milk thistle', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Possible drug interactions' },
+  { name: 'Red clover', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Anticoagulant/bleeding effect' },
+  { name: 'Reishi mushroom', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Bleeding concern, immune effects' },
+  { name: 'Maitake mushroom', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia, bleeding concern' },
+  { name: 'Shiitake mushroom extract', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Immune and bleeding-related effects' },
+  { name: 'Schisandra', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Hepatic enzyme effects, drug interactions' },
+  { name: 'Yohimbe', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After cardiovascular stability', effects: 'Hypertension, tachycardia, agitation' },
+  { name: 'Ashwagandha', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and no sedatives needed', effects: 'Sedation, thyroid/BP effects' },
+  { name: 'Rhodiola', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'CNS and haemodynamic effects' },
+  { name: 'Holy basil (tulsi)', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia, possible bleeding concern' },
+  { name: 'Bacopa', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Sedation, GI effects' },
+  { name: 'Cat\'s claw', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and wound stability', effects: 'Bleeding and immune effects' },
+  { name: 'Hawthorn', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After cardiovascular stability', effects: 'Hypotension, bleeding concern' },
+  { name: 'Bitter orange', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After cardiovascular stability', effects: 'Sympathomimetic effects, hypertension, tachycardia' },
+  { name: 'Aloe vera latex / oral aloe preparations', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and stable electrolytes', effects: 'Laxative effect, dehydration, electrolyte disturbance' },
+  { name: 'Senna', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and stable electrolytes', effects: 'Laxative effect, dehydration, electrolyte disturbance' },
+  { name: 'Cascara', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and stable electrolytes', effects: 'Laxative effect, dehydration, electrolyte disturbance' },
+  { name: 'Psyllium-containing herbal combinations', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and oral intake established', effects: 'GI bulk effects, altered drug absorption' },
+  { name: 'Chinese herbal combination products', risk: 'Multiple / Unknown', stop: '2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Unpredictable bleeding, sedation, interaction risks' },
+  { name: 'Ayurvedic polyherbal preparations', risk: 'Multiple / Unknown', stop: '2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Unpredictable effects, possible contaminants' },
+  { name: 'Unlabelled / mixed herbal supplements', risk: 'Multiple / Unknown', stop: '2 weeks before surgery', restart: 'After recovery/discharge', effects: 'Unknown composition, unpredictable perioperative effects' },
+  { name: 'Acai', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery and oral intake established', effects: 'Limited data, possible drug interactions' },
+  { name: 'Alfalfa', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hypoglycaemia, immune effects, anticoagulant interaction' },
+  { name: 'Astragalus', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Immune stimulation, drug interactions' },
+  { name: 'Boswellia', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible antiplatelet effect, GI upset' },
+  { name: 'Butterbur', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery; avoid if liver concerns', effects: 'Hepatotoxicity concern' },
+  { name: 'Chamomile', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Sedation, allergy, possible bleeding interaction' },
+  { name: 'Chasteberry', risk: 'Hormonal', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hormonal effects' },
+  { name: 'Cinnamon', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia, possible bleeding concern' },
+  { name: 'Cranberry', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible anticoagulant interaction' },
+  { name: 'Dandelion', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery and stable electrolytes', effects: 'Diuretic effect, electrolyte disturbance' },
+  { name: 'Elderberry', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Immune stimulation' },
+  { name: 'European mistletoe', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hypotension, immune effects' },
+  { name: 'Garcinia cambogia', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hepatotoxicity concern, serotonin-related effects' },
+  { name: 'Grape seed extract', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Possible bleeding effect' },
+  { name: 'Hoodia', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Cardiovascular and hepatic concerns' },
+  { name: 'Lavender', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anaesthetic recovery', effects: 'Sedation' },
+  { name: 'Mugwort', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Allergy risk' },
+  { name: 'Noni', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery and stable renal/electrolyte status', effects: 'Hyperkalaemia risk, liver concerns' },
+  { name: 'Passionflower', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and no sedatives needed', effects: 'Sedation, CNS depression' },
+  { name: 'Peppermint oil', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery and normal GI function', effects: 'GI effects, reflux-related symptoms' },
+  { name: 'Pomegranate', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible enzyme interaction' },
+  { name: 'Sage', risk: 'Neurotoxicity', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'CNS effects, seizure risk in high doses' },
+  { name: 'Soy isoflavone / soy extract', risk: 'Hormonal', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hormonal effects' },
+  { name: 'Tea tree oil (oral products)', risk: 'Neurotoxicity', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Toxicity risk, CNS effects' },
+  { name: 'Thunder god vine', risk: 'Drug Interactions', stop: '2 weeks before surgery', restart: 'Only after specialist review', effects: 'Immunosuppression, renal/hepatic toxicity' },
+  { name: 'White mulberry leaf', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia' },
+  { name: 'Acetylated aloe / aloe whole-leaf supplements', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and stable electrolytes', effects: 'Laxative effect, dehydration, electrolyte loss' },
+  { name: 'Bladderwrack', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and thyroid stability', effects: 'Thyroid effects, iodine excess' },
+  { name: 'Boldo', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hepatotoxicity concern' },
+  { name: 'Buchu', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Diuretic effect, renal irritation' },
+  { name: 'California poppy', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and no sedatives needed', effects: 'Sedation, CNS depression' },
+  { name: 'Cascara sagrada', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After GI recovery and stable electrolytes', effects: 'Laxative effect, hypokalaemia' },
+  { name: 'Celery seed', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Diuretic effect, photosensitivity' },
+  { name: 'Coleus forskohlii', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and stable BP', effects: 'Hypotension, tachycardia, bleeding concern' },
+  { name: 'Cordyceps', risk: 'Immune / Allergy', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Immune and glucose effects' },
+  { name: 'Damiana', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible CNS and glucose effects' },
+  { name: 'Danshen', risk: 'Bleeding', stop: '2 weeks before surgery', restart: 'After recovery and low bleeding risk', effects: 'Significant bleeding risk, anticoagulant interaction' },
+  { name: 'Eleuthero (Siberian ginseng)', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and stable BP', effects: 'Hypertension, tachycardia' },
+  { name: 'Fucus vesiculosus', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and thyroid stability', effects: 'Thyroid effects' },
+  { name: 'Gentian', risk: 'GI / Electrolyte', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'GI stimulation' },
+  { name: 'Gotu kola', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and no sedatives needed', effects: 'Sedation, possible hepatotoxicity' },
+  { name: 'Gymnema', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery and stable glucose', effects: 'Hypoglycaemia' },
+  { name: 'Hibiscus', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery and stable BP', effects: 'Hypotension, diuretic effect' },
+];
+
 const MEDICATIONS = [
   // Antiplatelet
   { name: 'Aspirin', cls: 'Antiplatelet', rec: 'Hold (unless recent stent/ACS)', stop: '7 days', restart: '24-48h if hemostasis achieved', notes: 'Continue if high cardiac risk; consult cardiology' },
@@ -168,6 +264,8 @@ function getSectionKey(medication) {
 export default function PerioperativeMedicationScreen() {
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
+  const [herbalSearch, setHerbalSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('periop');
 
   const filtered = useMemo(() => {
     if (!search.trim()) return MEDICATIONS;
@@ -176,6 +274,14 @@ export default function PerioperativeMedicationScreen() {
       m.name.toLowerCase().includes(q) || m.cls.toLowerCase().includes(q)
     );
   }, [search]);
+
+  const filteredHerbal = useMemo(() => {
+    if (!herbalSearch.trim()) return HERBAL_MEDICATIONS;
+    const q = herbalSearch.toLowerCase();
+    return HERBAL_MEDICATIONS.filter(h =>
+      h.name.toLowerCase().includes(q) || h.risk.toLowerCase().includes(q)
+    );
+  }, [herbalSearch]);
 
   const groupedRows = useMemo(() => {
     const grouped = SECTION_ORDER.reduce((acc, key) => ({ ...acc, [key]: [] }), {});
@@ -214,142 +320,262 @@ export default function PerioperativeMedicationScreen() {
     return { color: '#856404' };
   };
 
+  const getHerbalRiskStyle = (risk) => {
+    const r = risk.toLowerCase();
+    if (r.includes('bleeding')) return { backgroundColor: COLORS.danger, color: COLORS.white };
+    if (r.includes('sedation') || r.includes('cns')) return { backgroundColor: '#ffc107', color: COLORS.dark };
+    if (r.includes('cardiovascular')) return { backgroundColor: COLORS.info, color: COLORS.white };
+    if (r.includes('hypoglycaemia')) return { backgroundColor: COLORS.success, color: COLORS.white };
+    if (r.includes('drug interactions')) return { backgroundColor: COLORS.dark, color: COLORS.white };
+    if (r.includes('gi') || r.includes('electrolyte')) return { backgroundColor: '#fd7e14', color: COLORS.white };
+    if (r.includes('immune') || r.includes('allergy')) return { backgroundColor: COLORS.primary, color: COLORS.white };
+    if (r.includes('hormonal')) return { backgroundColor: '#8e44ad', color: COLORS.white };
+    if (r.includes('neurotoxicity') || r.includes('multiple')) return { backgroundColor: COLORS.dark, color: COLORS.white };
+    return { backgroundColor: COLORS.border, color: COLORS.text };
+  };
+
   return (
     <ScreenWrapper title="Perioperative Medication Management" subtitle="Comprehensive medication-by-medication perioperative guidelines (2024 Update)">
-      <View style={styles.searchCard}>
-        <View style={styles.searchInputWrap}>
-          <View style={styles.searchIconBox}>
-            <FontAwesome5 name="search" size={13} color={COLORS.white} />
+      {/* Tab Navigation */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'periop' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('periop')}
+        >
+          <FontAwesome5 name="pills" size={13} color={activeTab === 'periop' ? COLORS.white : COLORS.textMuted} style={styles.tabIcon} />
+          <Text style={[styles.tabText, activeTab === 'periop' && styles.tabTextActive]}>Perioperative Medications</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'herbal' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('herbal')}
+        >
+          <FontAwesome5 name="leaf" size={13} color={activeTab === 'herbal' ? COLORS.white : COLORS.textMuted} style={styles.tabIcon} />
+          <Text style={[styles.tabText, activeTab === 'herbal' && styles.tabTextActive]}>Herbal Medications</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>200+</Text>
           </View>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Type medication name (e.g., aspirin, metformin, warfarin)..."
-            value={search}
-            onChangeText={setSearch}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
-
-        <View style={styles.searchMetaRow}>
-          <Text style={styles.countText}>{filtered.length} medications found</Text>
-          <TouchableOpacity onPress={() => setSearch('')} style={styles.clearBtn}>
-            <FontAwesome5 name="times" size={11} color={COLORS.textMuted} style={styles.clearIcon} />
-            <Text style={styles.clearText}>Clear</Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.noticeBox}>
-        <FontAwesome5 name="info-circle" size={14} color={COLORS.info} style={styles.noticeIcon} />
-        <View style={styles.noticeContent}>
-          <Text style={styles.noticeTitle}>Evidence-Based Guidelines (2024)</Text>
-          <Text style={styles.noticeText}>
-            Recommendations from major societies including ACC/AHA, ADA, ACR, ASA, ACCP, and ACOG.
-          </Text>
-          <Text style={styles.noticeSubText}>
-            Always individualize care and consult anaesthesia, surgery, and relevant specialties for complex cases.
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.chartCard}>
-        <View style={styles.chartHeader}>
-          <FontAwesome5 name="table" size={13} color={COLORS.white} style={styles.chartHeaderIcon} />
-          <Text style={styles.chartHeaderText}>Comprehensive Perioperative Medication Chart</Text>
-        </View>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
-          <View style={styles.tableWrap}>
-            <View style={styles.tableHeaderRow}>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[0] }]}>Medication Name (Trade/Generic)</Text>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[1] }]}>Class</Text>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[2] }]}>Perioperative Recommendation</Text>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[3] }]}>When to Stop Before Surgery</Text>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[4] }]}>When to Restart Postop</Text>
-              <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[5] }]}>Key Notes</Text>
+      {/* Perioperative Tab */}
+      {activeTab === 'periop' && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.searchCard}>
+            <View style={styles.searchInputWrap}>
+              <View style={styles.searchIconBox}>
+                <FontAwesome5 name="search" size={13} color={COLORS.white} />
+              </View>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Type medication name (e.g., aspirin, metformin, warfarin)..."
+                value={search}
+                onChangeText={setSearch}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
             </View>
 
-            {groupedRows.map((row, i) => {
-              if (row.type === 'section') {
-                return (
-                  <View
-                    key={`section-${row.key}`}
-                    style={[
-                      styles.sectionBand,
-                      {
-                        backgroundColor: row.meta.color,
-                        borderColor: row.meta.borderColor || row.meta.color,
-                        width: TABLE_WIDTH,
-                      },
-                    ]}
-                  >
-                    <FontAwesome5 name={row.meta.icon} size={12} color={row.meta.textColor} style={styles.sectionBandIcon} />
-                    <Text style={[styles.sectionBandText, { color: row.meta.textColor }]}>{row.meta.label}</Text>
-                  </View>
-                );
-              }
+            <View style={styles.searchMetaRow}>
+              <Text style={styles.countText}>{filtered.length} medications found</Text>
+              <TouchableOpacity onPress={() => setSearch('')} style={styles.clearBtn}>
+                <FontAwesome5 name="times" size={11} color={COLORS.textMuted} style={styles.clearIcon} />
+                <Text style={styles.clearText}>Clear</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-              const med = row.med;
-              const badge = classBadgeStyle(med.cls);
+          <View style={styles.noticeBox}>
+            <FontAwesome5 name="info-circle" size={14} color={COLORS.info} style={styles.noticeIcon} />
+            <View style={styles.noticeContent}>
+              <Text style={styles.noticeTitle}>Evidence-Based Guidelines (2024)</Text>
+              <Text style={styles.noticeText}>
+                Recommendations from major societies including ACC/AHA, ADA, ACR, ASA, ACCP, and ACOG.
+              </Text>
+              <Text style={styles.noticeSubText}>
+                Always individualize care and consult anaesthesia, surgery, and relevant specialties for complex cases.
+              </Text>
+            </View>
+          </View>
 
-              return (
-                <View key={row.key} style={[styles.tableDataRow, i % 2 === 1 && styles.tableDataRowAlt]}>
-                  <Text style={[styles.tableDataCell, styles.medicationCell, { width: COLUMN_WIDTHS[0] }]}>{med.name}</Text>
-                  <View style={[styles.tableDataCell, { width: COLUMN_WIDTHS[1] }]}> 
-                    <Text style={[styles.classBadge, { backgroundColor: badge.backgroundColor, color: badge.color }]}>{med.cls}</Text>
-                  </View>
-                  <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[2] }, recStyle(med.rec)]}>{med.rec}</Text>
-                  <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[3] }]}>{med.stop}</Text>
-                  <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[4] }]}>{med.restart}</Text>
-                  <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[5] }]}>{med.notes}</Text>
+          <View style={styles.chartCard}>
+            <View style={styles.chartHeader}>
+              <FontAwesome5 name="table" size={13} color={COLORS.white} style={styles.chartHeaderIcon} />
+              <Text style={styles.chartHeaderText}>Comprehensive Perioperative Medication Chart</Text>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+              <View style={styles.tableWrap}>
+                <View style={styles.tableHeaderRow}>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[0] }]}>Medication Name (Trade/Generic)</Text>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[1] }]}>Class</Text>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[2] }]}>Perioperative Recommendation</Text>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[3] }]}>When to Stop Before Surgery</Text>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[4] }]}>When to Restart Postop</Text>
+                  <Text style={[styles.tableHeaderCell, { width: COLUMN_WIDTHS[5] }]}>Key Notes</Text>
                 </View>
-              );
-            })}
+
+                {groupedRows.map((row, i) => {
+                  if (row.type === 'section') {
+                    return (
+                      <View
+                        key={`section-${row.key}`}
+                        style={[
+                          styles.sectionBand,
+                          {
+                            backgroundColor: row.meta.color,
+                            borderColor: row.meta.borderColor || row.meta.color,
+                            width: TABLE_WIDTH,
+                          },
+                        ]}
+                      >
+                        <FontAwesome5 name={row.meta.icon} size={12} color={row.meta.textColor} style={styles.sectionBandIcon} />
+                        <Text style={[styles.sectionBandText, { color: row.meta.textColor }]}>{row.meta.label}</Text>
+                      </View>
+                    );
+                  }
+
+                  const med = row.med;
+                  const badge = classBadgeStyle(med.cls);
+
+                  return (
+                    <View key={row.key} style={[styles.tableDataRow, i % 2 === 1 && styles.tableDataRowAlt]}>
+                      <Text style={[styles.tableDataCell, styles.medicationCell, { width: COLUMN_WIDTHS[0] }]}>{med.name}</Text>
+                      <View style={[styles.tableDataCell, { width: COLUMN_WIDTHS[1] }]}> 
+                        <Text style={[styles.classBadge, { backgroundColor: badge.backgroundColor, color: badge.color }]}>{med.cls}</Text>
+                      </View>
+                      <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[2] }, recStyle(med.rec)]}>{med.rec}</Text>
+                      <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[3] }]}>{med.stop}</Text>
+                      <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[4] }]}>{med.restart}</Text>
+                      <Text style={[styles.tableDataCell, { width: COLUMN_WIDTHS[5] }]}>{med.notes}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </ScrollView>
+          </View>
+
+          {filtered.length === 0 && search.trim() ? (
+            <View style={styles.noResultsBox}>
+              <FontAwesome5 name="search" size={13} color="#856404" style={styles.noResultsIcon} />
+              <View style={styles.noResultsTextWrap}>
+                <Text style={styles.noResultsTitle}>No medications found</Text>
+                <Text style={styles.noResultsText}>Try a different medication name or clear search to view all entries.</Text>
+              </View>
+            </View>
+          ) : null}
+
+          <View style={styles.updatesCard}>
+            <View style={styles.updatesHeader}>
+              <FontAwesome5 name="calendar-alt" size={13} color={COLORS.white} style={styles.updatesHeaderIcon} />
+              <Text style={styles.updatesHeaderText}>Key Updates (2024) & References (2022-2024)</Text>
+            </View>
+
+            <View style={styles.updatesBody}>
+              <Text style={styles.updatesTitle}>Key Updates (2024)</Text>
+              <Text style={styles.updateItem}>• SGLT2 inhibitors: hold 3 days pre-op (4 days for ertugliflozin) to reduce euglycemic DKA risk.</Text>
+              <Text style={styles.updateItem}>• Biologics/DMARDs: most non-biologic DMARDs can continue; biologics often held 1-2 dosing cycles pre-op.</Text>
+              <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anaesthesia protocol due to aspiration risk.</Text>
+              <Text style={styles.updateItem}>• Oral contraceptives/HRT: hold around 4 weeks before major high-VTE-risk surgery.</Text>
+              <Text style={styles.updateItem}>• ACE inhibitors/ARBs: hold morning of surgery and restart when stable.</Text>
+              <Text style={styles.updateItem}>• Antiplatelets: individualize around stent/ACS status; consult cardiology when needed.</Text>
+
+              <Text style={styles.referencesTitle}>References</Text>
+              {REFERENCE_ITEMS.map((ref, i) => (
+                <View key={`ref-${i}`} style={styles.refItemRow}>
+                  <Text style={styles.refIndex}>{i + 1}.</Text>
+                  {ref.url ? (
+                    <TouchableOpacity style={styles.refLinkTouch} onPress={() => openReference(ref.url)} activeOpacity={0.7}>
+                      <Text style={[styles.refItem, styles.refLink]}>{ref.text}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <Text style={styles.refItem}>{ref.text}</Text>
+                  )}
+                </View>
+              ))}
+            </View>
           </View>
         </ScrollView>
-      </View>
+      )}
 
-      {filtered.length === 0 && search.trim() ? (
-        <View style={styles.noResultsBox}>
-          <FontAwesome5 name="search" size={13} color="#856404" style={styles.noResultsIcon} />
-          <View style={styles.noResultsTextWrap}>
-            <Text style={styles.noResultsTitle}>No medications found</Text>
-            <Text style={styles.noResultsText}>Try a different medication name or clear search to view all entries.</Text>
-          </View>
-        </View>
-      ) : null}
-
-      <View style={styles.updatesCard}>
-        <View style={styles.updatesHeader}>
-          <FontAwesome5 name="calendar-alt" size={13} color={COLORS.white} style={styles.updatesHeaderIcon} />
-          <Text style={styles.updatesHeaderText}>Key Updates (2024) & References (2022-2024)</Text>
-        </View>
-
-        <View style={styles.updatesBody}>
-          <Text style={styles.updatesTitle}>Key Updates (2024)</Text>
-          <Text style={styles.updateItem}>• SGLT2 inhibitors: hold 3 days pre-op (4 days for ertugliflozin) to reduce euglycemic DKA risk.</Text>
-          <Text style={styles.updateItem}>• Biologics/DMARDs: most non-biologic DMARDs can continue; biologics often held 1-2 dosing cycles pre-op.</Text>
-          <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anaesthesia protocol due to aspiration risk.</Text>
-          <Text style={styles.updateItem}>• Oral contraceptives/HRT: hold around 4 weeks before major high-VTE-risk surgery.</Text>
-          <Text style={styles.updateItem}>• ACE inhibitors/ARBs: hold morning of surgery and restart when stable.</Text>
-          <Text style={styles.updateItem}>• Antiplatelets: individualize around stent/ACS status; consult cardiology when needed.</Text>
-
-          <Text style={styles.referencesTitle}>References</Text>
-          {REFERENCE_ITEMS.map((ref, i) => (
-            <View key={`ref-${i}`} style={styles.refItemRow}>
-              <Text style={styles.refIndex}>{i + 1}.</Text>
-              {ref.url ? (
-                <TouchableOpacity style={styles.refLinkTouch} onPress={() => openReference(ref.url)} activeOpacity={0.7}>
-                  <Text style={[styles.refItem, styles.refLink]}>{ref.text}</Text>
-                </TouchableOpacity>
-              ) : (
-                <Text style={styles.refItem}>{ref.text}</Text>
-              )}
+      {/* Herbal Tab */}
+      {activeTab === 'herbal' && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.searchCard}>
+            <View style={styles.searchInputWrap}>
+              <View style={[styles.searchIconBox, { backgroundColor: COLORS.success }]}>
+                <FontAwesome5 name="search" size={13} color={COLORS.white} />
+              </View>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search herbal medication (e.g., garlic, ginkgo, valerian)..."
+                value={herbalSearch}
+                onChangeText={setHerbalSearch}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
             </View>
-          ))}
-        </View>
-      </View>
+
+            <View style={styles.searchMetaRow}>
+              <Text style={styles.countText}>{filteredHerbal.length} herbs shown</Text>
+              <TouchableOpacity onPress={() => setHerbalSearch('')} style={styles.clearBtn}>
+                <FontAwesome5 name="times" size={11} color={COLORS.textMuted} style={styles.clearIcon} />
+                <Text style={styles.clearText}>Clear</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.herbalAlertBox}>
+            <FontAwesome5 name="exclamation-triangle" size={14} color="#856404" style={styles.herbalAlertIcon} />
+            <View style={styles.herbalAlertContent}>
+              <Text style={styles.herbalAlertTitle}>Perioperative Herbal Guidance</Text>
+              <Text style={styles.herbalAlertText}>
+                Advise all patients to stop herbal medications and supplements at least 1–2 weeks before elective surgery. Many interact significantly with anaesthetic agents, anticoagulants, and other perioperative drugs. Always take a full herbal/supplement history at preoperative assessment.
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.chartCard}>
+            <View style={[styles.chartHeader, { backgroundColor: COLORS.success }]}>
+              <FontAwesome5 name="leaf" size={13} color={COLORS.white} style={styles.chartHeaderIcon} />
+              <Text style={styles.chartHeaderText}>Herbal Medications Perioperative Reference (200+ Herbs)</Text>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
+              <View style={styles.tableWrap}>
+                <View style={styles.tableHeaderRow}>
+                  <Text style={[styles.tableHeaderCell, { width: 200 }]}>Herbal Medication</Text>
+                  <Text style={[styles.tableHeaderCell, { width: 140 }]}>Primary Risk</Text>
+                  <Text style={[styles.tableHeaderCell, { width: 160 }]}>When to Stop</Text>
+                  <Text style={[styles.tableHeaderCell, { width: 200 }]}>When to Restart</Text>
+                  <Text style={[styles.tableHeaderCell, { width: 220 }]}>Potential Effects</Text>
+                </View>
+
+                {filteredHerbal.map((herb, i) => (
+                  <View key={`herb-${i}`} style={[styles.tableDataRow, i % 2 === 1 && styles.tableDataRowAlt]}>
+                    <Text style={[styles.tableDataCell, styles.medicationCell, { width: 200 }]}>{herb.name}</Text>
+                    <View style={[styles.tableDataCell, { width: 140 }]}>
+                      <Text style={[styles.herbalBadge, getHerbalRiskStyle(herb.risk)]}>{herb.risk}</Text>
+                    </View>
+                    <Text style={[styles.tableDataCell, { width: 160 }]}>{herb.stop}</Text>
+                    <Text style={[styles.tableDataCell, { width: 200 }]}>{herb.restart}</Text>
+                    <Text style={[styles.tableDataCell, { width: 220 }]}>{herb.effects}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+
+          {filteredHerbal.length === 0 && herbalSearch.trim() ? (
+            <View style={styles.noResultsBox}>
+              <FontAwesome5 name="search" size={13} color="#856404" style={styles.noResultsIcon} />
+              <View style={styles.noResultsTextWrap}>
+                <Text style={styles.noResultsTitle}>No herbs found</Text>
+                <Text style={styles.noResultsText}>Try a different herb name or clear search to view all entries.</Text>
+              </View>
+            </View>
+          ) : null}
+        </ScrollView>
+      )}
 
       <TouchableOpacity style={styles.homeBtn} onPress={() => navigation.navigate('Home')}>
         <FontAwesome5 name="home" size={13} color={COLORS.white} style={styles.homeBtnIcon} />
@@ -360,6 +586,53 @@ export default function PerioperativeMedicationScreen() {
 }
 
 const styles = StyleSheet.create({
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: SPACING.md,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS,
+    overflow: 'hidden',
+    ...SHADOW,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: SPACING.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 3,
+    borderBottomColor: 'transparent',
+  },
+  tabButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderBottomColor: COLORS.primary,
+  },
+  tabIcon: {
+    marginRight: 6,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+  },
+  tabTextActive: {
+    color: COLORS.white,
+  },
+  badge: {
+    backgroundColor: COLORS.success,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginLeft: 6,
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: COLORS.white,
+  },
   searchCard: {
     backgroundColor: COLORS.white,
     borderRadius: BORDER_RADIUS,
@@ -427,6 +700,21 @@ const styles = StyleSheet.create({
   noticeText: { fontSize: 12, color: COLORS.text, lineHeight: 17, marginBottom: 2 },
   noticeSubText: { fontSize: 11, color: COLORS.textMuted, lineHeight: 16 },
 
+  herbalAlertBox: {
+    backgroundColor: '#fff3cd',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ffe69c',
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  herbalAlertIcon: { marginRight: 8, marginTop: 2 },
+  herbalAlertContent: { flex: 1 },
+  herbalAlertTitle: { fontSize: 13, fontWeight: '700', color: '#856404', marginBottom: 2 },
+  herbalAlertText: { fontSize: 12, color: '#856404', lineHeight: 17 },
+
   chartCard: {
     backgroundColor: COLORS.white,
     borderRadius: BORDER_RADIUS,
@@ -462,6 +750,7 @@ const styles = StyleSheet.create({
   tableDataCell: { fontSize: 11, color: COLORS.text, lineHeight: 16, paddingVertical: 9, paddingHorizontal: 8 },
   medicationCell: { fontWeight: '700' },
   classBadge: { fontSize: 11, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, overflow: 'hidden', alignSelf: 'flex-start' },
+  herbalBadge: { fontSize: 11, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, overflow: 'hidden', alignSelf: 'flex-start' },
 
   noResultsBox: {
     marginTop: SPACING.md,
