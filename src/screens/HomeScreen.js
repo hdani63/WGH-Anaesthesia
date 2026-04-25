@@ -93,6 +93,9 @@ export default function HomeScreen({ navigation }) {
               )}
             </TouchableOpacity>
           ))}
+          {TOOLS.length % 3 !== 0 && Array.from({ length: 3 - (TOOLS.length % 3) }).map((_, i) => (
+            <View key={`spacer-${i}`} style={styles.cardSpacer} />
+          ))}
           </View>
         </View>
 
@@ -203,6 +206,10 @@ const styles = StyleSheet.create({
     color: '#ffc107',
     fontWeight: '600',
     marginTop: 4,
+  },
+  cardSpacer: {
+    width: '31%',
+    marginBottom: SPACING.md,
   },
   footer: {
     alignItems: 'center',

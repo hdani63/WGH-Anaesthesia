@@ -1,8 +1,7 @@
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Asset } from 'expo-asset';
-import * as WebBrowser from 'expo-web-browser';
 
 /**
  * 📁 Get cached/local PDF URI
@@ -42,25 +41,23 @@ export async function getLocalPdfUri(sourceModule, fileName) {
 }
 
 /**
- * 📖 OPEN PDF (READ MODE)
+ * 📖 OPEN PDF (READ MODE) — navigates to in-app PdfViewerScreen
+ * Pass the navigation object from the calling component.
  */
-export async function openPdf(sourceModule, fileName, title = 'PDF') {
+export async function openPdf(sourceModule, fileName, title = 'PDF', navigation = null) {
   try {
     const localUri = await getLocalPdfUri(sourceModule, fileName);
 
-    if (Platform.OS === 'android') {
-      // ✅ FIX: Android cannot open local file with WebBrowser
-      // Use native viewer via Sharing (no crash)
+    if (navigation) {
+      navigation.navigate('PdfViewerScreen', { uri: localUri, title });
+    } else {
+      // Fallback: share if no navigation provided
       await Sharing.shareAsync(localUri, {
         mimeType: 'application/pdf',
         dialogTitle: `Open ${title}`,
         UTI: 'com.adobe.pdf',
       });
-    } else {
-      // ✅ iOS works fine with WebBrowser
-      await WebBrowser.openBrowserAsync(localUri);
     }
-
   } catch (error) {
     console.log('Open PDF error:', error);
     Alert.alert('Error', 'Could not open this PDF.');

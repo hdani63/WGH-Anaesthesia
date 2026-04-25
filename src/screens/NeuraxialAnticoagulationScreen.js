@@ -63,7 +63,7 @@ export default function NeuraxialAnticoagulationScreen() {
   return (
     <ScreenWrapper title="Neuraxial Anaesthesia & Anticoagulation" subtitle="ASRA Evidence-Based Guidelines (5th Edition, 2025)">
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(RAPM_DOC.source, RAPM_DOC.fileName, RAPM_DOC.title)}>
+        <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(RAPM_DOC.source, RAPM_DOC.fileName, RAPM_DOC.title, navigation)}>
           <Text style={styles.primaryBtnText}>Open Full Guideline PDF</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.outlineBtn} onPress={() => downloadPdf(RAPM_DOC.source, RAPM_DOC.fileName, RAPM_DOC.title)}>

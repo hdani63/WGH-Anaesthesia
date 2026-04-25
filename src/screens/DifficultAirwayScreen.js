@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
@@ -82,6 +83,7 @@ function PanelColumns({ panels }) {
 }
 
 export default function DifficultAirwayScreen() {
+  const navigation = useNavigation();
   const [activeCard, setActiveCard] = useState('unanticipated');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalImage, setModalImage] = useState(null);
@@ -119,7 +121,7 @@ export default function DifficultAirwayScreen() {
         <ProtocolImage source={AIRWAY_IMAGES.unanticipatedManagement} label="DAS Unanticipated Management Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.unanticipatedManagement, "DAS Unanticipated Management Algorithm")} />
         <ProtocolImage source={AIRWAY_IMAGES.unanticipatedCico} label="DAS CICO Emergency Algorithm" onPress={() => openImageModal(AIRWAY_IMAGES.unanticipatedCico, "DAS CICO Emergency Algorithm")} />
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(DAS_DOC.source, DAS_DOC.fileName, DAS_DOC.title)}>
+          <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(DAS_DOC.source, DAS_DOC.fileName, DAS_DOC.title, navigation)}>
             <Text style={styles.primaryBtnText}>View PDF Guidelines</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.outlineBtn} onPress={() => downloadPdf(DAS_DOC.source, DAS_DOC.fileName, DAS_DOC.title)}>
@@ -309,7 +311,7 @@ export default function DifficultAirwayScreen() {
         <ProtocolImage source={AIRWAY_IMAGES.obstetricTable1} label="Obstetric Table 1" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable1, "Obstetric Table 1")} />
         <ProtocolImage source={AIRWAY_IMAGES.obstetricTable2} label="Obstetric Table 2" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable2, "Obstetric Table 2")} />
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title)}>
+          <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title, navigation)}>
             <Text style={styles.primaryBtnText}>View PDF Guidelines</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.outlineBtn} onPress={() => downloadPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title)}>

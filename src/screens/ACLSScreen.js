@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Modal, ActivityIndicator, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { WebView } from 'react-native-webview';
+import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
-import FullScreenWebModal from '../components/common/FullScreenWebModal';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { getLocalPdfUri } from '../utils/pdfUtils';
 
@@ -77,25 +76,14 @@ const notes = [
 export default function ACLSScreen() {
   const { width } = useWindowDimensions();
   const isTwoColumn = width >= 768;
-  const [viewerVisible, setViewerVisible] = useState(false);
-  const [viewerUri, setViewerUri] = useState('');
-  const [viewerTitle, setViewerTitle] = useState('ACLS Algorithm');
-  const [loadingViewer, setLoadingViewer] = useState(false);
-  const [viewerKey, setViewerKey] = useState(0);
+  const navigation = useNavigation();
 
   const handleOpenAlgorithm = async (algo) => {
-    setLoadingViewer(true);
-    setViewerTitle(algo.title);
-    setViewerKey((previous) => previous + 1);
-
     try {
       const localUri = await getLocalPdfUri(algo.source, algo.fileName);
-      setViewerUri(localUri);
-      setViewerVisible(true);
+      navigation.navigate('PdfViewerScreen', { uri: localUri, title: algo.title });
     } catch (error) {
-      Alert.alert('Unable to open algorithm', 'Please try again.');
-    } finally {
-      setLoadingViewer(false);
+      console.error('Unable to open algorithm', error);
     }
   };
 
@@ -128,37 +116,6 @@ export default function ACLSScreen() {
         <Text style={styles.notesTitle}>Important Notes</Text>
         {notes.map((note, i) => <Text key={i} style={styles.noteItem}>• {note}</Text>)}
       </View>
-
-      <FullScreenWebModal
-        visible={viewerVisible}
-        title={viewerTitle}
-        onClose={() => setViewerVisible(false)}
-      >
-        {loadingViewer ? (
-          <View style={styles.loadingWrap}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
-            <Text style={styles.loadingText}>Loading algorithm...</Text>
-          </View>
-        ) : (
-          <WebView
-            key={viewerKey}
-            source={{ uri: viewerUri }}
-            style={styles.viewerPdf}
-            startInLoadingState={true}
-            renderLoading={() => (
-              <View style={styles.loadingWrap}>
-                <ActivityIndicator size="large" color={COLORS.primary} />
-              </View>
-            )}
-            onError={() => Alert.alert('Unable to open algorithm', 'Please try again.')}
-            originWhitelist={['*']}
-            scalesPageToFit={true}
-            scrollEnabled={true}
-            javaScriptEnabled={false}
-            cacheEnabled={false}
-          />
-        )}
-      </FullScreenWebModal>
     </ScreenWrapper>
   );
 }
@@ -181,17 +138,4 @@ const styles = StyleSheet.create({
   notesBox: { backgroundColor: '#e8f4fd', borderRadius: BORDER_RADIUS, padding: SPACING.md, marginTop: SPACING.sm },
   notesTitle: { fontSize: 15, fontWeight: '700', color: COLORS.medicalBlue, marginBottom: SPACING.sm },
   noteItem: { fontSize: 13, color: COLORS.text, marginBottom: 4 },
-  loadingWrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    marginTop: SPACING.sm,
-    color: COLORS.textMuted,
-    fontSize: 13,
-  },
-  viewerPdf: {
-    flex: 1,
-  },
 });

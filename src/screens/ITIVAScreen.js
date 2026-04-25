@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, StatusBar } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
 export default function ITIVAScreen() {
   const navigation = useNavigation();
@@ -18,28 +18,48 @@ export default function ITIVAScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.gradientContainer}
     >
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-        <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backBtn} 
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <FontAwesome5 name="arrow-left" size={16} color={COLORS.white} />
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.headerGradientStart} />
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
 
-          <View style={styles.titleContainer}>
-            <FontAwesome5 name="flask" size={18} color={COLORS.white} style={styles.headerIcon} />
-            <View style={styles.titleTextContainer}>
-              <Text style={styles.headerTitle}>iTIVA</Text>
-              <Text style={styles.headerSubtitle}>Target Controlled Infusion</Text>
+        {/* App header — matches ScreenWrapper */}
+        <LinearGradient
+          colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.appHeader}
+        >
+          <View style={styles.appHeaderLeft}>
+            <View style={styles.appHeaderIconWrap}>
+              <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
+            </View>
+            <View>
+              <Text style={styles.appHeaderTitle}>WGH Anaesthesia</Text>
+              <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
             </View>
           </View>
+          <FontAwesome5 name="hospital" size={38} color="rgba(255,255,255,0.8)" />
+        </LinearGradient>
 
-          <View style={styles.spacer} />
+        {/* Page header card — matches ScreenWrapper pageHeader */}
+        <View style={styles.pageHeaderWrap}>
+          <View style={styles.pageHeader}>
+            <View style={styles.pageHeaderRow}>
+              <View style={styles.pageHeadingWrap}>
+                <View style={styles.pageTitleRow}>
+                  <FontAwesome5 name="flask" size={18} color={COLORS.medicalBlue} style={styles.pageIcon} />
+                  <Text style={styles.pageTitle}>iTIVA</Text>
+                </View>
+                <Text style={styles.pageSubtitle}>Target Controlled Infusion</Text>
+              </View>
+              <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+                <FontAwesome5 name="arrow-left" size={14} color={COLORS.primary} style={styles.backIcon} />
+                <Text style={styles.backText}>Back</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
 
+        {/* WebView content */}
         <View style={styles.webviewContainer}>
           {loading && (
             <View style={styles.loaderContainer}>
@@ -47,24 +67,22 @@ export default function ITIVAScreen() {
               <Text style={styles.loadingText}>Loading simulator...</Text>
             </View>
           )}
-          
+
           <WebView
             source={{ uri: 'https://simtiva.app/' }}
-            style={[styles.webview, loading && styles.hidden]}
+            style={[styles.webview, loading && styles.webviewHidden]}
             javaScriptEnabled={true}
             domStorageEnabled={true}
-            startInLoadingState={true}
+            startInLoadingState={false}
             scalesPageToFit={true}
-            userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
             onLoadEnd={() => setLoading(false)}
             onError={(syntheticEvent) => {
-              const { nativeEvent } = syntheticEvent;
-              console.warn('WebView error: ', nativeEvent);
+              console.warn('WebView error: ', syntheticEvent.nativeEvent);
               setLoading(false);
             }}
             onHttpError={(syntheticEvent) => {
-              const { nativeEvent } = syntheticEvent;
-              console.warn('HTTP error: ', nativeEvent.statusCode);
+              console.warn('HTTP error: ', syntheticEvent.nativeEvent.statusCode);
               setLoading(false);
             }}
             allowsInlineMediaPlayback={true}
@@ -77,81 +95,81 @@ export default function ITIVAScreen() {
 }
 
 const styles = StyleSheet.create({
-  gradientContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-  header: {
+  gradientContainer: { flex: 1 },
+  safeArea: { flex: 1, backgroundColor: 'transparent' },
+
+  // App header
+  appHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
+    paddingVertical: SPACING.lg,
   },
+  appHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
+    paddingRight: SPACING.sm,
+  },
+  appHeaderIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  appHeaderTitle: { fontSize: 22, fontWeight: '700', color: COLORS.white },
+  appHeaderSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
+
+  // Page header card
+  pageHeaderWrap: {
+    backgroundColor: COLORS.background,
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.md,
+  },
+  pageHeader: {
+    backgroundColor: COLORS.white,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS,
+    marginBottom: SPACING.sm,
+    ...SHADOW,
+  },
+  pageHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pageHeadingWrap: { flex: 1, paddingRight: 12 },
+  pageTitleRow: { flexDirection: 'row', alignItems: 'center' },
+  pageIcon: { marginRight: 8 },
+  pageTitle: { fontSize: 16, fontWeight: '700', color: COLORS.medicalBlue },
+  pageSubtitle: { fontSize: 12, color: COLORS.textMuted, marginTop: 4 },
   backBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
     borderRadius: BORDER_RADIUS,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  backText: {
-    color: COLORS.white,
-    fontSize: 12,
-    fontWeight: '600',
-    marginLeft: 6,
-  },
-  titleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: SPACING.sm,
-  },
-  headerIcon: {
-    marginRight: SPACING.sm,
-  },
-  titleTextContainer: {
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.white,
-  },
-  headerSubtitle: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 2,
-  },
-  spacer: {
-    width: 50,
-  },
-  webviewContainer: {
-    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: COLORS.white,
   },
-  webview: {
-    flex: 1,
-  },
-  hidden: {
-    display: 'none',
-  },
+  backIcon: { marginRight: 6 },
+  backText: { color: COLORS.primary, fontSize: 14, fontWeight: '500' },
+
+  // WebView
+  webviewContainer: { flex: 1, backgroundColor: COLORS.white },
+  webview: { flex: 1 },
+  webviewHidden: { opacity: 0, position: 'absolute' },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
-  loadingText: {
-    marginTop: SPACING.md,
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
+  loadingText: { marginTop: SPACING.md, fontSize: 14, color: COLORS.textMuted },
 });
