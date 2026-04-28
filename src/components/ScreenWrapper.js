@@ -58,7 +58,7 @@ function resolveTitleIcon(title, icon) {
   if (t.includes('departmental protocols')) return 'clipboard-list';
   if (t.includes('perioperative medication')) return 'prescription-bottle-alt';
   if (t.includes('rotem')) return 'vial';
-  if (t.includes('labour analgesia')) return 'baby';
+  if (t.includes('labour analgesia')) return 'female';
   if (t.includes('e-library')) return 'book-open';
   return 'stethoscope';
 }

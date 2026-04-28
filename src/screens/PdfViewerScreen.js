@@ -5,8 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import * as Sharing from 'expo-sharing';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Pdf from 'react-native-pdf';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+
+let PdfComponent = null;
+try {
+  // Avoid startup crash when native module is unavailable in Expo Go / mislinked builds.
+  PdfComponent = require('react-native-pdf').default;
+} catch (_error) {
+  PdfComponent = null;
+}
 
 export default function PdfViewerScreen({ route }) {
   const { uri, title } = route.params;
@@ -85,16 +92,20 @@ export default function PdfViewerScreen({ route }) {
 
         {/* PDF content area */}
         <View style={styles.pdfContainer}>
-          {error ? (
+          {error || !PdfComponent ? (
             <View style={styles.errorContainer}>
               <FontAwesome5 name="exclamation-circle" size={48} color={COLORS.primary} />
-              <Text style={styles.errorText}>Unable to Load PDF</Text>
-              <Text style={styles.errorSubtext}>There was an issue loading the PDF file</Text>
+              <Text style={styles.errorText}>{PdfComponent ? 'Unable to Load PDF' : 'PDF Viewer Unavailable'}</Text>
+              <Text style={styles.errorSubtext}>
+                {PdfComponent ? 'There was an issue loading the PDF file' : 'Use Download Instead on this build.'}
+              </Text>
               <View style={styles.errorButtonContainer}>
-                <TouchableOpacity style={styles.retryBtn} onPress={() => setError(false)}>
-                  <FontAwesome5 name="redo" size={14} color={COLORS.white} style={{ marginRight: 8 }} />
-                  <Text style={styles.retryBtnText}>Retry</Text>
-                </TouchableOpacity>
+                {PdfComponent ? (
+                  <TouchableOpacity style={styles.retryBtn} onPress={() => setError(false)}>
+                    <FontAwesome5 name="redo" size={14} color={COLORS.white} style={{ marginRight: 8 }} />
+                    <Text style={styles.retryBtnText}>Retry</Text>
+                  </TouchableOpacity>
+                ) : null}
                 <TouchableOpacity style={styles.downloadErrorBtn} onPress={handleDownload}>
                   <FontAwesome5 name="download" size={14} color={COLORS.white} style={{ marginRight: 8 }} />
                   <Text style={styles.downloadErrorBtnText}>Download Instead</Text>
@@ -110,7 +121,7 @@ export default function PdfViewerScreen({ route }) {
                 </View>
               )}
 
-              <Pdf
+              <PdfComponent
                 trustAllCerts={false}
                 source={{ uri, cache: true }}
                 style={[styles.pdf, loading && styles.pdfHidden]}

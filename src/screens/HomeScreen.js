@@ -15,11 +15,11 @@ const TOOLS = [
   { key: 'DrugDosing', icon: 'capsules', title: 'Drug Dosing' },
   { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
-  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', highlight: true },
+  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
   { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
   { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
-  { key: 'LabourAnalgesia', icon: 'baby', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
+  { key: 'LabourAnalgesia', icon: 'female', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
   { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
   { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
 ];
@@ -60,7 +60,7 @@ export default function HomeScreen({ navigation }) {
           <View style={[styles.headerRight, isCompactHeader && styles.headerRightCompact]}>
             <View style={[styles.userBadge, isCompactHeader && styles.userBadgeCompact]}>
               <Text style={styles.userNameText}>{user?.fullName || 'WGH User'}</Text>
-              <Text style={styles.userRoleText}>Consultant Anaesthetist</Text>
+              
             </View>
             <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
               <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.white} />

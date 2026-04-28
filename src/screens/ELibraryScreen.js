@@ -3,23 +3,19 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
-import CollapsibleCard from '../components/CollapsibleCard';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { downloadPdf, getLocalPdfUri } from '../utils/pdfUtils';
 
-const RESOURCE_SECTIONS = [
+const TAB_DATA = [
   {
-    id: 'core',
-    title: 'Core Anaesthesia Textbooks',
+    key: 'primary',
+    label: 'MCAI / Primary FRCA',
     color: '#1a3a5c',
-    icon: 'book',
-    items: [
+    books: [
       {
         title: "Morgan & Mikhail's Clinical Anesthesiology",
         edition: '7th Edition',
         badge: '2022',
-        editionTone: 'secondary',
-        desc: 'Comprehensive clinical anaesthesiology textbook covering basic science, techniques, pharmacology, and subspecialties.',
         fileName: 'morgan_mikhail_clinical_anesthesiology_7th.pdf',
         source: require('../../assets/pdfs/books/morgan_mikhail_clinical_anesthesiology_7th.pdf'),
       },
@@ -27,56 +23,190 @@ const RESOURCE_SECTIONS = [
         title: 'Oxford Handbook of Anaesthesia',
         edition: '5th Edition',
         badge: 'Oxford',
-        editionTone: 'secondary',
-        desc: 'Comprehensive pocket guide with rapid-reference protocols, practical procedures, and drug dosing.',
         fileName: 'oxford_handbook_anaesthesia_5th.pdf',
         source: require('../../assets/pdfs/books/oxford_handbook_anaesthesia_5th.pdf'),
       },
       {
-        title: "Morgan & Mikhail's Clinical Cases",
+        title: 'MasterPass: The Primary FRCA Structured Study Guide',
+        edition: '2016',
+        badge: 'Primary',
+        fileName: '2016 MasterPass_The_Primary_FRCA_Structured study guide 2.pdf',
+        source: require('../../assets/pdfs/newPdfs/2016 MasterPass_The_Primary_FRCA_Structured study guide 2.pdf'),
+      },
+      {
+        title: 'Fundamentals of Anaesthesia',
+        edition: '4th Edition',
+        badge: '2016',
+        fileName: '@Anesthesia_Books 2016 Fundamentals of Anaesthesia, 4th ed.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2016 Fundamentals of Anaesthesia, 4th ed.pdf'),
+      },
+      {
+        title: 'Applied Anatomy for the FRCA',
+        edition: 'Exam Text',
+        badge: '2021',
+        fileName: '@Anesthesia_Books 2021 Applied Anatomy for the FRCA.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2021 Applied Anatomy for the FRCA.pdf'),
+      },
+      {
+        title: 'Wests Respiratory Physiology',
+        edition: 'Exam Reference',
+        badge: '2016',
+        fileName: '@Anesthesia_Books_2016_Wests_Respiratory.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books_2016_Wests_Respiratory.pdf'),
+      },
+      {
+        title: 'Anatomy for Anaesthetists',
+        edition: 'Exam Reference',
+        badge: 'Anatomy',
+        fileName: 'Anatomy for Anaesthetists_n.pdf',
+        source: require('../../assets/pdfs/newPdfs/Anatomy for Anaesthetists_n.pdf'),
+      },
+      {
+        title: 'Get Through Primary FRCA - MTFs',
         edition: '1st Edition',
-        badge: '2020',
-        editionTone: 'secondary',
-        desc: 'Case-based anaesthesia companion covering common and high-yield perioperative scenarios.',
-        fileName: 'morgan_mikhail_clinical_cases_1st.pdf',
-        source: require('../../assets/pdfs/books/morgan_mikhail_clinical_cases_1st.pdf'),
+        badge: 'Primary',
+        fileName: 'Get_Through_Primary_FRCA_-_MTFs_1E.pdf',
+        source: require('../../assets/pdfs/newPdfs/Get_Through_Primary_FRCA_-_MTFs_1E.pdf'),
+      },
+      {
+        title: 'MCQs for the Primary FRCA',
+        edition: 'Question Bank',
+        badge: 'Primary',
+        fileName: 'MCQs for the Primary FRCA.pdf',
+        source: require('../../assets/pdfs/newPdfs/MCQs for the Primary FRCA.pdf'),
+      },
+      {
+        title: 'Physics in Anaesthesia',
+        edition: '2nd Edition',
+        badge: '2021',
+        fileName: 'MCU 2021 Physics in Anaesthesia, 2nd Edition.pdf',
+        source: require('../../assets/pdfs/newPdfs/MCU 2021 Physics in Anaesthesia, 2nd Edition.pdf'),
+      },
+      {
+        title: 'SBA and MTF MCQs for the Primary FRCA',
+        edition: 'Question Bank',
+        badge: 'Primary',
+        fileName: 'SBA and MTF MCQs for the Primary FRCA_n.pdf',
+        source: require('../../assets/pdfs/newPdfs/SBA and MTF MCQs for the Primary FRCA_n.pdf'),
       },
     ],
   },
   {
-    id: 'training',
-    title: 'Training Resources',
-    color: '#27ae60',
-    icon: 'user-graduate',
-    items: [
+    key: 'final',
+    label: 'FCAI / Final FRCA',
+    color: '#1f7a4c',
+    books: [
+      {
+        title: "Morgan & Mikhail's Clinical Cases",
+        edition: '1st Edition',
+        badge: '2020',
+        fileName: 'morgan_mikhail_clinical_cases_1st.pdf',
+        source: require('../../assets/pdfs/books/morgan_mikhail_clinical_cases_1st.pdf'),
+      },
       {
         title: 'Handbook for Trainees in Anaesthesia and Critical Care',
         edition: 'Trainees',
         badge: 'Training',
-        editionTone: 'success',
-        desc: 'Practical guide for trainees covering competencies, procedures, and critical care essentials.',
         fileName: 'handbook_trainees_anaesthesia_critical_care.pdf',
         source: require('../../assets/pdfs/books/handbook_trainees_anaesthesia_critical_care.pdf'),
+      },
+      {
+        title: 'Essentials of E',
+        edition: 'Exam Text',
+        badge: '2019',
+        fileName: '@Anesthesia_Books 2019 Essentials of E.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2019 Essentials of E.pdf'),
+      },
+      {
+        title: 'SBAs for the Final FRCA',
+        edition: 'Question Bank',
+        badge: '2019',
+        fileName: '@Anesthesia_Books 2019 SBAs for the Final FRCA.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2019 SBAs for the Final FRCA.pdf'),
+      },
+      {
+        title: 'Dr Podcast',
+        edition: 'Exam Audio Notes',
+        badge: '2011',
+        fileName: '@Anesthesia_Books_2011_Dr_Podcast.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books_2011_Dr_Podcast.pdf'),
+      },
+      {
+        title: 'The Final',
+        edition: 'Exam Text',
+        badge: '2016',
+        fileName: '@Anesthesia_Books_2016_The_Final.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books_2016_The_Final.pdf'),
+      },
+      {
+        title: 'Smith and',
+        edition: 'Exam Text',
+        badge: '2019',
+        fileName: '@Anesthesia_Books_2019_Smith_and.pdf',
+        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books_2019_Smith_and.pdf'),
+      },
+      {
+        title: 'Advanced Training in Anaesthesia',
+        edition: 'Exam Reference',
+        badge: '2014',
+        fileName: 'Advanced_Training_in_Anaesthesia_2014.pdf',
+        source: require('../../assets/pdfs/newPdfs/Advanced_Training_in_Anaesthesia_2014.pdf'),
+      },
+      {
+        title: 'CRQs for the Final FRCA',
+        edition: 'Question Bank',
+        badge: '2019',
+        fileName: 'CRQs for the Final FRCA 2019 (3).pdf',
+        source: require('../../assets/pdfs/newPdfs/CRQs for the Final FRCA 2019 (3).pdf'),
+      },
+      {
+        title: 'Exam Preparation Tips',
+        edition: 'Guide',
+        badge: 'Tips',
+        fileName: 'Exam preparation tips.pdf',
+        source: require('../../assets/pdfs/newPdfs/Exam preparation tips.pdf'),
+      },
+      {
+        title: 'Final FRCA - 300 SBAs',
+        edition: 'Question Bank',
+        badge: 'Final',
+        fileName: 'Final_FRCA-_300_SBAs.pdf',
+        source: require('../../assets/pdfs/newPdfs/Final_FRCA-_300_SBAs.pdf'),
+      },
+      {
+        title: 'MasterPass The Final FRCA SAQs',
+        edition: 'Question Bank',
+        badge: 'Final',
+        fileName: 'Masterpass The final FRCA SAQs.pdf',
+        source: require('../../assets/pdfs/newPdfs/Masterpass The final FRCA SAQs.pdf'),
+      },
+      {
+        title: 'Clinical Anaesthesia Viva Book',
+        edition: 'Second Edition',
+        badge: 'Viva',
+        fileName: 'The Clinical Anaesthesia Viva Book Second Edition.pdf',
+        source: require('../../assets/pdfs/newPdfs/The Clinical Anaesthesia Viva Book Second Edition.pdf'),
+      },
+      {
+        title: 'Anaesthesia Science Viva Book',
+        edition: '2nd Edition',
+        badge: 'Viva',
+        fileName: 'The_Anaesthesia_Science_Viva_Book__2nd_Edition (2).pdf',
+        source: require('../../assets/pdfs/newPdfs/The_Anaesthesia_Science_Viva_Book__2nd_Edition (2).pdf'),
       },
     ],
   },
 ];
 
-function BookCard({ book, categoryColor }) {
+function BookTile({ book, color }) {
   const navigation = useNavigation();
   const [loadingAction, setLoadingAction] = useState(null);
 
   const handleRead = async () => {
     try {
       setLoadingAction('open');
-      // Extract the local URI from assets
       const uri = await getLocalPdfUri(book.source, book.fileName);
-      
-      // Navigate to your PDF Viewer screen instead of opening system share
-      navigation.navigate('PdfViewerScreen', {
-        uri: uri,
-        title: book.title
-      });
+      navigation.navigate('PdfViewerScreen', { uri, title: book.title });
     } catch (error) {
       console.error('Read PDF Error:', error);
       Alert.alert('Error', 'Unable to open the PDF reader.');
@@ -89,8 +219,6 @@ function BookCard({ book, categoryColor }) {
     try {
       setLoadingAction('download');
       await downloadPdf(book.source, book.fileName, book.title);
-    } catch (error) {
-      // Errors handled within utility
     } finally {
       setLoadingAction(null);
     }
@@ -101,48 +229,35 @@ function BookCard({ book, categoryColor }) {
   const disabled = Boolean(loadingAction);
 
   return (
-    <View style={[styles.bookCard, { borderLeftColor: categoryColor }]}>
-      <View style={[styles.bookIcon, { backgroundColor: categoryColor }]}>
-        <FontAwesome5 name="book-open" size={20} color={COLORS.white} />
-      </View>
-      <View style={styles.bookInfo}>
-        <Text style={styles.bookTitle}>{book.title}</Text>
-        <View style={styles.metaRow}>
-          <Text style={[styles.smallBadge, book.editionTone === 'success' ? styles.successBadge : styles.secondaryBadge]}>
-            {book.edition}
-          </Text>
-          <Text style={[styles.smallBadge, { backgroundColor: categoryColor }]}>
-            {book.badge}
-          </Text>
+    <View style={styles.tile}>
+      <TouchableOpacity activeOpacity={0.85} onPress={handleRead} disabled={disabled}>
+        <View style={[styles.cover, { borderColor: color }]}> 
+          <View style={[styles.coverHead, { backgroundColor: color }]}>
+            <FontAwesome5 name="book" size={12} color={COLORS.white} />
+            <Text style={styles.coverBadge}>{book.badge}</Text>
+          </View>
+          <View style={styles.coverBody}>
+            <Text style={styles.coverTitle} numberOfLines={4}>{book.title}</Text>
+            <Text style={styles.coverEdition} numberOfLines={1}>{book.edition}</Text>
+          </View>
         </View>
-        <Text style={styles.bookDesc}>{book.desc}</Text>
+      </TouchableOpacity>
 
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.openBtn, { backgroundColor: categoryColor }, disabled && styles.disabledBtn]}
-            onPress={handleRead}
-            disabled={disabled}
-          >
-            {openLoading ? <ActivityIndicator color={COLORS.white} size="small" /> : (
-              <View style={styles.buttonContent}>
-                <FontAwesome5 name="eye" size={11} color={COLORS.white} style={styles.buttonIcon} />
-                <Text style={styles.openBtnText}>Read</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.downloadBtn, { borderColor: categoryColor }, disabled && styles.disabledBtn]}
-            onPress={handleDownload}
-            disabled={disabled}
-          >
-            {downloadLoading ? <ActivityIndicator color={categoryColor} size="small" /> : (
-              <View style={styles.buttonContent}>
-                <FontAwesome5 name="download" size={11} color={categoryColor} style={styles.buttonIcon} />
-                <Text style={[styles.downloadBtnText, { color: categoryColor }]}>Download</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
+      <View style={styles.tileActions}>
+        <TouchableOpacity
+          style={[styles.readBtn, { backgroundColor: color }, disabled && styles.disabledBtn]}
+          onPress={handleRead}
+          disabled={disabled}
+        >
+          {openLoading ? <ActivityIndicator color={COLORS.white} size="small" /> : <Text style={styles.readBtnText}>Read</Text>}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.downloadBtn, { borderColor: color }, disabled && styles.disabledBtn]}
+          onPress={handleDownload}
+          disabled={disabled}
+        >
+          {downloadLoading ? <ActivityIndicator color={color} size="small" /> : <Text style={[styles.downloadBtnText, { color }]}>Download</Text>}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -150,54 +265,35 @@ function BookCard({ book, categoryColor }) {
 
 export default function ELibraryScreen() {
   const navigation = useNavigation();
-  const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(null);
+  const [activeTab, setActiveTab] = useState('primary');
 
-  const toggleResources = (nextOpen) => {
-    setResourcesOpen(nextOpen);
-    if (!nextOpen) {
-      setActiveSection(null);
-    }
-  };
-
-  const toggleSection = (id, nextOpen) => {
-    setActiveSection(nextOpen ? id : null);
-  };
+  const currentTab = TAB_DATA.find((tab) => tab.key === activeTab) || TAB_DATA[0];
 
   return (
-    <ScreenWrapper title="E-Library" subtitle="Curated resources for the WGH Anaesthesia Department">
-      <View style={styles.heroCard}>
-        <View style={styles.heroIconWrap}>
-          <FontAwesome5 name="book-open" size={18} color={COLORS.white} />
-        </View>
-        <View style={styles.heroTextWrap}>
-          <Text style={styles.heroTitle}>Anaesthesia E-Library</Text>
-          <Text style={styles.heroSubtitle}>Department resources grouped by topic for fast access.</Text>
-        </View>
+    <ScreenWrapper title="E-Library" subtitle="Exam-focused resources">
+      <View style={styles.tabRow}>
+        {TAB_DATA.map((tab) => {
+          const selected = tab.key === activeTab;
+          return (
+            <TouchableOpacity
+              key={tab.key}
+              style={[
+                styles.tabBtn,
+                selected ? { backgroundColor: tab.color, borderColor: tab.color } : styles.tabBtnIdle,
+              ]}
+              onPress={() => setActiveTab(tab.key)}
+            >
+              <Text style={[styles.tabBtnText, selected ? styles.tabBtnTextActive : styles.tabBtnTextIdle]}>{tab.label}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
-      <CollapsibleCard
-        title="Resources"
-        icon="book-open"
-        iconColor="#1a3a5c"
-        open={resourcesOpen}
-        onToggle={toggleResources}
-      >
-        {RESOURCE_SECTIONS.map((section) => (
-          <CollapsibleCard
-            key={section.id}
-            title={section.title}
-            icon={section.icon}
-            iconColor={section.color}
-            open={activeSection === section.id}
-            onToggle={(nextOpen) => toggleSection(section.id, nextOpen)}
-          >
-            {section.items.map((book) => (
-              <BookCard key={book.fileName} book={book} categoryColor={section.color} />
-            ))}
-          </CollapsibleCard>
+      <View style={styles.grid}>
+        {currentTab.books.map((book) => (
+          <BookTile key={book.fileName} book={book} color={currentTab.color} />
         ))}
-      </CollapsibleCard>
+      </View>
 
       <TouchableOpacity style={styles.homeBtn} onPress={() => navigation.navigate('Home')}>
         <FontAwesome5 name="home" size={13} color={COLORS.white} style={styles.homeBtnIcon} />
@@ -208,96 +304,60 @@ export default function ELibraryScreen() {
 }
 
 const styles = StyleSheet.create({
-  heroCard: {
-    backgroundColor: '#e8f1fb',
-    borderRadius: BORDER_RADIUS,
-    borderWidth: 1,
-    borderColor: '#cfe0f5',
-    padding: SPACING.md,
-    marginBottom: SPACING.sm,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  heroIconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: 9,
-    backgroundColor: '#1a3a5c',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: SPACING.sm,
-  },
-  heroTextWrap: { flex: 1 },
-  heroTitle: { fontSize: 16, fontWeight: '700', color: COLORS.primary, marginBottom: 2 },
-  heroSubtitle: { fontSize: 12, color: COLORS.textMuted, lineHeight: 17 },
-  bookCard: {
-    flexDirection: 'row',
-    backgroundColor: '#f8f9fa',
-    borderRadius: BORDER_RADIUS,
-    padding: SPACING.sm,
-    marginBottom: SPACING.sm,
-    borderLeftWidth: 3,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-  },
-  bookIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: SPACING.sm,
-  },
-  bookInfo: { flex: 1 },
-  bookTitle: { fontWeight: '700', fontSize: 14, color: COLORS.text, marginBottom: 2, lineHeight: 20 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
-  smallBadge: {
-    color: COLORS.white,
-    fontSize: 10,
-    fontWeight: '700',
+  tabRow: { flexDirection: 'row', marginBottom: SPACING.md },
+  tabBtn: {
+    flex: 1,
+    paddingVertical: 10,
     paddingHorizontal: 8,
-    paddingVertical: 2,
     borderRadius: 10,
+    borderWidth: 1,
+    marginRight: SPACING.xs,
+    alignItems: 'center',
+  },
+  tabBtnIdle: { backgroundColor: '#f3f6fa', borderColor: '#d7dee8' },
+  tabBtnText: { fontSize: 12, fontWeight: '700', textAlign: 'center' },
+  tabBtnTextActive: { color: COLORS.white },
+  tabBtnTextIdle: { color: COLORS.text },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  tile: { width: '48%', marginBottom: SPACING.md },
+  cover: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderRadius: 12,
     overflow: 'hidden',
+    ...SHADOW,
+  },
+  coverHead: {
+    height: 28,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  coverBadge: { color: COLORS.white, fontSize: 10, fontWeight: '700' },
+  coverBody: { minHeight: 136, padding: 10, justifyContent: 'space-between' },
+  coverTitle: { color: COLORS.text, fontSize: 12, fontWeight: '700', lineHeight: 17 },
+  coverEdition: { color: COLORS.textMuted, fontSize: 11, marginTop: 8 },
+  tileActions: { flexDirection: 'row', marginTop: 8 },
+  readBtn: {
+    flex: 1,
+    borderRadius: 6,
+    paddingVertical: 7,
+    alignItems: 'center',
     marginRight: 6,
   },
-  secondaryBadge: {
-    backgroundColor: '#6c757d',
-  },
-  successBadge: {
-    backgroundColor: '#198754',
-  },
-  bookDesc: { fontSize: 12, color: COLORS.textMuted, marginBottom: SPACING.sm, lineHeight: 17 },
-  buttonRow: { flexDirection: 'row', alignItems: 'center' },
-  openBtn: {
-    borderRadius: 6,
-    paddingVertical: 7,
-    paddingHorizontal: 16,
-    minWidth: 78,
-    alignItems: 'center',
-    marginRight: 8,
-  },
+  readBtnText: { color: COLORS.white, fontWeight: '600', fontSize: 12 },
   downloadBtn: {
-    borderRadius: 6,
+    flex: 1,
     borderWidth: 1,
+    borderRadius: 6,
     paddingVertical: 7,
-    paddingHorizontal: 12,
-    minWidth: 92,
     alignItems: 'center',
   },
-  disabledBtn: {
-    opacity: 0.65,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonIcon: { marginRight: 6 },
-  openBtnText: { color: COLORS.white, fontWeight: '600', fontSize: 12 },
   downloadBtnText: { fontWeight: '600', fontSize: 12 },
+  disabledBtn: { opacity: 0.65 },
   homeBtn: {
-    marginTop: SPACING.md,
+    marginTop: SPACING.sm,
     backgroundColor: COLORS.primary,
     borderRadius: BORDER_RADIUS,
     paddingVertical: 12,
