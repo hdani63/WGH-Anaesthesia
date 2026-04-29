@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   // PDF area
   pdfContainer: { flex: 1, backgroundColor: COLORS.background },
   pdf: { flex: 1, width: '100%', backgroundColor: '#f5f5f5' },
-  pdfHidden: { opacity: 0, position: 'absolute' },
+  pdfHidden: { opacity: 0 },
   loaderContainer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
