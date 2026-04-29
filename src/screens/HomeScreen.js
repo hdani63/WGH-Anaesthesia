@@ -22,6 +22,7 @@ const TOOLS = [
   { key: 'LabourAnalgesia', icon: 'female', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
   { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
   { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
+  { key: 'AIEducation', icon: 'robot', title: 'AI Education', badge: 'Poe', highlight: true },
 ];
 
 export default function HomeScreen({ navigation }) {

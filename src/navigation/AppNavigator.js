@@ -30,6 +30,7 @@ import LabourAnalgesiaScreen from '../screens/LabourAnalgesiaScreen';
 import ELibraryScreen from '../screens/ELibraryScreen';
 import ITIVAScreen from '../screens/ITIVAScreen';
 import PdfViewerScreen from '../screens/PdfViewerScreen';
+import AIEducationScreen from '../screens/AIEducationScreen';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -81,6 +82,7 @@ function MainNavigator() {
       <MainStack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />
       <MainStack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
       <MainStack.Screen name="ITIVA" component={ITIVAScreen} options={{ title: 'iTIVA' }} />
+      <MainStack.Screen name="AIEducation" component={AIEducationScreen} options={{ title: 'AI Education' }} />
       <MainStack.Screen name="PdfViewerScreen" component={PdfViewerScreen} options={{ title: 'PDF Viewer' }} />
     </MainStack.Navigator>
   );
