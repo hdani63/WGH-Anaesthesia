@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
-import { downloadPdf, getLocalPdfUri } from '../utils/pdfUtils';
+import { downloadPdf } from '../utils/pdfUtils';
 
 const TAB_DATA = [
   {
@@ -31,21 +31,21 @@ const TAB_DATA = [
         edition: '2016',
         badge: 'Primary',
         fileName: '2016 MasterPass_The_Primary_FRCA_Structured study guide 2.pdf',
-        source: require('../../assets/pdfs/newPdfs/2016 MasterPass_The_Primary_FRCA_Structured study guide 2.pdf'),
+        source: require('../../assets/pdfs/newPdfs/2016_masterpass_the_primary_frca_structured_study_guide_2.pdf'),
       },
       {
         title: 'Fundamentals of Anaesthesia',
         edition: '4th Edition',
         badge: '2016',
         fileName: '@Anesthesia_Books 2016 Fundamentals of Anaesthesia, 4th ed.pdf',
-        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2016 Fundamentals of Anaesthesia, 4th ed.pdf'),
+        source: require('../../assets/pdfs/newPdfs/anesthesia_books_2016_fundamentals_of_anaesthesia_4th_ed.pdf'),
       },
       {
         title: 'Applied Anatomy for the FRCA',
         edition: 'Exam Text',
         badge: '2021',
         fileName: '@Anesthesia_Books 2021 Applied Anatomy for the FRCA.pdf',
-        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2021 Applied Anatomy for the FRCA.pdf'),
+        source: require('../../assets/pdfs/newPdfs/anesthesia_books_2021_applied_anatomy_for_the_frca.pdf'),
       },
       {
         title: 'Wests Respiratory Physiology',
@@ -59,7 +59,7 @@ const TAB_DATA = [
         edition: 'Exam Reference',
         badge: 'Anatomy',
         fileName: 'Anatomy for Anaesthetists_n.pdf',
-        source: require('../../assets/pdfs/newPdfs/Anatomy for Anaesthetists_n.pdf'),
+        source: require('../../assets/pdfs/newPdfs/anatomy_for_anaesthetists_n.pdf'),
       },
       {
         title: 'Get Through Primary FRCA - MTFs',
@@ -73,21 +73,21 @@ const TAB_DATA = [
         edition: 'Question Bank',
         badge: 'Primary',
         fileName: 'MCQs for the Primary FRCA.pdf',
-        source: require('../../assets/pdfs/newPdfs/MCQs for the Primary FRCA.pdf'),
+        source: require('../../assets/pdfs/newPdfs/mcqs_for_the_primary_frca.pdf'),
       },
       {
         title: 'Physics in Anaesthesia',
         edition: '2nd Edition',
         badge: '2021',
         fileName: 'MCU 2021 Physics in Anaesthesia, 2nd Edition.pdf',
-        source: require('../../assets/pdfs/newPdfs/MCU 2021 Physics in Anaesthesia, 2nd Edition.pdf'),
+        source: require('../../assets/pdfs/newPdfs/mcu_2021_physics_in_anaesthesia_2nd_edition.pdf'),
       },
       {
         title: 'SBA and MTF MCQs for the Primary FRCA',
         edition: 'Question Bank',
         badge: 'Primary',
         fileName: 'SBA and MTF MCQs for the Primary FRCA_n.pdf',
-        source: require('../../assets/pdfs/newPdfs/SBA and MTF MCQs for the Primary FRCA_n.pdf'),
+        source: require('../../assets/pdfs/newPdfs/sba_and_mtf_mcqs_for_the_primary_frca_n.pdf'),
       },
     ],
   },
@@ -115,14 +115,14 @@ const TAB_DATA = [
         edition: 'Exam Text',
         badge: '2019',
         fileName: '@Anesthesia_Books 2019 Essentials of E.pdf',
-        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2019 Essentials of E.pdf'),
+        source: require('../../assets/pdfs/newPdfs/anesthesia_books_2019_essentials_of_e.pdf'),
       },
       {
         title: 'SBAs for the Final FRCA',
         edition: 'Question Bank',
         badge: '2019',
         fileName: '@Anesthesia_Books 2019 SBAs for the Final FRCA.pdf',
-        source: require('../../assets/pdfs/newPdfs/@Anesthesia_Books 2019 SBAs for the Final FRCA.pdf'),
+        source: require('../../assets/pdfs/newPdfs/anesthesia_books_2019_sbas_for_the_final_frca.pdf'),
       },
       {
         title: 'Dr Podcast',
@@ -157,14 +157,14 @@ const TAB_DATA = [
         edition: 'Question Bank',
         badge: '2019',
         fileName: 'CRQs for the Final FRCA 2019 (3).pdf',
-        source: require('../../assets/pdfs/newPdfs/CRQs for the Final FRCA 2019 (3).pdf'),
+        source: require('../../assets/pdfs/newPdfs/crqs_for_the_final_frca_2019_3.pdf'),
       },
       {
         title: 'Exam Preparation Tips',
         edition: 'Guide',
         badge: 'Tips',
         fileName: 'Exam preparation tips.pdf',
-        source: require('../../assets/pdfs/newPdfs/Exam preparation tips.pdf'),
+        source: require('../../assets/pdfs/newPdfs/exam_preparation_tips.pdf'),
       },
       {
         title: 'Final FRCA - 300 SBAs',
@@ -178,21 +178,21 @@ const TAB_DATA = [
         edition: 'Question Bank',
         badge: 'Final',
         fileName: 'Masterpass The final FRCA SAQs.pdf',
-        source: require('../../assets/pdfs/newPdfs/Masterpass The final FRCA SAQs.pdf'),
+        source: require('../../assets/pdfs/newPdfs/masterpass_the_final_frca_saqs.pdf'),
       },
       {
         title: 'Clinical Anaesthesia Viva Book',
         edition: 'Second Edition',
         badge: 'Viva',
         fileName: 'The Clinical Anaesthesia Viva Book Second Edition.pdf',
-        source: require('../../assets/pdfs/newPdfs/The Clinical Anaesthesia Viva Book Second Edition.pdf'),
+        source: require('../../assets/pdfs/newPdfs/the_clinical_anaesthesia_viva_book_second_edition.pdf'),
       },
       {
         title: 'Anaesthesia Science Viva Book',
         edition: '2nd Edition',
         badge: 'Viva',
         fileName: 'The_Anaesthesia_Science_Viva_Book__2nd_Edition (2).pdf',
-        source: require('../../assets/pdfs/newPdfs/The_Anaesthesia_Science_Viva_Book__2nd_Edition (2).pdf'),
+        source: require('../../assets/pdfs/newPdfs/the_anaesthesia_science_viva_book_2nd_edition_2.pdf'),
       },
     ],
   },
@@ -205,8 +205,7 @@ function BookTile({ book, color }) {
   const handleRead = async () => {
     try {
       setLoadingAction('open');
-      const uri = await getLocalPdfUri(book.source, book.fileName);
-      navigation.navigate('PdfViewerScreen', { uri, title: book.title });
+      navigation.navigate('PdfViewerScreen', { source: book.source, title: book.title, fileName: book.fileName });
     } catch (error) {
       console.error('Read PDF Error:', error);
       Alert.alert('Error', 'Unable to open the PDF reader.');

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, StatusBar } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Sharing from 'expo-sharing';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
+import { getLocalPdfUri } from '../utils/pdfUtils';
 
 let PdfComponent = null;
 try {
@@ -16,15 +18,53 @@ try {
 }
 
 export default function PdfViewerScreen({ route }) {
-  const { uri, title } = route.params;
+  const { uri, source, fileName, title } = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [triedFallback, setTriedFallback] = useState(false);
+  const [resolvedSource, setResolvedSource] = useState(null);
+  const [useWebViewFallback, setUseWebViewFallback] = useState(false);
+  const normalizedUri = typeof uri === 'string' && uri.startsWith('/') ? `file://${uri}` : uri;
+  const isLocalFile = typeof normalizedUri === 'string' && normalizedUri.startsWith('file://');
+  const fallbackSource = source ? source : (normalizedUri ? { uri: normalizedUri, cache: !isLocalFile } : null);
+  const pdfSource = resolvedSource || fallbackSource;
+
+  useEffect(() => {
+    let mounted = true;
+    const prepare = async () => {
+      if (source && fileName) {
+        try {
+          const localUri = await getLocalPdfUri(source, fileName);
+          const safeUri = typeof localUri === 'string' && localUri.startsWith('/') ? `file://${localUri}` : localUri;
+          if (mounted) setResolvedSource({ uri: safeUri, cache: false });
+          return;
+        } catch (_e) {}
+      }
+      if (mounted) setResolvedSource(null);
+    };
+    prepare();
+    return () => {
+      mounted = false;
+    };
+  }, [source, fileName]);
 
   const handleDownload = async () => {
     try {
+      if (source && fileName) {
+        const localUri = await getLocalPdfUri(source, fileName);
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(localUri, {
+            mimeType: 'application/pdf',
+            dialogTitle: `Download ${title}`,
+            UTI: 'com.adobe.pdf',
+          });
+        }
+        return;
+      }
+
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, {
           mimeType: 'application/pdf',
@@ -92,7 +132,19 @@ export default function PdfViewerScreen({ route }) {
 
         {/* PDF content area */}
         <View style={styles.pdfContainer}>
-          {error || !PdfComponent ? (
+          {useWebViewFallback ? (
+            <WebView
+              source={resolvedSource?.uri ? { uri: resolvedSource.uri } : { uri: normalizedUri }}
+              style={styles.pdf}
+              originWhitelist={['*']}
+              allowingReadAccessToURL={resolvedSource?.uri || normalizedUri}
+              onLoadEnd={() => setLoading(false)}
+              onError={() => {
+                setLoading(false);
+                setError(true);
+              }}
+            />
+          ) : error || !PdfComponent ? (
             <View style={styles.errorContainer}>
               <FontAwesome5 name="exclamation-circle" size={48} color={COLORS.primary} />
               <Text style={styles.errorText}>{PdfComponent ? 'Unable to Load PDF' : 'PDF Viewer Unavailable'}</Text>
@@ -121,9 +173,10 @@ export default function PdfViewerScreen({ route }) {
                 </View>
               )}
 
+              {pdfSource ? (
               <PdfComponent
                 trustAllCerts={false}
-                source={{ uri, cache: true }}
+                source={pdfSource}
                 style={[styles.pdf, loading && styles.pdfHidden]}
                 onLoadComplete={(pages) => {
                   setTotalPages(pages);
@@ -132,11 +185,24 @@ export default function PdfViewerScreen({ route }) {
                 onPageChanged={(page) => setCurrentPage(page)}
                 onError={(err) => {
                   console.error('PDF load error:', err);
+                  if (!triedFallback && source && resolvedSource) {
+                    setTriedFallback(true);
+                    setResolvedSource(null);
+                    setLoading(true);
+                    setError(false);
+                    return;
+                  }
+                  if (!useWebViewFallback) {
+                    setLoading(true);
+                    setUseWebViewFallback(true);
+                    return;
+                  }
                   setLoading(false);
                   setError(true);
                 }}
                 fitPolicy={0}
               />
+              ) : null}
 
               {!loading && totalPages > 0 && (
                 <View style={styles.pageIndicator}>

@@ -3,6 +3,11 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Asset } from 'expo-asset';
 
+const safePdfName = (fileName = 'document.pdf') => {
+  const base = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+  return base.toLowerCase().endsWith('.pdf') ? base : `${base}.pdf`;
+};
+
 /**
  * 📁 Get cached/local PDF URI
  */
@@ -22,11 +27,11 @@ export async function getLocalPdfUri(sourceModule, fileName) {
       return sourceUri;
     }
 
-    const cachedUri = FileSystem.cacheDirectory + fileName;
+    const cachedUri = FileSystem.cacheDirectory + safePdfName(fileName);
 
     const cachedInfo = await FileSystem.getInfoAsync(cachedUri);
 
-    if (!cachedInfo.exists) {
+    if (!cachedInfo.exists || (cachedInfo.size ?? 0) === 0) {
       await FileSystem.copyAsync({
         from: sourceUri,
         to: cachedUri,
@@ -74,7 +79,7 @@ export async function downloadPdf(sourceModule, fileName, title = 'PDF') {
     let targetUri = localUri;
 
     if (FileSystem.documentDirectory) {
-      const savedUri = FileSystem.documentDirectory + fileName;
+      const savedUri = FileSystem.documentDirectory + safePdfName(fileName);
 
       const savedInfo = await FileSystem.getInfoAsync(savedUri);
 

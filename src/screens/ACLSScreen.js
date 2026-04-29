@@ -4,7 +4,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
-import { getLocalPdfUri } from '../utils/pdfUtils';
 
 const algorithms = [
   {
@@ -80,8 +79,7 @@ export default function ACLSScreen() {
 
   const handleOpenAlgorithm = async (algo) => {
     try {
-      const localUri = await getLocalPdfUri(algo.source, algo.fileName);
-      navigation.navigate('PdfViewerScreen', { uri: localUri, title: algo.title });
+      navigation.navigate('PdfViewerScreen', { source: algo.source, title: algo.title, fileName: algo.fileName });
     } catch (error) {
       console.error('Unable to open algorithm', error);
     }
