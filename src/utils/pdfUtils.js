@@ -40,7 +40,6 @@ export async function getLocalPdfUri(sourceModule, fileName) {
 
     return cachedUri;
   } catch (error) {
-    console.log('getLocalPdfUri error:', error);
     throw error;
   }
 }
@@ -63,8 +62,7 @@ export async function openPdf(sourceModule, fileName, title = 'PDF', navigation 
         UTI: 'com.adobe.pdf',
       });
     }
-  } catch (error) {
-    console.log('Open PDF error:', error);
+  } catch {
     Alert.alert('Error', 'Could not open this PDF.');
   }
 }
@@ -103,8 +101,7 @@ export async function downloadPdf(sourceModule, fileName, title = 'PDF') {
       Alert.alert('Downloaded', `Saved PDF:\n${targetUri}`);
     }
 
-  } catch (error) {
-    console.log('Download PDF error:', error);
+  } catch {
     Alert.alert('Error', 'Could not download this PDF.');
   }
 }

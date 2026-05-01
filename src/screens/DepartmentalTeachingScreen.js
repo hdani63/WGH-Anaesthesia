@@ -46,8 +46,7 @@ export default function DepartmentalTeachingScreen() {
       } else {
         Alert.alert('Error', 'Failed to load teaching schedule');
       }
-    } catch (error) {
-      console.error('Error fetching teaching schedule:', error);
+    } catch {
       Alert.alert('Error', 'Unable to connect to server');
     } finally {
       setFetchLoading(false);

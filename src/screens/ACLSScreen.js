@@ -80,8 +80,7 @@ export default function ACLSScreen() {
   const handleOpenAlgorithm = async (algo) => {
     try {
       navigation.navigate('PdfViewerScreen', { source: algo.source, title: algo.title, fileName: algo.fileName });
-    } catch (error) {
-      console.error('Unable to open algorithm', error);
+    } catch {
     }
   };
 

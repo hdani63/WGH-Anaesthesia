@@ -72,8 +72,7 @@ export default function PdfViewerScreen({ route }) {
           UTI: 'com.adobe.pdf',
         });
       }
-    } catch (err) {
-      console.error('Download error:', err);
+    } catch {
     }
   };
 
@@ -183,8 +182,7 @@ export default function PdfViewerScreen({ route }) {
                   setLoading(false);
                 }}
                 onPageChanged={(page) => setCurrentPage(page)}
-                onError={(err) => {
-                  console.error('PDF load error:', err);
+                onError={() => {
                   if (!triedFallback && source && resolvedSource) {
                     setTriedFallback(true);
                     setResolvedSource(null);

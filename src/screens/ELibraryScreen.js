@@ -206,8 +206,7 @@ function BookTile({ book, color }) {
     try {
       setLoadingAction('open');
       navigation.navigate('PdfViewerScreen', { source: book.source, title: book.title, fileName: book.fileName });
-    } catch (error) {
-      console.error('Read PDF Error:', error);
+    } catch {
       Alert.alert('Error', 'Unable to open the PDF reader.');
     } finally {
       setLoadingAction(null);

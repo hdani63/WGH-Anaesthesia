@@ -42,7 +42,6 @@ export function AuthProvider({ children }) {
       try {
         const savedToken = token;
         const savedUser = user || null;
-        console.log('[auth] hydrate parsed token/user:', Boolean(savedToken), Boolean(savedUser));
         if (!savedToken) return;
 
         // Prefer server-verified profile when available.
@@ -75,13 +74,10 @@ export function AuthProvider({ children }) {
 
     try {
       const result = await authService.login({ email, password });
-      console.log('[auth] login result keys:', result && typeof result === 'object' ? Object.keys(result) : typeof result);
       const nextUser = extractUser(result);
       const nextToken = extractToken(result);
-      console.log('[auth] login parsed token/user:', Boolean(nextToken), Boolean(nextUser));
       if (nextToken) {
         setSession({ token: nextToken, user: nextUser });
-        console.log('[auth] session persisted');
       }
       return result;
     } finally {

@@ -26,7 +26,6 @@ export async function request(path, options = {}) {
 	const url = `${baseUrl}${apiPath}`;
 
 	try {
-		console.log('[apiClient] request', options.method || 'GET', url);
 		response = await fetch(url, {
 			method: options.method || 'GET',
 			headers: {
@@ -43,7 +42,6 @@ export async function request(path, options = {}) {
 
 	const payload = await parseResponse(response);
 	const message = payload?.message || `Request failed (${response.status})`;
-	console.log('[apiClient] response', response.status, url, payload?.success, payload?.message);
 
 	if (!response.ok || payload?.success === false) {
 		throw new Error(message);

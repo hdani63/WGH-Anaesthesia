@@ -153,8 +153,7 @@ export default function DepartmentalProtocolsScreen() {
       if (Array.isArray(protocols)) {
         setApiProtocols(protocols);
       }
-    } catch (error) {
-      console.error('Error fetching protocols from API:', error);
+    } catch {
     } finally {
       setLoadingApiProtocols(false);
     }
