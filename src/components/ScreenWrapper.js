@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
@@ -58,7 +58,7 @@ function resolveTitleIcon(title, icon) {
   if (t.includes('departmental protocols')) return 'clipboard-list';
   if (t.includes('perioperative medication')) return 'prescription-bottle-alt';
   if (t.includes('rotem')) return 'vial';
-  if (t.includes('labour analgesia')) return 'female';
+  if (t.includes('labour analgesia')) return 'human-pregnant';
   if (t.includes('e-library')) return 'book-open';
   return 'stethoscope';
 }
@@ -103,7 +103,13 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
             <View style={styles.pageHeaderTopRow}>
               <View style={styles.pageHeadingWrap}>
                 <View style={styles.pageTitleRow}>
-                  {iconName ? <FontAwesome5 name={iconName} size={18} color={COLORS.medicalBlue} style={styles.pageIcon} /> : null}
+                  {iconName ? (
+                    iconName === 'human-pregnant' ? (
+                      <MaterialCommunityIcons name={iconName} size={18} color={COLORS.medicalBlue} style={styles.pageIcon} />
+                    ) : (
+                      <FontAwesome5 name={iconName} size={18} color={COLORS.medicalBlue} style={styles.pageIcon} />
+                    )
+                  ) : null}
                   <Text style={styles.pageTitle}>{displayTitle}</Text>
                 </View>
                 {subtitle && <Text style={styles.pageSubtitle}>{subtitle}</Text>}

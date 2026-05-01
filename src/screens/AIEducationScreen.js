@@ -18,21 +18,6 @@ export default function AIEducationScreen() {
   const [quizTopic, setQuizTopic] = useState('');
   const [quizLevel, setQuizLevel] = useState('MCAI');
   const [protocolQuestion, setProtocolQuestion] = useState('');
-  const [crossrefSituation, setCrossrefSituation] = useState('');
-
-  const [medications, setMedications] = useState('');
-  const [surgeryType, setSurgeryType] = useState('');
-  const [patientInfo, setPatientInfo] = useState('');
-  const [drugList, setDrugList] = useState('');
-  const [allergen, setAllergen] = useState('');
-  const [airway, setAirway] = useState({ mallampati: '', mouth_opening: '', neck_mobility: '', tmd: '', bmi: '', history: '', additional: '' });
-  const [regional, setRegional] = useState({ drug: '', last_dose: '', procedure: '', factors: '' });
-  const [fasting, setFasting] = useState({ solid: '', fluids: '', type: 'adult', urgency: 'elective' });
-  const [planning, setPlanning] = useState({ age: '', weight: '', height: '', asa: '', comorbidities: '', procedure: '', additional: '' });
-  const [dose, setDose] = useState({ drug: '', weight: '', indication: '', renal: 'normal', hepatic: 'normal', age: '', obesity: 'no' });
-  const [herbal, setHerbal] = useState('');
-  const [handover, setHandover] = useState({ procedure: '', technique: '', drugs: '', events: '', blocks: '', fluids: '', vitals: '', pain: '', additional: '' });
-  const [consent, setConsent] = useState({ procedure: '', age: '', comorbidities: '', type: '' });
   const quizHint = useMemo(() => ({
     MCAI: 'Entry-level Irish anaesthesia exam covering core clinical knowledge, basic sciences and safe clinical practice.',
     'Primary FRCA': 'Basic sciences focus: physiology, pharmacology, physics & measurement, anatomy.',
@@ -79,13 +64,13 @@ export default function AIEducationScreen() {
   };
 
   return (
-    <ScreenWrapper title="AI Education" subtitle="Flask-matched AI assistant powered by Poe" icon="robot">
+    <ScreenWrapper title="AI Clinical Assistant" subtitle="For qualified medical professionals only" icon="robot">
       <View style={styles.banner}>
         <View style={styles.bannerRow}>
           <FontAwesome5 name="exclamation-triangle" size={14} color="#8a6d1d" />
           <Text style={styles.bannerTitle}>Clinical Disclaimer</Text>
         </View>
-        <Text style={styles.bannerText}>AI responses are decision-support aids only. Verify against current WGH protocols and use clinical judgment.</Text>
+        <Text style={styles.bannerText}>AI responses are decision-support aids only. Always apply clinical judgement and verify against current WGH protocols and guidelines.</Text>
       </View>
 
       <View style={styles.tabs}>
@@ -95,101 +80,46 @@ export default function AIEducationScreen() {
 
       {tab === TABS.education ? (
         <>
-          <Card title="Preoperative Medication Review" subtitle="Medication list, surgery type, and patient info" accent="pink">
-            <Field label="Medications" value={medications} onChangeText={setMedications} multiline />
-            <Field label="Surgery Type" value={surgeryType} onChangeText={setSurgeryType} />
-            <Field label="Patient Info" value={patientInfo} onChangeText={setPatientInfo} multiline />
-            <Action onPress={() => runSection('med', () => aiService.medicationReview(medications, surgeryType, patientInfo))} label="Generate Review" variant="pink" loading={loadingKey === 'med'} />
-            <ResultBox value={results.med} />
-          </Card>
-
-          <Card title="Drug Interaction Checker" subtitle="Anaesthesia-relevant interactions and management" accent="orange">
-            <Field label="Drugs" value={drugList} onChangeText={setDrugList} multiline />
-            <Action onPress={() => runSection('interaction', () => aiService.interaction(drugList))} label="Check Interactions" variant="orange" loading={loadingKey === 'interaction'} />
-            <ResultBox value={results.interaction} />
-          </Card>
-
-          <Card title="Case-Based Learning Generator" subtitle="Exam-calibrated clinical scenarios" accent="pink">
-            <Field label="Topic" value={caseTopic} onChangeText={setCaseTopic} placeholder="Difficult airway, malignant hyperthermia..." />
-            <Field label="Exam Level" value={caseLevel} onChangeText={setCaseLevel} placeholder="MCAI" />
+          <Card title="Case-Based Learning Generator" subtitle="Exam-calibrated clinical scenarios — MCAI · Primary FRCA · FCAI · Final FRCA" accent="pink">
+            <ExamLevelRow level={caseLevel} onChange={setCaseLevel} />
+            <Field label="Topic *" value={caseTopic} onChangeText={setCaseTopic} placeholder="e.g. Difficult airway, Malignant hyperthermia, Obstetric haemorrhage, Paediatric..." />
+            <Field label="Exam Level *" value={caseLevel} onChangeText={setCaseLevel} />
             <Text style={styles.hint}>{quizHint}</Text>
             <Action onPress={() => runSection('case', () => aiService.caseLearning(caseTopic, caseLevel))} label="Generate Case" variant="pink" loading={loadingKey === 'case'} />
             <ResultBox value={results.case} />
           </Card>
 
-          <Card title="Exam MCQ Practice" subtitle="Exam-style MCQs" accent="orange">
-            <Field label="Topic" value={quizTopic} onChangeText={setQuizTopic} placeholder="Neuromuscular blockers..." />
-            <Field label="Exam Level" value={quizLevel} onChangeText={setQuizLevel} placeholder="MCAI" />
+          <Card title="Exam MCQ Practice" subtitle="Exam-style MCQs — MCAI · Primary FRCA · FCAI · Final FRCA" accent="orange">
+            <ExamLevelRow level={quizLevel} onChange={setQuizLevel} />
+            <Field label="Topic *" value={quizTopic} onChangeText={setQuizTopic} placeholder="e.g. Neuromuscular blockers, Opioid pharmacology, Anatomy of..." />
+            <Field label="Exam Level *" value={quizLevel} onChangeText={setQuizLevel} />
             <Text style={styles.hint}>{quizHint}</Text>
             <Action onPress={() => runSection('quiz', () => aiService.quiz(quizTopic, quizLevel, 5))} label="Start Quiz (5 Questions)" variant="orange" loading={loadingKey === 'quiz'} />
             <QuizBox quizState={quizState} setQuizState={setQuizState} />
             {results.quiz ? <Text style={styles.quizErrorText}>{results.quiz}</Text> : null}
           </Card>
-
-          <Card title="Difficult Airway Assessment" subtitle="DAS-style predictors and plan A/B/C" accent="blue">
-            <GridField values={airway} setValues={setAirway} keys={['mallampati','mouth_opening','neck_mobility','tmd','bmi','history','additional']} />
-            <Action onPress={() => runSection('airway', () => aiService.airway(airway))} label="Assess Airway" variant="blue" loading={loadingKey === 'airway'} />
-            <ResultBox value={results.airway} />
-          </Card>
-
-          <Card title="Regional / Anticoagulation" subtitle="ASRA and ESRA style interval guidance" accent="blue">
-            <GridField values={regional} setValues={setRegional} keys={['drug','last_dose','procedure','factors']} />
-            <Action onPress={() => runSection('regional', () => aiService.regional(regional))} label="Check Regional" variant="blue" loading={loadingKey === 'regional'} />
-            <ResultBox value={results.regional} />
-          </Card>
-
-          <Card title="Fasting Validator" subtitle="Adult / paediatric / breastfeeding checks" accent="blue">
-            <GridField values={fasting} setValues={setFasting} keys={['solid','fluids','type','urgency']} />
-            <Action onPress={() => runSection('fasting', () => aiService.fasting(fasting))} label="Validate Fasting" variant="blue" loading={loadingKey === 'fasting'} />
-            <ResultBox value={results.fasting} />
-          </Card>
-
-          <Card title="Anaesthetic Planning" subtitle="Technique, airway, monitoring, risk mitigation" accent="blue">
-            <GridField values={planning} setValues={setPlanning} keys={['age','weight','height','asa','comorbidities','procedure','additional']} />
-            <Action onPress={() => runSection('planning', () => aiService.planning(planning))} label="Plan Anaesthetic" variant="blue" loading={loadingKey === 'planning'} />
-            <ResultBox value={results.planning} />
-          </Card>
-
-          <Card title="Smart Dose Calculator" subtitle="Weight-based dose with renal/hepatic adjustment" accent="blue">
-            <GridField values={dose} setValues={setDose} keys={['drug','weight','indication','renal','hepatic','age','obesity']} />
-            <Action onPress={() => runSection('dose', () => aiService.dose(dose))} label="Calculate Dose" variant="blue" loading={loadingKey === 'dose'} />
-            <ResultBox value={results.dose} />
-          </Card>
-
-          <Card title="Herbal Identifier" subtitle="Perioperative relevance and stop/restart guidance" accent="blue">
-            <Field label="Supplement" value={herbal} onChangeText={setHerbal} />
-            <Action onPress={() => runSection('herbal', () => aiService.herbal(herbal))} label="Identify Herbal" variant="blue" loading={loadingKey === 'herbal'} />
-            <ResultBox value={results.herbal} />
-          </Card>
-
-          <Card title="Structured Handover" subtitle="SBAR-style post-op handover" accent="blue">
-            <GridField values={handover} setValues={setHandover} keys={['procedure','technique','drugs','events','blocks','fluids','vitals','pain','additional']} />
-            <Action onPress={() => runSection('handover', () => aiService.handover(handover))} label="Generate Handover" variant="blue" loading={loadingKey === 'handover'} />
-            <ResultBox value={results.handover} />
-          </Card>
-
-          <Card title="Consent" subtitle="Patient-friendly risk explanation" accent="blue">
-            <GridField values={consent} setValues={setConsent} keys={['procedure','age','comorbidities','type']} />
-            <Action onPress={() => runSection('consent', () => aiService.consent(consent))} label="Generate Consent" variant="blue" loading={loadingKey === 'consent'} />
-            <ResultBox value={results.consent} />
-          </Card>
         </>
       ) : (
-        <>
-          <Card title="Clinical Protocol Search" subtitle="Natural language search across anaesthesia guidelines" accent="blue">
-            <Field label="Ask a Clinical Question" value={protocolQuestion} onChangeText={setProtocolQuestion} multiline placeholder="Can I use spinal anaesthesia after apixaban 18 hours ago?" />
-            <Action onPress={() => runSection('protocol', () => aiService.protocol(protocolQuestion))} label="Search" variant="blue" loading={loadingKey === 'protocol'} />
-            <ResultBox value={results.protocol} />
-          </Card>
-
-          <Card title="Cross Reference Finder" subtitle="Multi-domain anaesthesia guidance" accent="blue">
-            <Field label="Clinical Situation" value={crossrefSituation} onChangeText={setCrossrefSituation} multiline placeholder="Complex perioperative scenario..." />
-            <Action onPress={() => runSection('crossref', () => aiService.crossref(crossrefSituation))} label="Cross Reference" variant="blue" loading={loadingKey === 'crossref'} />
-            <ResultBox value={results.crossref} />
-          </Card>
-        </>
+        <Card title="Clinical Protocol Search" subtitle="Natural language search across anaesthesia guidelines" accent="blue">
+          <Field label="Ask a Clinical Question *" value={protocolQuestion} onChangeText={setProtocolQuestion} multiline placeholder="e.g. Can I use spinal anaesthesia in a patient who had their last dose of apixaban 18 hours ago? / What is the recommended RSI sequence for a full stomach patient with known difficult airway?" />
+          <Action onPress={() => runSection('protocol', () => aiService.protocol(protocolQuestion))} label="Search" variant="blue" loading={loadingKey === 'protocol'} />
+          <ResultBox value={results.protocol} />
+        </Card>
       )}
     </ScreenWrapper>
+  );
+}
+
+function ExamLevelRow({ level, onChange }) {
+  const levels = ['MCAI', 'Primary FRCA', 'FCAI', 'Final FRCA'];
+  return (
+    <View style={styles.levelRow}>
+      {levels.map((name) => (
+        <TouchableOpacity key={name} onPress={() => onChange(name)} style={[styles.levelChip, level === name && styles.levelChipActive]} activeOpacity={0.85}>
+          <Text style={[styles.levelChipText, level === name && styles.levelChipTextActive]}>{name}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 }
 
@@ -387,18 +317,6 @@ function renderInlineMarkdown(input) {
   return chunks;
 }
 
-function GridField({ values, setValues, keys }) {
-  return keys.map((key) => (
-    <Field
-      key={key}
-      label={key.replaceAll('_', ' ').replace(/\b\w/g, (m) => m.toUpperCase())}
-      value={values[key]}
-      onChangeText={(text) => setValues((prev) => ({ ...prev, [key]: text }))}
-      multiline={key === 'additional' || key === 'history' || key === 'comorbidities' || key === 'events' || key === 'fluids' || key === 'vitals' || key === 'pain'}
-    />
-  ));
-}
-
 const styles = StyleSheet.create({
   tabs: { flexDirection: 'row', marginBottom: SPACING.md, gap: 8 },
   tabBtn: { flex: 1, padding: 12, borderRadius: 999, backgroundColor: '#f0f4f8', borderWidth: 1, borderColor: '#d8e6f7', alignItems: 'center' },
@@ -429,6 +347,11 @@ const styles = StyleSheet.create({
   actionLoading: { opacity: 0.85 },
   actionText: { color: COLORS.white, fontWeight: '700' },
   hint: { fontSize: 12, color: COLORS.textMuted, marginBottom: 10, lineHeight: 18 },
+  levelRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', marginBottom: 10 },
+  levelChip: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: '#d8e6f7', backgroundColor: '#f0f4f8' },
+  levelChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
+  levelChipText: { fontSize: 11, fontWeight: '700', color: '#1a3a5c' },
+  levelChipTextActive: { color: COLORS.white },
   resultScroll: { maxHeight: 250 },
   resultBox: { marginTop: SPACING.md, borderWidth: 1, borderColor: COLORS.border, borderRadius: BORDER_RADIUS, overflow: 'hidden', backgroundColor: COLORS.white },
   resultHeader: { backgroundColor: COLORS.medicalBlue, paddingHorizontal: SPACING.md, paddingVertical: 10 },

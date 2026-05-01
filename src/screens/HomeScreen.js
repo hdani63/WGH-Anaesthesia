@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
@@ -12,17 +12,16 @@ const TOOLS = [
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'DrugDosing', icon: 'capsules', title: 'Drug Dosing' },
   { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
   { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
   { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
-  { key: 'LabourAnalgesia', icon: 'female', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
+  { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
   { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
   { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
-  { key: 'AIEducation', icon: 'robot', title: 'AI Education', badge: 'Poe', highlight: true },
+  { key: 'AIEducation', title: 'AI Education', highlight: true },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -80,11 +79,27 @@ export default function HomeScreen({ navigation }) {
               activeOpacity={0.7}
             >
               <View style={styles.cardIconWrap}>
-                <FontAwesome5
-                  name={tool.icon}
-                  size={22}
-                  color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
-                />
+                {tool.key === 'AIEducation' ? (
+                  <View style={styles.aiIconWrap}>
+                    <View style={styles.aiIconBox}>
+                      <Text style={styles.aiIconText}>AI</Text>
+                    </View>
+                    <Text style={styles.aiSparkleMain}>✦</Text>
+                    <Text style={styles.aiSparkleSmall}>✦</Text>
+                  </View>
+                ) : tool.iconSet === 'MaterialCommunityIcons' ? (
+                  <MaterialCommunityIcons
+                    name={tool.icon}
+                    size={22}
+                    color={tool.key === 'LabourAnalgesia' ? COLORS.white : (tool.highlight ? COLORS.white : COLORS.medicalBlue)}
+                  />
+                ) : (
+                  <FontAwesome5
+                    name={tool.icon}
+                    size={22}
+                    color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
+                  />
+                )}
               </View>
               <Text style={[styles.cardTitle, tool.highlight && styles.cardTitleHighlight]}>
                 {tool.title}
@@ -194,6 +209,19 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   cardIconWrap: { marginBottom: 8 },
+  aiIconWrap: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  aiIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 2.5,
+    borderColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  aiIconText: { color: COLORS.white, fontSize: 16, fontWeight: '700', lineHeight: 18 },
+  aiSparkleMain: { position: 'absolute', top: -1, right: -1, color: COLORS.white, fontSize: 10, lineHeight: 10 },
+  aiSparkleSmall: { position: 'absolute', top: -6, right: 5, color: COLORS.white, fontSize: 7, lineHeight: 7 },
   cardTitle: {
     fontSize: 12,
     fontWeight: '600',
