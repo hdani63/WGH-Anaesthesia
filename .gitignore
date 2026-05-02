@@ -38,8 +38,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Environment files
-.env
-.env.*
 !.env.example
 # env.ts
 
@@ -48,3 +46,4 @@ pnpm-debug.log*
 temp_auto_push.bat
 temp_interactive_push.bat
 
+config.bat

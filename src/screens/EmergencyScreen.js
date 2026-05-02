@@ -953,7 +953,7 @@ const qrhSections = [
           '5. Airway: consider tracheal intubation for improved airway security if time allows.',
           '6. Breathing/ventilation: minimise O2 usage (lowest flows possible). Self-inflating bag +/- supplemental O2. Mechanical ventilator or C-circuit require higher flows.',
           '7. Circulation: ensure adequacy and security of IV access. Take adequate supplies of fluid +/- infusion sets. Take vasopressor(s) and/or resuscitation drug box.',
-          '8. Maintenance of anaesthesia: intermittent bolus propofol is simplest and quickest.',',
+          '8. Maintenance of anaesthesia: intermittent bolus propofol is simplest and quickest.',
         ],
         panels: [
           {
