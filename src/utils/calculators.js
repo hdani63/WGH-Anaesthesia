@@ -577,9 +577,9 @@ export function calculateGasExchange(currentPCO2, targetPCO2, currentSweep, targ
   };
 }
 
-// =============== ANESTHETIC DRUG DOSING ===============
+// =============== ANAESTHETIC DRUG DOSING ===============
 
-export function calculateAnestheticDoses(weight, age, ageGroup) {
+export function calculateAnaestheticDoses(weight, age, ageGroup) {
   const w = parseFloat(weight) || 70;
   const a = parseInt(age) || 40;
   const isPaediatric = ['neonate', 'infant', 'toddler', 'preschool'].includes(ageGroup);

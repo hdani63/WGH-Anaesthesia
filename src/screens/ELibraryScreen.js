@@ -20,7 +20,7 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/books/morgan_mikhail_clinical_anesthesiology_7th.pdf'),
       },
       {
-        title: 'Oxford Handbook of Anesthesia',
+        title: 'Oxford Handbook of Anaesthesia',
         edition: '5th Edition',
         badge: 'Oxford',
         fileName: 'oxford_handbook_anesthesia_5th.pdf',
@@ -34,10 +34,10 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/newPdfs/2016_masterpass_the_primary_frca_structured_study_guide_2.pdf'),
       },
       {
-        title: 'Fundamentals of Anesthesia',
+        title: 'Fundamentals of Anaesthesia',
         edition: '4th Edition',
         badge: '2016',
-        fileName: '@Anesthetic_Books 2016 Fundamentals of Anesthesia, 4th ed.pdf',
+        fileName: '@Anesthetic_Books 2016 Fundamentals of Anaesthesia, 4th ed.pdf',
         source: require('../../assets/pdfs/newPdfs/anesthetic_books_2016_fundamentals_of_anesthesia_4th_ed.pdf'),
       },
       {
@@ -76,10 +76,10 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/newPdfs/mcqs_for_the_primary_frca.pdf'),
       },
       {
-        title: 'Physics in Anesthesia',
+        title: 'Physics in Anaesthesia',
         edition: '2nd Edition',
         badge: '2021',
-        fileName: 'MCU 2021 Physics in Anesthesia, 2nd Edition.pdf',
+        fileName: 'MCU 2021 Physics in Anaesthesia, 2nd Edition.pdf',
         source: require('../../assets/pdfs/newPdfs/mcu_2021_physics_in_anesthesia_2nd_edition.pdf'),
       },
       {
@@ -104,7 +104,7 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/books/morgan_mikhail_clinical_cases_1st.pdf'),
       },
       {
-        title: 'Handbook for Trainees in Anesthesia and Critical Care',
+        title: 'Handbook for Trainees in Anaesthesia and Critical Care',
         edition: 'Trainees',
         badge: 'Training',
         fileName: 'handbook_trainees_anesthesia_critical_care.pdf',
@@ -146,7 +146,7 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/newPdfs/@Anesthetic_Books_2019_Smith_and.pdf'),
       },
       {
-        title: 'Advanced Training in Anesthesia',
+        title: 'Advanced Training in Anaesthesia',
         edition: 'Exam Reference',
         badge: '2014',
         fileName: 'Advanced_Training_in_Anesthesia_2014.pdf',
@@ -181,14 +181,14 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/newPdfs/masterpass_the_final_frca_saqs.pdf'),
       },
       {
-        title: 'Clinical Anesthesia Viva Book',
+        title: 'Clinical Anaesthesia Viva Book',
         edition: 'Second Edition',
         badge: 'Viva',
-        fileName: 'The Clinical Anesthesia Viva Book Second Edition.pdf',
+        fileName: 'The Clinical Anaesthesia Viva Book Second Edition.pdf',
         source: require('../../assets/pdfs/newPdfs/the_clinical_anesthesia_viva_book_second_edition.pdf'),
       },
       {
-        title: 'Anesthesia Science Viva Book',
+        title: 'Anaesthesia Science Viva Book',
         edition: '2nd Edition',
         badge: 'Viva',
         fileName: 'The_Anesthesia_Science_Viva_Book__2nd_Edition (2).pdf',

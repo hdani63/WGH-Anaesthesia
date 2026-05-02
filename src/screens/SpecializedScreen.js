@@ -335,7 +335,7 @@ export default function SpecializedScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Cardiac Anesthesia Calculations"
+        title="Cardiac Anaesthesia Calculations"
         icon="heart"
         open={activeCard === 'cardiac'}
         onToggle={(nextOpen) => toggleCard('cardiac', nextOpen)}

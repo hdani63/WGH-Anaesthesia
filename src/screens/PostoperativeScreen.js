@@ -57,9 +57,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Circulation"
           options={[
-            { value: '2', label: 'BP within 20% of pre-anesthetic level (2 points)' },
-            { value: '1', label: 'BP 20-50% of pre-anesthetic level (1 point)' },
-            { value: '0', label: 'BP >50% of pre-anesthetic level (0 points)' },
+            { value: '2', label: 'BP within 20% of pre-anaesthetic level (2 points)' },
+            { value: '1', label: 'BP 20-50% of pre-anaesthetic level (1 point)' },
+            { value: '0', label: 'BP >50% of pre-anaesthetic level (0 points)' },
           ]}
           selected={aldrete.circulation}
           onSelect={v => setAldrete(p => ({ ...p, circulation: v }))}

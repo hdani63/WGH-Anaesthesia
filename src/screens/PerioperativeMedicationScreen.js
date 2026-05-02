@@ -6,7 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 
 const HERBAL_MEDICATIONS = [
-  { name: '5-HTP', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and only if clinically appropriate', effects: 'Serotonergic effects, sedation risk, interaction with anesthetic/psychiatric drugs' },
+  { name: '5-HTP', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and only if clinically appropriate', effects: 'Serotonergic effects, sedation risk, interaction with anaesthetic/psychiatric drugs' },
   { name: 'Acai', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery and oral intake established', effects: 'Limited data, possible drug interactions' },
   { name: 'Aged garlic / garlic', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery and when bleeding risk is low', effects: 'Bleeding risk, possible hypotension' },
   { name: 'Agrimony', risk: 'Hypoglycaemia', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Limited perioperative data; possible hypoglycaemic effects' },
@@ -141,12 +141,12 @@ const HERBAL_MEDICATIONS = [
   { name: 'Jiaogulan', risk: 'Bleeding', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible bleeding and hypotension' },
   { name: 'Jujube', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery and no sedatives needed', effects: 'Sedation' },
   { name: 'Kanna', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Serotonergic/CNS effects' },
-  { name: 'Kava', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anesthetic recovery and no sedatives needed', effects: 'Sedation, CNS depression' },
+  { name: 'Kava', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anaesthetic recovery and no sedatives needed', effects: 'Sedation, CNS depression' },
   { name: 'Kratom', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'Only after specialist review', effects: 'Opioid-like effects, withdrawal, sedation' },
   { name: 'Kudzu', risk: 'Cardiovascular', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Hypotension, hormonal effects' },
   { name: 'Kutki', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Possible hepatic and GI effects' },
   { name: 'Lady\'s mantle', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Astringent effects; limited data' },
-  { name: 'Lavender', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anesthetic recovery', effects: 'Sedation' },
+  { name: 'Lavender', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After anaesthetic recovery', effects: 'Sedation' },
   { name: 'Lecithin', risk: 'Drug Interactions', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Limited perioperative relevance; possible GI effects' },
   { name: 'Lemon balm', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Sedation, possible thyroid effects' },
   { name: 'Lemon verbena', risk: 'Sedation / CNS', stop: '1–2 weeks before surgery', restart: 'After recovery', effects: 'Sedation' },
@@ -492,7 +492,7 @@ export default function PerioperativeMedicationScreen() {
                 Recommendations from major societies including ACC/AHA, ADA, ACR, ASA, ACCP, and ACOG.
               </Text>
               <Text style={styles.noticeSubText}>
-                Always individualize care and consult anesthesia, surgery, and relevant specialties for complex cases.
+                Always individualize care and consult anaesthesia, surgery, and relevant specialties for complex cases.
               </Text>
             </View>
           </View>
@@ -574,7 +574,7 @@ export default function PerioperativeMedicationScreen() {
               <Text style={styles.updatesTitle}>Key Updates (2024)</Text>
               <Text style={styles.updateItem}>• SGLT2 inhibitors: hold 3 days pre-op (4 days for ertugliflozin) to reduce euglycemic DKA risk.</Text>
               <Text style={styles.updateItem}>• Biologics/DMARDs: most non-biologic DMARDs can continue; biologics often held 1-2 dosing cycles pre-op.</Text>
-              <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anesthesia protocol due to aspiration risk.</Text>
+              <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anaesthesia protocol due to aspiration risk.</Text>
               <Text style={styles.updateItem}>• Oral contraceptives/HRT: hold around 4 weeks before major high-VTE-risk surgery.</Text>
               <Text style={styles.updateItem}>• ACE inhibitors/ARBs: hold morning of surgery and restart when stable.</Text>
               <Text style={styles.updateItem}>• Antiplatelets: individualize around stent/ACS status; consult cardiology when needed.</Text>
@@ -629,7 +629,7 @@ export default function PerioperativeMedicationScreen() {
             <View style={styles.herbalAlertContent}>
               <Text style={styles.herbalAlertTitle}>Perioperative Herbal Guidance</Text>
               <Text style={styles.herbalAlertText}>
-                Advise all patients to stop herbal medications and supplements at least 1–2 weeks before elective surgery. Many interact significantly with anesthetic agents, anticoagulants, and other perioperative drugs. Always take a full herbal/supplement history at preoperative assessment.
+                Advise all patients to stop herbal medications and supplements at least 1–2 weeks before elective surgery. Many interact significantly with anaesthetic agents, anticoagulants, and other perioperative drugs. Always take a full herbal/supplement history at preoperative assessment.
               </Text>
             </View>
           </View>

@@ -347,7 +347,7 @@ export default function LabourAnalgesiaScreen() {
           items={[
             'Request for pain relief and not suitable for epidural',
             'Failed epidural (multiple attempts or ineffective)',
-            'Contraindication to epidural (coagulopathy, spinal abnormalities, site infection, local anesthetic allergy, specific neurological disorders)',
+            'Contraindication to epidural (coagulopathy, spinal abnormalities, site infection, local anaesthetic allergy, specific neurological disorders)',
             'Gestational age >= 37 weeks',
             'Able to understand and operate PCA device',
             'Informed consent obtained',
@@ -453,7 +453,7 @@ export default function LabourAnalgesiaScreen() {
         </View>
 
         <View style={styles.warningAlert}>
-          <Text style={styles.warningAlertText}>BMI >=40: use with caution. Enhanced monitoring and senior anesthetic involvement required.</Text>
+          <Text style={styles.warningAlertText}>BMI >=40: use with caution. Enhanced monitoring and senior anaesthetic involvement required.</Text>
         </View>
 
         <SectionHeader icon="clipboard-list" title="Monitoring (Every 15 Minutes)" />
@@ -525,7 +525,7 @@ export default function LabourAnalgesiaScreen() {
               items={[
                 'Adverse events: sedation, dizziness, nausea/vomiting, itching, low RR, low sats',
                 'Patient satisfaction score (1-10)',
-                'Complete all sections of anesthetic form',
+                'Complete all sections of anaesthetic form',
               ]}
             />
           </View>

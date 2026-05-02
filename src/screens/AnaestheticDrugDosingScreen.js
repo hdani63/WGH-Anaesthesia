@@ -51,13 +51,13 @@ function TableSection({ title, headers, rows, columnFlex }) {
   );
 }
 
-export default function AnestheticDrugDosingScreen() {
+export default function AnaestheticDrugDosingScreen() {
   const [patient, setPatient] = useState({ weight: '70', age: '40', height: '170', gender: 'male' });
   const [ageGroup, setAgeGroup] = useState('adult');
   const [activeCard, setActiveCard] = useState('iv');
 
   const doses = useMemo(
-    () => Calc.calculateAnestheticDoses(patient.weight, patient.age, ageGroup),
+    () => Calc.calculateAnaestheticDoses(patient.weight, patient.age, ageGroup),
     [patient.weight, patient.age, ageGroup]
   );
 
@@ -219,7 +219,7 @@ export default function AnestheticDrugDosingScreen() {
   ];
 
   return (
-    <ScreenWrapper title="Anesthetic Drug Dosing" subtitle="Comprehensive anesthetic medication dosing calculator">
+    <ScreenWrapper title="Anaesthetic Drug Dosing" subtitle="Comprehensive anaesthetic medication dosing calculator">
       <PatientInfoCard patient={patient} setPatient={setPatient} showGender={false}>
         <View style={styles.extraField}>
           <PickerSelect
@@ -241,7 +241,7 @@ export default function AnestheticDrugDosingScreen() {
       </PatientInfoCard>
 
       <CollapsibleCard
-        title="I. Intravenous Anesthetics"
+        title="I. Intravenous Anaesthetics"
         icon="syringe"
         open={activeCard === 'iv'}
         onToggle={() => toggleCard('iv')}
@@ -255,7 +255,7 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="I.B. Inhalational Anesthetics"
+        title="I.B. Inhalational Anaesthetics"
         icon="wind"
         open={activeCard === 'inhalational'}
         onToggle={() => toggleCard('inhalational')}
@@ -297,13 +297,13 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="IV. Local Anesthetics"
+        title="IV. Local Anaesthetics"
         icon="syringe"
         open={activeCard === 'local'}
         onToggle={() => toggleCard('local')}
       >
         <TableSection
-          title="Local Anesthetic Profiles"
+          title="Local Anaesthetic Profiles"
           headers={['Agent', 'Local Infiltration', 'Epidural', 'Spinal', 'Max Safe Dose']}
           rows={localRows}
           columnFlex={[1.1, 1.2, 1.2, 1.25, 1.2]}

@@ -98,8 +98,8 @@ export default function PdfViewerScreen({ route }) {
               <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
             </View>
             <View>
-              <Text style={styles.appHeaderTitle}>WGH Anesthesia</Text>
-              <Text style={styles.appHeaderSubtitle}>Anesthesia For Wexford General Hospital</Text>
+              <Text style={styles.appHeaderTitle}>WGH Anaesthesia</Text>
+              <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
             </View>
           </View>
           <FontAwesome5 name="hospital" size={38} color="rgba(255,255,255,0.8)" />

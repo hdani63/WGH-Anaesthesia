@@ -8,11 +8,11 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
-  { key: 'AnesthesiaCalculators', icon: 'calculator', title: 'Anesthesia Calculators', badge: 'Core Tools', highlight: true },
+  { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'AnestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
+  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
@@ -50,10 +50,10 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View style={styles.headerTextWrap}>
               <Text style={styles.headerTitle} numberOfLines={1}>
-                WGH Anesthesia
+                WGH Anaesthesia
               </Text>
               <Text style={styles.headerSub} numberOfLines={2}>
-                Anesthesia For Wexford General Hospital
+                Anaesthesia For Wexford General Hospital
               </Text>
             </View>
           </View>
@@ -116,7 +116,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>© 2025 WGH Anesthesia - Wexford General Hospital Anesthesia Department</Text>
+            <Text style={styles.footerText}>© 2025 WGH Anaesthesia - Wexford General Hospital Anaesthesia Department</Text>
             <Text style={styles.footerMuted}>For medical professional use only</Text>
           </View>
         </ScrollView>

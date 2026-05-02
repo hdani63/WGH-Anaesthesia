@@ -160,7 +160,7 @@ export default function DepartmentalProtocolsScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anesthesia Department">
+    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
       {/* Existing protocols from database */}
       <CollapsibleCard title="IV Cannulation Request Protocol" icon="syringe">
         <SectionHeader title="Protocol Overview" icon="info-circle" />
@@ -217,7 +217,7 @@ export default function DepartmentalProtocolsScreen() {
           items={[
             'Who to contact: duty consultant of the day, based in theatre',
             'How to contact: dial O and request switchboard connection',
-            'Duty consultant coordinates available anesthesia staff response',
+            'Duty consultant coordinates available anaesthesia staff response',
             'Best placed to identify the least-delay response clinician',
           ]}
         />
@@ -306,7 +306,7 @@ export default function DepartmentalProtocolsScreen() {
 
         <SectionHeader title="Quality Assurance & Review" icon="star" color={COLORS.warning} />
         <View style={styles.qualityBox}>
-          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anesthesia Department.</Text>
+          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anaesthesia Department.</Text>
           <Text style={styles.sectionItem}>• All IV cannulation requests are logged for quality improvement purposes.</Text>
           <Text style={styles.sectionItem}>• Feedback on protocol effectiveness should be directed to the department lead.</Text>
           <Text style={styles.sectionItem}>• Training updates are communicated through departmental meetings and bulletins.</Text>

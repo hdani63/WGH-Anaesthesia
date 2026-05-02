@@ -19,9 +19,9 @@ export default function AIEducationScreen() {
   const [quizLevel, setQuizLevel] = useState('MCAI');
   const [protocolQuestion, setProtocolQuestion] = useState('');
   const quizHint = useMemo(() => ({
-    MCAI: 'Entry-level Irish anesthesia exam covering core clinical knowledge, basic sciences and safe clinical practice.',
+    MCAI: 'Entry-level Irish anaesthesia exam covering core clinical knowledge, basic sciences and safe clinical practice.',
     'Primary FRCA': 'Basic sciences focus: physiology, pharmacology, physics & measurement, anatomy.',
-    FCAI: 'Advanced clinical anesthesia, subspecialties, critical care, pain, and complex management.',
+    FCAI: 'Advanced clinical anaesthesia, subspecialties, critical care, pain, and complex management.',
     'Final FRCA': 'Advanced clinical examination with SOE-style questioning, written paper, statistics and evidence-based practice.',
   })[quizLevel] || '', [quizLevel]);
 
@@ -100,8 +100,8 @@ export default function AIEducationScreen() {
           </Card>
         </>
       ) : (
-        <Card title="Clinical Protocol Search" subtitle="Natural language search across anesthesia guidelines" accent="blue">
-          <Field label="Ask a Clinical Question *" value={protocolQuestion} onChangeText={setProtocolQuestion} multiline placeholder="e.g. Can I use spinal anesthesia in a patient who had their last dose of apixaban 18 hours ago? / What is the recommended RSI sequence for a full stomach patient with known difficult airway?" />
+        <Card title="Clinical Protocol Search" subtitle="Natural language search across anaesthesia guidelines" accent="blue">
+          <Field label="Ask a Clinical Question *" value={protocolQuestion} onChangeText={setProtocolQuestion} multiline placeholder="e.g. Can I use spinal anaesthesia in a patient who had their last dose of apixaban 18 hours ago? / What is the recommended RSI sequence for a full stomach patient with known difficult airway?" />
           <Action onPress={() => runSection('protocol', () => aiService.protocol(protocolQuestion))} label="Search" variant="blue" loading={loadingKey === 'protocol'} />
           <ResultBox value={results.protocol} />
         </Card>

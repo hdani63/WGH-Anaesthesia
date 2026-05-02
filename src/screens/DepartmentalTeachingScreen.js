@@ -72,7 +72,7 @@ export default function DepartmentalTeachingScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anesthesia Department">
+    <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
       <View style={styles.resourceCard}>
         <View style={styles.resourceHeader}>
           <View style={styles.resourceIconWrap}>

@@ -299,7 +299,7 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Obstetric General Anesthesia & Failed Intubation"
+        title="Obstetric General Anaesthesia & Failed Intubation"
         icon="female"
         open={activeCard === 'obstetric'}
         onToggle={(nextOpen) => toggleCard('obstetric', nextOpen)}
