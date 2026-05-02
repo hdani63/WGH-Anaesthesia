@@ -160,6 +160,13 @@ const TAB_DATA = [
         source: require('../../assets/pdfs/newPdfs/crqs_for_the_final_frca_2019_3.pdf'),
       },
       {
+        title: 'The Final FRCA Constructed Response Questions',
+        edition: '2nd Edition',
+        badge: 'CRQs',
+        fileName: 'The Final FRCA Constructed Response Questions 2e.pdf',
+        source: require('../../assets/pdfs/newPdfs/The Final FRCA Constructed Response Questions 2e.pdf'),
+      },
+      {
         title: 'Exam Preparation Tips',
         edition: 'Guide',
         badge: 'Tips',
