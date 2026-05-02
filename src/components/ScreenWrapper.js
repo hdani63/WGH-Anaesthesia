@@ -49,7 +49,7 @@ function resolveTitleIcon(title, icon) {
   if (t.includes('general medical')) return 'calculator';
   if (t.includes('drug dosing')) return 'pills';
   if (t.includes('ecmo')) return 'lungs';
-  if (t.includes('anaesthetic')) return 'syringe';
+  if (t.includes('anesthetic')) return 'syringe';
   if (t.includes('difficult airway')) return 'lungs';
   if (t.includes('acls')) return 'heartbeat';
   if (t.includes('teaching')) return 'graduation-cap';
@@ -90,8 +90,8 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
               <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
             </View>
             <View>
-              <Text style={styles.appHeaderTitle}>WGH Anaesthesia</Text>
-              <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
+              <Text style={styles.appHeaderTitle}>WGH Anesthesia</Text>
+              <Text style={styles.appHeaderSubtitle}>Anesthesia For Wexford General Hospital</Text>
             </View>
           </View>
 

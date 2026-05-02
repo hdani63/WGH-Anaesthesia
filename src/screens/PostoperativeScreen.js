@@ -30,7 +30,7 @@ export default function PostoperativeScreen() {
   const [padssResult, setPadssResult] = useState(null);
 
   return (
-    <ScreenWrapper title="Postoperative & Recovery Tools" subtitle="Recovery assessment and discharge planning">
+    <ScreenWrapper title="Postoperative & Recovery Tools" subtitle="Assessment tools for recovery and discharge planning">
       <PatientInfoCard patient={patient} setPatient={setPatient} />
 
       <CollapsibleCard title="Aldrete Score (PACU Discharge)" icon="clipboard-list">
@@ -57,9 +57,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Circulation"
           options={[
-            { value: '2', label: 'BP within 20% of pre-anaesthetic level (2 points)' },
-            { value: '1', label: 'BP 20-50% of pre-anaesthetic level (1 point)' },
-            { value: '0', label: 'BP >50% of pre-anaesthetic level (0 points)' },
+            { value: '2', label: 'BP within 20% of pre-anesthetic level (2 points)' },
+            { value: '1', label: 'BP 20-50% of pre-anesthetic level (1 point)' },
+            { value: '0', label: 'BP >50% of pre-anesthetic level (0 points)' },
           ]}
           selected={aldrete.circulation}
           onSelect={v => setAldrete(p => ({ ...p, circulation: v }))}
@@ -126,7 +126,7 @@ export default function PostoperativeScreen() {
           selected={painLocation}
           onSelect={setPainLocation}
         />
-        <CalcButton title="Assess Pain" onPress={() => setPainResult(Calc.assessPain(painScore, painLocation))} />
+        <CalcButton title="Assess Pain Level" onPress={() => setPainResult(Calc.assessPain(painScore, painLocation))} />
         {painResult && <ResultDisplay result={painResult.text} type={painResult.type} />}
       </CollapsibleCard>
 
@@ -134,9 +134,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Vital Signs"
           options={[
-            { value: '2', label: 'Within 20% of baseline (2 pts)' },
-            { value: '1', label: '20-40% of baseline (1 pt)' },
-            { value: '0', label: '>40% of baseline (0 pts)' },
+            { value: '2', label: 'Within 20% of baseline (2 points)' },
+            { value: '1', label: '20-40% of baseline (1 point)' },
+            { value: '0', label: '>40% of baseline (0 points)' },
           ]}
           selected={padss.vitals}
           onSelect={v => setPadss(p => ({ ...p, vitals: v }))}
@@ -144,9 +144,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Activity Level"
           options={[
-            { value: '2', label: 'Steady gait, no dizziness (2 pts)' },
-            { value: '1', label: 'Requires assistance (1 pt)' },
-            { value: '0', label: 'Unable to ambulate (0 pts)' },
+            { value: '2', label: 'Steady gait, no dizziness (2 points)' },
+            { value: '1', label: 'Requires assistance (1 point)' },
+            { value: '0', label: 'Unable to ambulate (0 points)' },
           ]}
           selected={padss.activity}
           onSelect={v => setPadss(p => ({ ...p, activity: v }))}
@@ -154,9 +154,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Nausea/Vomiting"
           options={[
-            { value: '2', label: 'Minimal (2 pts)' },
-            { value: '1', label: 'Moderate (1 pt)' },
-            { value: '0', label: 'Severe (0 pts)' },
+            { value: '2', label: 'Minimal (2 points)' },
+            { value: '1', label: 'Moderate (1 point)' },
+            { value: '0', label: 'Severe (0 points)' },
           ]}
           selected={padss.nausea}
           onSelect={v => setPadss(p => ({ ...p, nausea: v }))}
@@ -164,9 +164,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Pain"
           options={[
-            { value: '2', label: 'Minimal (2 pts)' },
-            { value: '1', label: 'Moderate (1 pt)' },
-            { value: '0', label: 'Severe (0 pts)' },
+            { value: '2', label: 'Minimal (2 points)' },
+            { value: '1', label: 'Moderate (1 point)' },
+            { value: '0', label: 'Severe (0 points)' },
           ]}
           selected={padss.pain}
           onSelect={v => setPadss(p => ({ ...p, pain: v }))}
@@ -174,9 +174,9 @@ export default function PostoperativeScreen() {
         <PickerSelect
           label="Surgical Bleeding"
           options={[
-            { value: '2', label: 'Minimal (2 pts)' },
-            { value: '1', label: 'Moderate (1 pt)' },
-            { value: '0', label: 'Severe (0 pts)' },
+            { value: '2', label: 'Minimal (2 points)' },
+            { value: '1', label: 'Moderate (1 point)' },
+            { value: '0', label: 'Severe (0 points)' },
           ]}
           selected={padss.bleeding}
           onSelect={v => setPadss(p => ({ ...p, bleeding: v }))}

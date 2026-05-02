@@ -104,19 +104,19 @@ export default function SpecializedScreen() {
 
     if (total >= 8) {
       return {
-        text: `Bishop Score: ${total}/13\nFavorable cervix - high success rate for induction`,
+        text: `Bishop Score: ${total}/9\nFavorable cervix - high success rate for induction\n3-parameter score (dilation, effacement, station). Full 5-parameter score adds consistency & position (max 13).`,
         type: 'success',
       };
     }
     if (total >= 5) {
       return {
-        text: `Bishop Score: ${total}/13\nModerately favorable cervix`,
+        text: `Bishop Score: ${total}/9\nModerately favorable cervix\n3-parameter score (dilation, effacement, station). Full 5-parameter score adds consistency & position (max 13).`,
         type: 'warning',
       };
     }
 
     return {
-      text: `Bishop Score: ${total}/13\nUnfavorable cervix - consider cervical ripening`,
+      text: `Bishop Score: ${total}/9\nUnfavorable cervix - consider cervical ripening\n3-parameter score (dilation, effacement, station). Full 5-parameter score adds consistency & position (max 13).`,
       type: 'warning',
     };
   };
@@ -291,12 +291,12 @@ export default function SpecializedScreen() {
         onToggle={(nextOpen) => toggleCard('obstetric', nextOpen)}
       >
         <Text style={styles.sectionTitle}>Gestational Age Assessment</Text>
-        <Text style={styles.label}>Gestational Age (weeks)</Text>
+        <Text style={styles.label}>Weeks of Gestation</Text>
         <TextInput style={styles.input} keyboardType="numeric" placeholder="32" value={gestAge} onChangeText={setGestAge} />
         <CalcButton title="Assess GA Risk" onPress={() => setGestResult(assessGestationalAge(gestAge))} />
         {gestResult && <ResultDisplay result={gestResult.text} type={gestResult.type} />}
         <View style={styles.divider} />
-        <Text style={styles.sectionTitle}>Bishop Score</Text>
+        <Text style={styles.sectionTitle}>Bishop Score (Cervical Assessment)</Text>
         <PickerSelect label="Dilation" options={[
           { value: '0', label: '0 — Closed' }, { value: '1', label: '1 — 1-2 cm' }, { value: '2', label: '2 — 3-4 cm' }, { value: '3', label: '3 — ≥5 cm' },
         ]} selected={bishop.dilation} onSelect={v => setBishop(p => ({ ...p, dilation: v }))} />
@@ -304,7 +304,7 @@ export default function SpecializedScreen() {
           { value: '0', label: '0 — 0-30%' }, { value: '1', label: '1 — 40-50%' }, { value: '2', label: '2 — 60-70%' }, { value: '3', label: '3 — ≥80%' },
         ]} selected={bishop.effacement} onSelect={v => setBishop(p => ({ ...p, effacement: v }))} />
         <PickerSelect label="Station" options={[
-          { value: '0', label: '0 — −3' }, { value: '1', label: '1 — −2' }, { value: '2', label: '2 — −1/0' }, { value: '3', label: '3 — ≥+1' },
+          { value: '0', label: '0 — −3' }, { value: '1', label: '1 — −2' }, { value: '2', label: '2 — -1,0' }, { value: '3', label: '3 — ≥+1' },
         ]} selected={bishop.station} onSelect={v => setBishop(p => ({ ...p, station: v }))} />
         <CalcButton title="Calculate Bishop Score" onPress={() => setBishopResult(calcBishop())} />
         {bishopResult && <ResultDisplay result={bishopResult.text} type={bishopResult.type} />}
@@ -335,7 +335,7 @@ export default function SpecializedScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Cardiac Anaesthesia Calculations"
+        title="Cardiac Anesthesia Calculations"
         icon="heart"
         open={activeCard === 'cardiac'}
         onToggle={(nextOpen) => toggleCard('cardiac', nextOpen)}
@@ -355,7 +355,7 @@ export default function SpecializedScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Neuroanaesthesia Calculations"
+        title="Neuroanesthesia Calculations"
         icon="brain"
         open={activeCard === 'neuro'}
         onToggle={(nextOpen) => toggleCard('neuro', nextOpen)}

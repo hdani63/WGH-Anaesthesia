@@ -80,7 +80,7 @@ export default function AnestheticDrugDosingScreen() {
     ['Etomidate', `${fmt(doses.iv.etomidate.induction)} mg`, '-', 'Hemodynamically stable'],
     [
       'Dexmedetomidine',
-      `Load: ${doses.iv.dexmedetomidine.load} mcg over 10 min`,
+      `Load: ${fmt(doses.iv.dexmedetomidine.load)} mcg over 10 min`,
       `Maint: ${fmt(doses.iv.dexmedetomidine.maintenance)} mcg/hr`,
       'alpha2-agonist, no respiratory depression',
     ],
@@ -184,7 +184,7 @@ export default function AnestheticDrugDosingScreen() {
   ];
 
   const localRows = [
-    ['Lidocaine', '0.5-1% solution', '1.5-2% solution', '5% solution, 50-100 mg', `${doses.local.lidocaine.max} mg (max)`],
+    ['Lidocaine', '0.5-1% solution', '1.5-2% solution', '5% solution, 50-100 mg', `${doses.local.lidocaine.max} mg (max, plain; 500 mg with adrenaline)`],
     ['Bupivacaine', '0.25-0.5% solution', '0.25-0.5% solution', '0.5% solution, 10-20 mg', `${doses.local.bupivacaine.max} mg (max)`],
     ['Ropivacaine', '0.2-0.5% solution', '0.2-0.5% solution', '-', `${doses.local.ropivacaine.max} mg (max)`],
   ];
@@ -219,7 +219,7 @@ export default function AnestheticDrugDosingScreen() {
   ];
 
   return (
-    <ScreenWrapper title="Anaesthetic Drug Dosing" subtitle="Comprehensive anaesthetic medication dosing calculator">
+    <ScreenWrapper title="Anesthetic Drug Dosing" subtitle="Comprehensive anesthetic medication dosing calculator">
       <PatientInfoCard patient={patient} setPatient={setPatient} showGender={false}>
         <View style={styles.extraField}>
           <PickerSelect
@@ -241,7 +241,7 @@ export default function AnestheticDrugDosingScreen() {
       </PatientInfoCard>
 
       <CollapsibleCard
-        title="I. Intravenous Anaesthetics"
+        title="I. Intravenous Anesthetics"
         icon="syringe"
         open={activeCard === 'iv'}
         onToggle={() => toggleCard('iv')}
@@ -255,7 +255,7 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="I.B. Inhalational Anaesthetics"
+        title="I.B. Inhalational Anesthetics"
         icon="wind"
         open={activeCard === 'inhalational'}
         onToggle={() => toggleCard('inhalational')}
@@ -297,13 +297,13 @@ export default function AnestheticDrugDosingScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="IV. Local Anaesthetics"
+        title="IV. Local Anesthetics"
         icon="syringe"
         open={activeCard === 'local'}
         onToggle={() => toggleCard('local')}
       >
         <TableSection
-          title="Local Anaesthetic Profiles"
+          title="Local Anesthetic Profiles"
           headers={['Agent', 'Local Infiltration', 'Epidural', 'Spinal', 'Max Safe Dose']}
           rows={localRows}
           columnFlex={[1.1, 1.2, 1.2, 1.25, 1.2]}

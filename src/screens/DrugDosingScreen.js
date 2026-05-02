@@ -136,13 +136,13 @@ export default function DrugDosingScreen() {
 
     if (bolus > 0) {
       setHepResult({
-        text: `${protocol}\nBolus: ${bolus.toFixed(0)} units IV\nInfusion: ${infusion.toFixed(0)} units/hr\nCheck aPTT in 6 hours, target 1.5-2.5 x control`,
+        text: `${protocol}\nBolus: ${bolus.toFixed(0)} units IV\nInfusion: ${infusion.toFixed(0)} units/hr\nCheck aPTT in 6 hours, target 1.5-2.5 × control`,
         type: 'success',
       });
       return;
     }
 
-    setHepResult({ text: `${protocol}\n${protocol}`, type: 'success' });
+    setHepResult({ text: protocol, type: 'success' });
   };
 
   const calcChemo = () => {
@@ -179,8 +179,8 @@ export default function DrugDosingScreen() {
     const doses = {
       acetaminophen: { oral: { min: 10, max: 15, freq: 'q4-6h', maxDaily: 'Max 5 doses/24h' }, iv: { min: 10, max: 15, freq: 'q6h', maxDaily: 'Max 4g/day' } },
       ibuprofen: { oral: { min: 5, max: 10, freq: 'q6-8h', maxDaily: 'Max 40 mg/kg/day' } },
-      amoxicillin: { oral: { min: 20, max: 40, freq: 'q8h', maxDaily: 'Max 500 mg/dose' } },
-      prednisolone: { oral: { min: 1, max: 2, freq: 'daily or BID', maxDaily: 'Max 60 mg/day' } },
+      amoxicillin: { oral: { min: 20, max: 40, freq: 'q8h', maxDaily: 'Max 500 mg per dose' } },
+      prednisolone: { oral: { min: 1, max: 2, freq: 'daily or divided BID', maxDaily: 'Max 60 mg/day' } },
     };
     const drugInfo = doses[pedDrug]?.[pedRoute];
 

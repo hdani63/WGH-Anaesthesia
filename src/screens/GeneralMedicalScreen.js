@@ -58,7 +58,7 @@ export default function GeneralMedicalScreen() {
     }
 
     setBmiResult({
-      text: `BMI: ${bmi.toFixed(1)} kg/m2\nCategory: ${category}\nNormal range: 18.5-24.9 kg/m2`,
+      text: `BMI: ${bmi.toFixed(1)} kg/m²\nCategory: ${category}\nNormal range: 18.5-24.9 kg/m²`,
       type,
     });
   };
@@ -74,7 +74,7 @@ export default function GeneralMedicalScreen() {
 
     const bsa = Math.sqrt((weight * height) / 3600);
     setBsaResult({
-      text: `BSA: ${bsa.toFixed(2)} m2\nMosteller formula: sqrt(weight(kg) * height(cm) / 3600)`,
+      text: `BSA: ${bsa.toFixed(2)} m²\nMosteller formula: √(weight(kg) × height(cm) / 3600)`,
       type: 'success',
     });
   };

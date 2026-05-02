@@ -75,7 +75,7 @@ export default function PreoperativeScreen() {
   const toggleSB = (key) => setSbCriteria(p => ({ ...p, [key]: !p[key] }));
 
   return (
-    <ScreenWrapper title="Preoperative Assessment Tools" subtitle="Comprehensive risk assessment and planning tools">
+    <ScreenWrapper title="Preoperative Assessment Tools" subtitle="Comprehensive risk assessment and planning tools for perioperative care">
       <View style={styles.alert}>
         <View style={styles.alertRow}>
           <FontAwesome5 name="info-circle" size={14} color="#0c5460" style={styles.alertIcon} />
@@ -128,10 +128,10 @@ export default function PreoperativeScreen() {
         <PickerSelect
           label="Mallampati Class"
           options={[
-            { value: '1', label: 'Class I' },
-            { value: '2', label: 'Class II' },
-            { value: '3', label: 'Class III' },
-            { value: '4', label: 'Class IV' },
+            { value: '1', label: 'Class I - Full visibility of soft palate, uvula, tonsils' },
+            { value: '2', label: 'Class II - Partial visibility of uvula' },
+            { value: '3', label: 'Class III - Only base of uvula visible' },
+            { value: '4', label: 'Class IV - No visibility of soft palate' },
           ]}
           selected={mallampati}
           onSelect={setMallampati}
@@ -139,8 +139,8 @@ export default function PreoperativeScreen() {
         <PickerSelect
           label="Thyromental Distance"
           options={[
-            { value: 'normal', label: 'Normal (>6.5cm)' },
-            { value: 'reduced', label: 'Reduced (<6.5cm)' },
+            { value: 'normal', label: '> 6 cm (Normal)' },
+            { value: 'reduced', label: '< 6 cm (Reduced)' },
           ]}
           selected={thyromental}
           onSelect={setThyromental}
@@ -148,28 +148,28 @@ export default function PreoperativeScreen() {
         <PickerSelect
           label="Upper Lip Bite Test"
           options={[
-            { value: '1', label: 'Class I' },
-            { value: '2', label: 'Class II' },
-            { value: '3', label: 'Class III' },
+            { value: '1', label: 'Class I - Lower teeth can bite upper lip above vermillion border' },
+            { value: '2', label: 'Class II - Lower teeth can bite upper lip below vermillion border' },
+            { value: '3', label: 'Class III - Lower teeth cannot bite upper lip' },
           ]}
           selected={lipBite}
           onSelect={setLipBite}
         />
-        <CalcButton title="Calculate Airway Risk" onPress={() => setAirwayResult(Calc.calculateAirwayRisk(mallampati, thyromental, lipBite))} />
+        <CalcButton title="Assess Airway Risk" onPress={() => setAirwayResult(Calc.calculateAirwayRisk(mallampati, thyromental, lipBite))} />
         {airwayResult && <ResultDisplay result={airwayResult.text} type={airwayResult.type} />}
       </CollapsibleCard>
 
       {/* STOP-BANG */}
       <CollapsibleCard title="STOP-BANG Score (Sleep Apnea)" icon="bed">
         {[
-          ['snoring', 'Snoring (loud)'],
-          ['tiredness', 'Tiredness (daytime sleepiness)'],
-          ['observed', 'Observed apnea'],
-          ['pressure', 'Blood pressure (treated hypertension)'],
-          ['bmi', 'BMI > 35'],
-          ['age', 'Age > 50'],
-          ['neck', 'Neck circumference > 40cm'],
-          ['gender', 'Male gender'],
+          ['snoring', 'Snoring - Loud snoring'],
+          ['tiredness', 'Tiredness - Daytime tiredness'],
+          ['observed', 'Observed apnea - Witnessed breathing interruptions'],
+          ['pressure', 'Pressure - High blood pressure'],
+          ['bmi', 'BMI > 35 kg/m²'],
+          ['age', 'Age > 50 years'],
+          ['neck', 'Neck circumference > 40 cm'],
+          ['gender', 'Gender - Male'],
         ].map(([k, label]) => (
           <CheckboxItem key={k} label={label} checked={sbCriteria[k]} onToggle={() => toggleSB(k)} />
         ))}
@@ -185,9 +185,9 @@ export default function PreoperativeScreen() {
         <TextInput style={styles.input} keyboardType="decimal-pad" value={hdlChol} onChangeText={setHdlChol} placeholder="50" />
         <Text style={styles.label}>Systolic BP (mmHg)</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" value={systolicBP} onChangeText={setSystolicBP} placeholder="120" />
-        <CheckboxItem label="Smoking" checked={smoking} onToggle={() => setSmoking(!smoking)} />
+        <CheckboxItem label="Current smoker" checked={smoking} onToggle={() => setSmoking(!smoking)} />
         <CheckboxItem label="Diabetes" checked={diabetes2} onToggle={() => setDiabetes2(!diabetes2)} />
-        <CalcButton title="Calculate Framingham" onPress={() => setFramResult(Calc.calculateFramingham(patient, parseFloat(totalChol), parseFloat(hdlChol), parseFloat(systolicBP), smoking, diabetes2))} />
+        <CalcButton title="Calculate CV Risk" onPress={() => setFramResult(Calc.calculateFramingham(patient, parseFloat(totalChol), parseFloat(hdlChol), parseFloat(systolicBP), smoking, diabetes2))} />
         {framResult && <ResultDisplay result={framResult.text} type={framResult.type} />}
       </CollapsibleCard>
 
@@ -196,20 +196,20 @@ export default function PreoperativeScreen() {
         <PickerSelect
           label="Activity Level"
           options={[
-            { value: '1', label: '1 MET - Eat, dress' },
-            { value: '2', label: '2 METs - Walk indoors' },
-            { value: '3', label: '3 METs - Walk 1 block' },
-            { value: '4', label: '4 METs - Climb stairs' },
-            { value: '5', label: '5 METs - Run short distance' },
-            { value: '6', label: '6 METs - Play golf' },
-            { value: '7', label: '7 METs - Play tennis (singles)' },
-            { value: '8', label: '8 METs - Jog' },
-            { value: '9', label: '9+ METs - Strenuous sports' },
+            { value: '1', label: '1 MET - Light housework, eating, dressing' },
+            { value: '2', label: '2 METs - Walking slowly (2 mph)' },
+            { value: '3', label: '3 METs - Walking 3 mph, light gardening' },
+            { value: '4', label: '4 METs - Climbing stairs, walking briskly (4 mph)' },
+            { value: '5', label: '5 METs - Dancing, moderate cycling' },
+            { value: '6', label: '6 METs - Sexual activity, moderate sports' },
+            { value: '7', label: '7 METs - Tennis (singles), skiing' },
+            { value: '8', label: '8 METs - Running 6 mph, heavy lifting' },
+            { value: '9', label: '9+ METs - Running >7 mph, vigorous sports' },
           ]}
           selected={activityLevel}
           onSelect={setActivityLevel}
         />
-        <CalcButton title="Assess METs" onPress={() => setMetsResult(Calc.calculateMETS(activityLevel))} />
+        <CalcButton title="Assess Functional Capacity" onPress={() => setMetsResult(Calc.calculateMETS(activityLevel))} />
         {metsResult && <ResultDisplay result={metsResult.text} type={metsResult.type} />}
       </CollapsibleCard>
 
@@ -218,8 +218,8 @@ export default function PreoperativeScreen() {
         {[
           ['Bilirubin', cpBili, setCpBili, [{ v: '1', l: '<2 (1pt)' }, { v: '2', l: '2-3 (2pt)' }, { v: '3', l: '>3 (3pt)' }]],
           ['Albumin', cpAlbumin, setCpAlbumin, [{ v: '1', l: '>3.5 (1pt)' }, { v: '2', l: '2.8-3.5 (2pt)' }, { v: '3', l: '<2.8 (3pt)' }]],
-          ['INR', cpINR, setCpINR, [{ v: '1', l: '<1.7 (1pt)' }, { v: '2', l: '1.7-2.2 (2pt)' }, { v: '3', l: '>2.2 (3pt)' }]],
-          ['Ascites', cpAscites, setCpAscites, [{ v: '1', l: 'None (1pt)' }, { v: '2', l: 'Mild (2pt)' }, { v: '3', l: 'Moderate (3pt)' }]],
+          ['INR', cpINR, setCpINR, [{ v: '1', l: '<1.7 (1pt)' }, { v: '2', l: '1.7-2.3 (2pt)' }, { v: '3', l: '>2.3 (3pt)' }]],
+          ['Ascites', cpAscites, setCpAscites, [{ v: '1', l: 'None (1pt)' }, { v: '2', l: 'Mild (2pt)' }, { v: '3', l: 'Moderate to severe (3pt)' }]],
           ['Encephalopathy', cpEnceph, setCpEnceph, [{ v: '1', l: 'None (1pt)' }, { v: '2', l: 'Grade 1-2 (2pt)' }, { v: '3', l: 'Grade 3-4 (3pt)' }]],
         ].map(([label, val, setter, opts]) => (
           <PickerSelect key={label} label={label} options={opts.map(o => ({ value: o.v, label: o.l }))} selected={val} onSelect={setter} />
@@ -236,7 +236,7 @@ export default function PreoperativeScreen() {
         <TextInput style={styles.input} keyboardType="decimal-pad" value={meldCr} onChangeText={setMeldCr} placeholder="1.0" />
         <Text style={styles.label}>INR</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" value={meldINR} onChangeText={setMeldINR} placeholder="1.0" />
-        <CheckboxItem label="On dialysis" checked={dialysis} onToggle={() => setDialysis(!dialysis)} />
+        <CheckboxItem label="On dialysis (twice in past week)" checked={dialysis} onToggle={() => setDialysis(!dialysis)} />
         <CalcButton title="Calculate MELD" onPress={() => setMeldResult(Calc.calculateMELD(parseFloat(meldBili), parseFloat(meldCr), parseFloat(meldINR), dialysis))} />
         {meldResult && <ResultDisplay result={meldResult.text} type={meldResult.type} />}
       </CollapsibleCard>
@@ -252,23 +252,23 @@ export default function PreoperativeScreen() {
       {/* Body Weights */}
       <CollapsibleCard title="Ideal & Lean Body Weight" icon="balance-scale">
         <Text style={styles.hint}>Uses patient information above</Text>
-        <CalcButton title="Calculate Body Weights" onPress={() => setBwResult(Calc.calculateBodyWeights(patient))} />
+        <CalcButton title="Calculate IBW & LBW" onPress={() => setBwResult(Calc.calculateBodyWeights(patient))} />
         {bwResult && <ResultDisplay result={bwResult.text} type={bwResult.type} />}
       </CollapsibleCard>
 
       {/* Caprini */}
       <CollapsibleCard title="Caprini DVT Risk Score" icon="lungs">
         {[
-          ['majorSurgery', 'Major surgery (2pt)'],
-          ['malignancy', 'Malignancy (2pt)'],
-          ['priorVTE', 'Prior VTE (3pt)'],
-          ['immobility', 'Immobility (1pt)'],
-          ['varicoseVeins', 'Varicose veins (1pt)'],
-          ['obesity', 'Obesity (1pt)'],
+          ['majorSurgery', 'Major surgery (>45 minutes) - 2 points'],
+          ['malignancy', 'History of malignancy - 2 points'],
+          ['priorVTE', 'Prior VTE - 3 points'],
+          ['immobility', 'Confined to bed >72 hours - 1 point'],
+          ['varicoseVeins', 'Varicose veins - 1 point'],
+          ['obesity', 'BMI > 25 kg/m² - 1 point'],
         ].map(([k, label]) => (
           <CheckboxItem key={k} label={label} checked={capriniFactors[k]} onToggle={() => toggleCaprini(k)} />
         ))}
-        <CalcButton title="Calculate Caprini" onPress={() => setCapriniResult(Calc.calculateCaprini(capriniFactors, patient))} />
+        <CalcButton title="Calculate DVT Risk" onPress={() => setCapriniResult(Calc.calculateCaprini(capriniFactors, patient))} />
         {capriniResult && <ResultDisplay result={capriniResult.text} type={capriniResult.type} />}
       </CollapsibleCard>
 

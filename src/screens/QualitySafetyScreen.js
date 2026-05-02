@@ -87,7 +87,7 @@ export default function QualitySafetyScreen() {
     let interpretation = '';
 
     if (percentage === 100) {
-      interpretation = 'Anaesthesia safety checklist fully completed - ready to proceed';
+      interpretation = 'Anesthesia safety checklist fully completed - ready to proceed';
       type = 'success';
     } else if (percentage >= 90) {
       interpretation = 'Minor items outstanding - review before proceeding';
@@ -149,20 +149,20 @@ export default function QualitySafetyScreen() {
         open={activeCard === 'who'}
         onToggle={(nextOpen) => toggleCard('who', nextOpen)}
       >
-        <CheckGroup title="SIGN IN (Before induction of anaesthesia)" state={whoSignIn} onToggle={toggle(setWhoSignIn)} items={{
+        <CheckGroup title="SIGN IN (Before induction of anesthesia)" state={whoSignIn} onToggle={toggle(setWhoSignIn)} items={{
           patientIdentity: 'Patient has confirmed identity, site, procedure, and consent',
           siteMarked: 'Site marked/not applicable',
-          anesCheck: 'Anaesthesia safety check completed',
+          anesCheck: 'Anesthesia safety check completed',
           pulseOx: 'Pulse oximeter on patient and functioning',
           knownAllergy: 'Does patient have a known allergy? No / Yes (and allergy stated)',
           difficultAirway: 'Difficult airway/aspiration risk? No / Yes (and equipment/assistance available)',
           bloodLoss: 'Risk of >500mL blood loss (7mL/kg in children)? No / Yes (and adequate IV access and fluids planned)',
         }} />
         <CheckGroup title="TIME OUT (Before skin incision)" state={whoTimeOut} onToggle={toggle(setWhoTimeOut)} items={{
-          teamIntroduction: 'Team members introduced by name and role',
-          patientConfirm: 'Surgeon, anaesthetist, and nurse verbally confirm patient, site, and procedure',
+          teamIntroduction: 'All team members have introduced themselves by name and role',
+          patientConfirm: 'Surgeon, anesthetist, and nurse verbally confirm patient, site, and procedure',
           criticalSteps: 'Surgeon reviews critical or unexpected steps, operative duration, anticipated blood loss',
-          anestheticConcerns: 'Anaesthetist reviews any patient-specific concerns',
+          anestheticConcerns: 'Anesthetist reviews any patient-specific concerns',
           nurseConcerns: 'Nursing team reviews sterility and equipment issues or concerns',
           antibioticProphylaxis: 'Antibiotic prophylaxis given within 60 minutes? Yes / Not applicable',
           imagingDisplayed: 'Essential imaging displayed? Yes / Not applicable',
@@ -172,20 +172,20 @@ export default function QualitySafetyScreen() {
           instrumentCount: 'Instrument, sponge, and needle counts are correct (or not applicable)',
           specimenLabeled: 'Specimen is labeled (including patient name)',
           equipmentProblems: 'Are there any equipment problems to be addressed?',
-          keyConcerns: 'Surgeon, anaesthetist, and nurse review key concerns for recovery and management of patient',
+          keyConcerns: 'Surgeon, anesthetist, and nurse review key concerns for recovery and management of patient',
         }} />
         <CalcButton title="Evaluate Checklist Completion" onPress={calcWHO} />
         {whoResult && <ResultDisplay result={whoResult.text} type={whoResult.type} />}
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Anaesthesia Safety Checklist"
+        title="Anesthesia Safety Checklist"
         icon="shield-alt"
         open={activeCard === 'anes'}
         onToggle={(nextOpen) => toggleCard('anes', nextOpen)}
       >
         <CheckGroup title="Equipment Checks" state={anesEquip} onToggle={toggle(setAnesEquip)} items={{
-          machineCheck: 'Anaesthesia machine safety check completed',
+          machineCheck: 'Anesthesia machine safety check completed',
           o2Supply: 'Oxygen supply and backup verified',
           suctionCheck: 'Suction equipment tested and ready',
           airwayEquip: 'Airway equipment available and checked',

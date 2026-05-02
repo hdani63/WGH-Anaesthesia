@@ -78,7 +78,7 @@ export default function ECMOScreen() {
 
     const extraModeLine = modeText ? `\n${modeText}` : '';
     setInitResult({
-      text: `BSA: ${bsa.toFixed(2)} m2\nInitial Flow Rate: ${initialFlow.toFixed(1)} L/min\nInitial Sweep Gas: ${sweepGas.toFixed(1)} L/min\nFiO2: Start at 1.0 (100%)${extraModeLine}`,
+      text: `BSA: ${bsa.toFixed(2)} m²\nInitial Flow Rate: ${initialFlow.toFixed(1)} L/min\nInitial Sweep Gas: ${sweepGas.toFixed(1)} L/min\nFiO2: Start at 1.0 (100%)${extraModeLine}`,
       type: 'success',
     });
   };
@@ -100,7 +100,7 @@ export default function ECMOScreen() {
     const ecmoFlow = totalCO - nativeContribution;
 
     setFlowResult({
-      text: `Target Total CO: ${totalCO.toFixed(1)} L/min\nNative CO: ${nativeContribution.toFixed(1)} L/min (${nativePercent}%)\nRequired ECMO Flow: ${ecmoFlow.toFixed(1)} L/min\nBased on CI of ${ci} L/min/m2 and BSA of ${bsa.toFixed(2)} m2`,
+      text: `Target Total CO: ${totalCO.toFixed(1)} L/min\nNative CO: ${nativeContribution.toFixed(1)} L/min (${nativePercent}%)\nRequired ECMO Flow: ${ecmoFlow.toFixed(1)} L/min\nBased on CI of ${ci} L/min/m² and BSA of ${bsa.toFixed(2)} m²`,
       type: 'success',
     });
   };
@@ -121,11 +121,11 @@ export default function ECMOScreen() {
 
     if (pO2) {
       if (pO2 < 80) {
-        text += `\nFor PaO2 ${pO2} mmHg: Consider reducing FiO2 to 0.6-0.8`;
+        text += `\nFor PaO₂ ${pO2} mmHg: Consider reducing FiO2 to 0.6-0.8`;
       } else if (pO2 > 100) {
-        text += `\nFor PaO2 ${pO2} mmHg: May need to increase flow rate or check membrane function`;
+        text += `\nFor PaO₂ ${pO2} mmHg: May need to increase flow rate or check membrane function`;
       } else {
-        text += `\nFor PaO2 ${pO2} mmHg: Current oxygenation settings likely appropriate`;
+        text += `\nFor PaO₂ ${pO2} mmHg: Current oxygenation settings likely appropriate`;
       }
     }
 

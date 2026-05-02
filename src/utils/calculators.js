@@ -137,7 +137,7 @@ export function calculateMELD(bilirubin, creatinine, inr, dialysis) {
   const raw = 3.78 * Math.log(adjBil) + 11.2 * Math.log(adjINR) + 9.57 * Math.log(adjCr) + 6.43;
   const score = Math.min(Math.max(Math.round(raw), 6), 40);
   let type, interp, rec;
-  if (score < 10) { type = 'success'; interp = 'Low risk (4% 3-month mortality)'; rec = 'Standard perioperative care'; }
+  if (score < 10) { type = 'success'; interp = 'Low risk (~6% 3-month mortality)'; rec = 'Standard perioperative care'; }
   else if (score < 20) { type = 'warning'; interp = 'Moderate risk (27% 3-month mortality)'; rec = 'Consider optimization and monitoring'; }
   else if (score < 30) { type = 'danger'; interp = 'High risk (76% 3-month mortality)'; rec = 'High-risk surgery, consider postponing elective procedures'; }
   else { type = 'danger'; interp = 'Very high risk (>80% 3-month mortality)'; rec = 'Extremely high risk, avoid elective surgery'; }
@@ -194,10 +194,10 @@ export function calculateCaprini(factors, patient) {
 export function calculateAldrete(scores) {
   const total = Object.values(scores).reduce((s, v) => s + (parseInt(v) || 0), 0);
   let type, interp;
-  if (total >= 9) { type = 'success'; interp = 'Ready for PACU discharge'; }
-  else if (total >= 7) { type = 'warning'; interp = 'Continue monitoring in PACU'; }
-  else { type = 'danger'; interp = 'Requires continued intensive monitoring'; }
-  return { text: `Aldrete Score: ${total}/10\n${interp}`, type };
+  if (total >= 9) { type = 'success'; interp = 'Ready for discharge from PACU'; }
+  else if (total >= 7) { type = 'warning'; interp = 'Requires continued monitoring'; }
+  else { type = 'danger'; interp = 'Not ready for discharge'; }
+  return { text: `Aldrete Score: ${total}/10\n${interp}\nScore ≥9 typically required for PACU discharge`, type };
 }
 
 export function calculatePONV(factors) {
@@ -301,10 +301,10 @@ export function calculateDantrolenes(weight) {
   if (!weight) return { text: 'Please enter patient weight', type: 'warning' };
   const w = parseFloat(weight);
   const initial = w * 2.5;
-  const max = w * 10;
-  const vials = Math.ceil(max / 20);
+  const repeat = w * 1;
+  const vials = Math.ceil(initial / 20);
   return {
-    text: `DANTROLENE DOSING:\nInitial dose: ${initial.toFixed(0)} mg IV\nRepeat: ${initial.toFixed(0)} mg every 5 minutes PRN\nMaximum total: ${max.toFixed(0)} mg\n\nVials needed: ${vials} vials (20mg each)\nEach vial requires 60mL sterile water for reconstitution`,
+    text: `DANTROLENE DOSES (${w} kg):\nInitial bolus: ${initial.toFixed(0)} mg IV (2.5 mg·kg⁻¹)\nRepeat dose: ${repeat.toFixed(0)} mg IV every 5 min (1 mg·kg⁻¹) until EtCO₂ <6 kPa and temp <38.5°C\nVials needed for initial dose: ${vials} vials (20 mg each)\nEach vial requires 60 mL WFI for reconstitution`,
     type: 'danger',
   };
 }
@@ -313,10 +313,10 @@ export function calculateLipidRescue(weight) {
   if (!weight) return { text: 'Please enter patient weight', type: 'warning' };
   const w = parseFloat(weight);
   const bolus = w * 1.5;
-  const infusion = w * 0.25;
+  const infusion = (w * 15) / 60;
   const max = w * 12;
   return {
-    text: `LIPID RESCUE THERAPY (20% Intralipid):\n1. Initial bolus: ${bolus.toFixed(0)} mL IV\n2. Infusion: ${infusion.toFixed(1)} mL/min\n3. Repeat bolus: ${bolus.toFixed(0)} mL (if needed)\n4. Maximum total: ${max.toFixed(0)} mL\n\nContinue infusion until hemodynamic stability`,
+    text: `20% INTRALIPID DOSES (${w} kg):\nInitial bolus: ${bolus.toFixed(0)} mL over 2-3 min\nInfusion: ${infusion.toFixed(1)} mL/min (${(w * 15).toFixed(0)} mL/hr)\nRepeat bolus at 5 and 10 min if not improved: ${bolus.toFixed(0)} mL\nDouble infusion if deteriorating: ${(infusion * 2).toFixed(1)} mL/min\nMaximum cumulative dose: ${max.toFixed(0)} mL`,
     type: 'warning',
   };
 }
@@ -324,66 +324,64 @@ export function calculateLipidRescue(weight) {
 export function calculateAnaphylaxis(weight, ageGroup) {
   if (!weight) return { text: 'Please enter patient weight', type: 'warning' };
   const w = parseFloat(weight);
-  const fluidBolus = w * 20;
-  const diphenhydramine = Math.min(w * 1, 50);
-  const methylpred = w * 1;
+  const fluidBolus = (w * 20).toFixed(0);
 
   let epiDose = '';
   switch (ageGroup) {
     case 'adult':
-      epiDose = '0.5 mg (0.5 mL of 1:1000) IM';
+      epiDose = '0.5 mg IM (0.5 mL of 1:1,000)';
       break;
     case 'child': {
       const childDose = Math.min(w * 0.01, 0.5);
-      epiDose = `${childDose.toFixed(2)} mg (${childDose.toFixed(2)} mL of 1:1000) IM`;
+      epiDose = `${childDose.toFixed(2)} mg IM (${childDose.toFixed(2)} mL of 1:1,000)`;
       break;
     }
     case 'infant': {
       const infantDose = w * 0.01;
-      epiDose = `${infantDose.toFixed(2)} mg (${infantDose.toFixed(2)} mL of 1:1000) IM`;
+      epiDose = `${infantDose.toFixed(2)} mg IM`;
       break;
     }
     default:
-      epiDose = '0.5 mg (0.5 mL of 1:1000) IM';
+      epiDose = '0.5 mg IM (0.5 mL of 1:1,000)';
   }
 
   return {
-    text: `ANAPHYLAXIS EMERGENCY DOSES:\n1. Epinephrine IM: ${epiDose}\n2. Fluid bolus: ${fluidBolus.toFixed(0)} mL crystalloid\n3. Diphenhydramine: ${diphenhydramine.toFixed(0)} mg IV\n4. Methylprednisolone: ${methylpred.toFixed(0)} mg IV\n\nRepeat epinephrine every 5-15 minutes if needed`,
+    text: `ANAPHYLAXIS EMERGENCY DOSES (${w} kg):\nAdrenaline IM: ${epiDose}\nFluid bolus: ${fluidBolus} mL crystalloid\nRepeat adrenaline every 5-15 min if needed\nTryptase sample ASAP then 1-2 h and >24 h`,
     type: 'danger',
   };
 }
 
 export function getACLSProtocol(rhythm, weight) {
   if (!rhythm) return { text: 'Please select rhythm', type: 'warning' };
-  const epiDose = '1 mg IV/IO';
-  const amiodarone = '300 mg IV/IO';
-  const atropine = '0.5 mg IV/IO';
+  const w = parseFloat(weight) || 70;
+  const epi = (w * 0.01).toFixed(1);
+  const amio = (w * 5).toFixed(0);
 
   switch (rhythm) {
     case 'vfvt':
     case 'vf_vt':
       return {
-        text: `VF/VT Algorithm:\n1. CPR + Defibrillation - 2 J/kg (pediatric) or 200-360 J (adult)\n2. Epinephrine - ${epiDose} every 3-5 minutes\n3. Amiodarone - ${amiodarone}, then 150 mg\n4. Continue CPR - Minimize interruptions\n5. Treat reversible causes - H's and T's`,
+        text: `VF/pVT (${w} kg):\nCPR + Defibrillation (4 J·kg⁻¹ = ${(w * 4).toFixed(0)} J biphasic)\nAdrenaline ${epi} mg (1 mg adult) every 3-5 min\nAmiodarone ${amio} mg IV after 3rd shock\nTreat reversible causes (4 H's and 4 T's)`,
         type: 'danger',
       };
     case 'asystole':
     case 'pea':
       return {
-        text: `Asystole/PEA Algorithm:\n1. High-quality CPR - 30:2 ratio\n2. Epinephrine - ${epiDose} every 3-5 minutes\n3. No defibrillation for asystole/PEA\n4. Treat reversible causes:\n   - Hypovolemia, Hypoxia, H+ (acidosis)\n   - Hypo/hyperkalemia, Hypothermia\n   - Tension pneumothorax, Tamponade\n   - Toxins, Thrombosis (coronary/pulmonary)`,
+        text: `Asystole/PEA (${w} kg):\nHigh-quality CPR. NO defibrillation.\nAdrenaline ${epi} mg every 3-5 min\nTreat reversible causes urgently`,
         type: 'danger',
       };
     case 'bradycardia':
       return {
-        text: `Bradycardia with Pulse:\n1. Assess symptoms - Hypotension, altered mental status\n2. Atropine - ${atropine}, may repeat\n3. Consider transcutaneous pacing\n4. Dopamine - 2-10 mcg/kg/min\n5. Epinephrine - 2-10 mcg/min infusion`,
+        text: `Bradycardia with pulse (${w} kg):\nAtropine 0.5-1 mg IV (may repeat up to 3 mg)\nGlycopyrrolate 200-400 mcg IV\nConsider transcutaneous pacing\nEphedrine ${(w * 0.1).toFixed(0)} mg IV`,
         type: 'warning',
       };
     case 'tachycardia':
       return {
-        text: 'Tachycardia with Pulse:\n1. Assess stability - Check BP, consciousness\n2. If unstable: Synchronized cardioversion\n3. If stable SVT: Vagal maneuvers, adenosine\n4. If stable VT: Amiodarone 150 mg IV\n5. Treat underlying causes',
+        text: `Tachycardia with pulse (${w} kg):\nIf unstable -> synchronised DC cardioversion: ${(w * 1).toFixed(0)} J (1 J·kg⁻¹) biphasic\nIf stable SVT -> vagal manoeuvres -> adenosine 6 mg IV rapid bolus\nIf stable VT -> amiodarone 300 mg IV over 20-60 min`,
         type: 'warning',
       };
     default:
-      return { text: 'Select a valid rhythm', type: 'warning' };
+      return { text: 'Please select rhythm', type: 'warning' };
   }
 }
 
@@ -584,6 +582,7 @@ export function calculateGasExchange(currentPCO2, targetPCO2, currentSweep, targ
 export function calculateAnestheticDoses(weight, age, ageGroup) {
   const w = parseFloat(weight) || 70;
   const a = parseInt(age) || 40;
+  const isPaediatric = ['neonate', 'infant', 'toddler', 'preschool'].includes(ageGroup);
 
   let ageFactor = 1.0;
   if (ageGroup === 'elderly') ageFactor = 0.8;
@@ -608,25 +607,32 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
     ageFactor,
     macFactor,
     iv: {
-      propofol: { induction: dose(1.5, 2.5), maintenance: dose(100, 200, ageFactor, 0), sedation: dose(25, 75, ageFactor, 0) },
+      propofol: { induction: dose(1.5, 2.5), maintenance: dose(6, 12, ageFactor, 0), sedation: dose(1.5, 4.5, ageFactor, 0) },
       ketamine: { iv: dose(1, 2), im: dose(4, 8), analgesic: dose(0.1, 0.5) },
       etomidate: { induction: dose(0.2, 0.3) },
-      dexmedetomidine: { load: singleDose(1), maintenance: dose(0.2, 1) },
+      dexmedetomidine: { load: dose(0.5, 1), maintenance: dose(0.2, 0.7) },
       thiopental: { induction: dose(4, 6) },
-      remimazolam: { induction: dose(0.2, 0.35), maintenance: dose(1, 2) },
+      remimazolam: { induction: dose(0.1, 0.2), maintenance: dose(1, 2) },
     },
     inhalational: {
       sevoflurane: { mac: (2.0 * macFactor).toFixed(1) },
       desflurane: { mac: (6.0 * macFactor).toFixed(1) },
-      isoflurane: { mac: (1.2 * macFactor).toFixed(1) },
+      isoflurane: { mac: (1.17 * macFactor).toFixed(2) },
     },
     opioids: {
-      fentanyl: { bolus: dose(1, 3), infusion: dose(0.5, 3), epidural: dose(2, 4) },
-      morphine: { iv: dose(0.1, 0.15), im: dose(0.1, 0.15), epidural: dose(0.05, 0.1) },
-      sufentanil: { bolus: dose(0.2, 0.5), infusion: dose(0.1, 0.5) },
-      remifentanil: { bolus: dose(0.5, 1.5), infusion: dose(6, 30, ageFactor, 0) },
+      fentanyl: {
+        bolus: dose(1, 3),
+        infusion: dose(0.5, 3),
+        epidural: {
+          min: (w * 0.5 * ageFactor).toFixed(0),
+          max: Math.min(w * 1.5 * ageFactor, 100).toFixed(0),
+        },
+      },
+      morphine: { iv: dose(0.1, 0.15), im: dose(0.1, 0.15), epidural: dose(0.02, 0.04) },
+      sufentanil: { bolus: dose(0.1, 0.5), infusion: dose(0.1, 0.5) },
+      remifentanil: { bolus: dose(0.5, 1), infusion: dose(6, 30, ageFactor, 0) },
       hydromorphone: { iv: dose(0.015, 0.03, ageFactor, 2), im: dose(0.02, 0.04, ageFactor, 2) },
-      tramadol: { ivIm: w > 50 ? '100' : '50', oral: w > 50 ? '100' : '50' },
+      tramadol: { ivIm: w >= 50 ? '100' : '50', oral: w >= 50 ? '100' : '50' },
     },
     nmb: {
       succinylcholine: { iv: dose(1, 1.5, 1), im: dose(3, 4, 1) },
@@ -636,18 +642,18 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
       atracurium: { intubation: singleDose(0.5, 1), maintenance: singleDose(0.1, 1, 2) },
     },
     local: {
-      lidocaine: { max: fixedDose(300) },
-      bupivacaine: { max: fixedDose(175) },
-      ropivacaine: { max: fixedDose(200) },
+      lidocaine: { max: fixedDose(Math.min(3 * w, 200)) },
+      bupivacaine: { max: fixedDose(Math.min(2 * w, 150)) },
+      ropivacaine: { max: fixedDose(Math.min(3 * w, 250)) },
     },
     sedatives: {
-      midazolam: { premed: singleDose(0.07) },
+      midazolam: { premed: singleDose(0.05) },
       lorazepam: { premed: singleDose(0.03) },
     },
     vasopressors: {
-      phenylephrine: { infusion: dose(0.2, 2, 1, 0) },
+      phenylephrine: { infusion: dose(0.1, 0.5, 1, 0) },
       ephedrine: { bolus: '5-25' },
-      norepinephrine: { infusion: dose(0.6, 180, 1, 0) },
+      norepinephrine: { infusion: dose(0.6, 18, 1, 0) },
       epinephrine: { infusion: dose(0.6, 18, 1, 0) },
       dopamine: { infusion: dose(120, 1200, 1, 0) },
       dobutamine: { infusion: dose(150, 900, 1, 0) },
@@ -656,15 +662,15 @@ export function calculateAnestheticDoses(weight, age, ageGroup) {
       naloxone: { initial: '0.04-0.4 mg IV (up to 2 mg)', infusion: '0.25-0.4 mg/hr' },
       flumazenil: { initial: '0.1-0.2 mg IV', additional: '0.1 mg q60sec (max 1 mg)' },
       sugammadex: { routine: singleDose(2, 1, 0), deep: singleDose(4, 1, 0), immediate: singleDose(16, 1, 0) },
-      neostigmine: { dose: singleDose(0.05, 1) },
-      glycopyrrolate: { dose: singleDose(0.01, 1, 2) },
-      atropine: { premed: singleDose(0.5, 1, 0), bradycardia: singleDose(6, 1, 0) },
+      neostigmine: { dose: Math.min(0.05 * w, 5).toFixed(1) },
+      glycopyrrolate: { dose: (Math.min(0.05 * w, 5) * 0.2).toFixed(2) },
+      atropine: { premed: fixedDose(Math.min(5 * w, 600)), bradycardia: fixedDose(Math.min(10 * w, 3000)) },
       dantrolene: { dose: singleDose(2.5, 1, 0) },
     },
     antiemetics: {
-      ondansetron: { dose: singleDose(0.04, 1) },
-      dexamethasone: { dose: singleDose(0.04, 1) },
-      metoclopramide: { dose: singleDose(0.1, 1) },
+      ondansetron: { dose: isPaediatric ? Math.min(0.1 * w, 4).toFixed(1) : '4' },
+      dexamethasone: { dose: isPaediatric ? Math.min(0.15 * w, 8).toFixed(1) : '4-8' },
+      metoclopramide: { dose: isPaediatric ? Math.min(0.15 * w, 10).toFixed(1) : '10' },
     },
   };
 }

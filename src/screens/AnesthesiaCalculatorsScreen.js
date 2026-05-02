@@ -31,10 +31,10 @@ const CALCULATOR_GROUPS = [
   },
 ];
 
-export default function AnaesthesiaCalculatorsScreen({ navigation }) {
+export default function AnesthesiaCalculatorsScreen({ navigation }) {
   return (
     <ScreenWrapper
-      title="Anaesthesia Calculators"
+      title="Anesthesia Calculators"
       subtitle="Core calculator groups for perioperative and critical care workflows"
       icon="calculator"
     >

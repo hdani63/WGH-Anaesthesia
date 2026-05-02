@@ -160,7 +160,7 @@ export default function DepartmentalProtocolsScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
+    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anesthesia Department">
       {/* Existing protocols from database */}
       <CollapsibleCard title="IV Cannulation Request Protocol" icon="syringe">
         <SectionHeader title="Protocol Overview" icon="info-circle" />
@@ -172,7 +172,7 @@ export default function DepartmentalProtocolsScreen() {
 
         <SectionHeader title="Key Principles" icon="lightbulb" color={COLORS.success} />
         <InfoSection title="Rationale" icon="check-circle" items={[
-          'Optimizes Anaesthesiology resource utilization',
+          'Optimizes Anesthesiology resource utilization',
           'Ensures appropriate escalation pathway',
           'Provides consultant-level oversight for difficult cases',
           'Maintains audit trail for quality improvement',
@@ -195,7 +195,7 @@ export default function DepartmentalProtocolsScreen() {
             'Medical teams: 10 teams of Medical NCHDs operating at ward level',
             'Surgical teams: 4 teams of Surgical NCHDs operating at ward level',
             'At least one person per shift should possess the required cannulation skills',
-            'Attempt cannulation within your specialty before involving Anaesthesiology',
+            'Attempt cannulation within your specialty before involving Anesthesiology',
           ]}
         />
 
@@ -212,12 +212,12 @@ export default function DepartmentalProtocolsScreen() {
 
         <StepCard
           step="3"
-          title="Contact Consultant Anaesthesiologist"
-          intro="The admitting consultant should contact the consultant anaesthesiologist on-call."
+          title="Contact Consultant Anesthesiologist"
+          intro="The admitting consultant should contact the consultant anesthesiologist on-call."
           items={[
             'Who to contact: duty consultant of the day, based in theatre',
             'How to contact: dial O and request switchboard connection',
-            'Duty consultant coordinates available anaesthesia staff response',
+            'Duty consultant coordinates available anesthesia staff response',
             'Best placed to identify the least-delay response clinician',
           ]}
         />
@@ -241,13 +241,13 @@ export default function DepartmentalProtocolsScreen() {
           rows={[
             [
               'WEEKDAYS\n09:00 - 17:00',
-              'Admitting consultant contacts anaesthesiology duty consultant via switchboard (dial O)',
-              'Follow 4-step process, duty consultant coordinates and deploys best available anaesthesiologist',
+              'Admitting consultant contacts anesthesiology duty consultant via switchboard (dial O)',
+              'Follow 4-step process, duty consultant coordinates and deploys best available anesthesiologist',
               'Required: bring patient sticker to theatre reception and complete audit book',
             ],
             [
               'OUT OF HOURS\n17:00 - 09:00\nWeekends',
-              'Team registrar contacts 1st-on-call anaesthesiologist directly',
+              'Team registrar contacts 1st-on-call anesthesiologist directly',
               'Direct on-call response without duty consultant coordination',
               'Still required: attend theatre and complete same audit documentation',
             ],
@@ -278,7 +278,7 @@ export default function DepartmentalProtocolsScreen() {
           <FontAwesome5 name="exclamation-triangle" size={14} color="#856404" style={styles.importantNoteIcon} />
           <Text style={styles.importantNote}>
             <Text style={styles.importantNoteStrong}>Important Distinction: </Text>
-            If central venous cannulation is required, this must continue as a formal consultation with Anaesthesiology in the existing manner and be performed in theatre under sterile conditions.
+            If central venous cannulation is required, this must continue as a formal consultation with Anesthesiology in the existing manner and be performed in theatre under sterile conditions.
           </Text>
         </View>
 
@@ -286,13 +286,13 @@ export default function DepartmentalProtocolsScreen() {
         <View style={styles.contactColumn}>
           <ContactCard
             title="Weekdays 09:00-17:00"
-            detail="Anaesthesiology Duty Consultant via Hospital Switchboard. Dial 0 and request Anaesthesiology Duty Consultant."
+            detail="Anesthesiology Duty Consultant via Hospital Switchboard. Dial 0 and request Anesthesiology Duty Consultant."
             icon="user-md"
             borderColor={COLORS.success}
           />
           <ContactCard
             title="Out of Hours"
-            detail="1st-on-call Anaesthesiologist direct contact via Switchboard. Available 17:00-09:00 and weekends."
+            detail="1st-on-call Anesthesiologist direct contact via Switchboard. Available 17:00-09:00 and weekends."
             icon="clock"
             borderColor={COLORS.warning}
           />
@@ -306,7 +306,7 @@ export default function DepartmentalProtocolsScreen() {
 
         <SectionHeader title="Quality Assurance & Review" icon="star" color={COLORS.warning} />
         <View style={styles.qualityBox}>
-          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anaesthesia Department.</Text>
+          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anesthesia Department.</Text>
           <Text style={styles.sectionItem}>• All IV cannulation requests are logged for quality improvement purposes.</Text>
           <Text style={styles.sectionItem}>• Feedback on protocol effectiveness should be directed to the department lead.</Text>
           <Text style={styles.sectionItem}>• Training updates are communicated through departmental meetings and bulletins.</Text>

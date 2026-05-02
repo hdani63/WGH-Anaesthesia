@@ -11,16 +11,16 @@ import * as Calc from '../utils/calculators';
 
 const protocolSteps = {
   mh: [
-    '1. Stop all triggering agents (volatile anaesthetics, succinylcholine)',
+    '1. Stop all triggering agents (volatile anesthetics, succinylcholine)',
     '2. Call for help - Get MH cart',
     '3. Hyperventilate with 100% O2 at 10 L/min',
-    '4. Give Dantrolene - 2.5 mg/kg IV bolus, repeat q5min PRN',
+    '4. Give Dantrolene - 2-3 mg/kg IV bolus, then 1 mg/kg every 5 min as needed',
     '5. Cool patient - Ice packs, cold IV fluids',
     '6. Treat arrhythmias - Avoid calcium channel blockers',
     '7. Monitor - ABG, electrolytes, CK, temperature',
   ],
   last: [
-    '1. Stop local anaesthetic injection',
+    '1. Stop local anesthetic injection',
     '2. Call for help - Get lipid emulsion',
     '3. Manage airway and breathing',
     '4. Suppress seizures - Small doses of benzodiazepines/propofol',
@@ -30,15 +30,15 @@ const protocolSteps = {
     '8. Avoid vasopressin, calcium channel blockers, beta-blockers',
   ],
   anaphylaxis: [
-    '1. Remove/Stop suspected trigger',
-    '2. Call for help - Emergency response',
-    '3. Epinephrine IM - Anterolateral thigh (primary treatment)',
-    '4. High-flow O2 - 15 L/min',
-    '5. IV access - Large bore cannula',
-    '6. Fluid resuscitation - Crystalloid 20 mL/kg',
-    '7. H1 antagonist - Diphenhydramine 1 mg/kg',
-    '8. H2 antagonist - Ranitidine 1 mg/kg',
-    '9. Steroid - Methylprednisolone 1 mg/kg',
+    '1. Call for help and note the time',
+    '2. Stop/remove potential triggers and maintain anesthesia',
+    '3. Give 100% oxygen and secure airway/ventilation',
+    '4. Elevate legs if hypotensive',
+    '5. If severe hypotension/cardiac arrest, start CPR immediately',
+    '6. Give adrenaline and repeat as needed',
+    '7. Give rapid IV crystalloid 20 mL/kg; repeat until hypotension resolves',
+    '8. If persistent bronchospasm, treat as severe bronchospasm',
+    '9. Send serum tryptase ASAP, then repeat at 1-2 h and >24 h',
   ],
 };
 
@@ -63,7 +63,7 @@ const qrhSections = [
           'Airway - Check position of airway device and listen for noise (including larynx and stomach). Check capnogram shape. Confirm airway device patent (consider suction catheter). Consider isolating equipment.',
           'Breathing - Check chest symmetry, rate, breath sounds, SpO2, measured VTexp, EtCO2. Feel airway pressure using reservoir bag and APL valve (<3 breaths).',
           'Circulation - Check rate, rhythm, perfusion, recheck BP.',
-          'Depth - Ensure appropriate depth of anaesthesia, analgesia and neuromuscular blockade.',
+          'Depth - Ensure appropriate depth of anesthesia, analgesia and neuromuscular blockade.',
           'Consider surgical problem.',
           'Call for help if problem not resolving quickly.',
           'Isolating Equipment - Ventilate using self-inflating bag connected directly to tracheal tube connector. Do NOT use HME filter, angle piece, or catheter mount.',
@@ -84,17 +84,17 @@ const qrhSections = [
         title: '2-1 Cardiac Arrest',
         icon: 'heartbeat',
         intro:
-          'Probable cause: something related to surgery/anaesthesia, patient medical condition, reason for surgery, or equipment failure. First priority: start chest compressions.',
+          'Probable cause: something related to surgery/anesthesia, patient medical condition, reason for surgery, or equipment failure. First priority: start chest compressions.',
         alert:
           "START. Systematically evaluate and treat potential causes (4 H's, 4 T's + perioperative problems).",
         steps: [
           '1. IMMEDIATE ACTION - Declare cardiac arrest and note time. Delegate ONE person to chest compressions (100 min-1, depth 5 cm). Call for help. Call for cardiac arrest trolley. Delegate evaluation of potential causes.',
-          '2. Adequate Oxygen Delivery - Increase FGF, give 100% O2, check measured FiO2. Turn off anaesthetic (inhalational and IV). Check breathing system valves and connections. Confirm ventilator bellows moving or provide manual ventilation.',
+          '2. Adequate Oxygen Delivery - Increase FGF, give 100% O2, check measured FiO2. Turn off anesthetic (inhalational and IV). Check breathing system valves and connections. Confirm ventilator bellows moving or provide manual ventilation.',
           '3. Airway - Check position and listen for noise. Confirm patency (suction catheter). If absent EtCO2 - presume oesophageal intubation until excluded.',
           '4. Breathing - Check chest symmetry, SpO2, measured volume, EtCO2. Evaluate airway pressure.',
           '5. Circulation - Check rate and adequacy of compressions (visual + EtCO2). Rotate personnel. IV or IO access. Check ECG rhythm <5 seconds. Follow Resuscitation Council (UK)/ERC Guidelines.',
           "6. Systematically evaluate and treat underlying causes - 4 H's & 4 T's + perioperative: vagal tone, drug error, LA toxicity (->3-10), acidosis, anaphylaxis (->3-1), massive blood loss (->3-2).",
-          '7. If ROSC - re-establish anaesthesia.',
+          '7. If ROSC - re-establish anesthesia.',
         ],
         panels: [
           {
@@ -149,7 +149,7 @@ const qrhSections = [
           '2. Airway - Check position and listen for noise (larynx and stomach). Check capnogram shape. Confirm patency. Isolate patient from machine (self-inflating bag directly to TT connector). Consider replacing airway device.',
           '3. Breathing - Chest symmetry, rate, sounds, SpO2, VTexp, EtCO2. Feel airway pressure. Consider causes (Box D).',
           '4. Circulation - Heart rate, rhythm, perfusion, BP. If unstable, consider if secondary to hypoxia.',
-          '5. Depth - Ensure adequate anaesthesia and analgesia.',
+          '5. Depth - Ensure adequate anesthesia and analgesia.',
           '6. If not resolving - call for help AND check ABG, 12-lead ECG, CXR.',
         ],
         panels: [
@@ -175,7 +175,7 @@ const qrhSections = [
           '2. Airway - Check position and noise. Check capnogram. Confirm patency. Isolate from machine (self-inflating bag directly to TT). Consider replacing airway device.',
           '3. Breathing - Chest, SpO2, VTexp, EtCO2. Feel pressure. Consider causes: inadequate NMB, laparoscopic surgery (release pneumoperitoneum), laryngospasm (->3-6), bronchospasm (->3-4), anaphylaxis (->3-1), circulatory embolus (->3-5), aspiration, pulmonary oedema, bronchial intubation, foreign body, pneumothorax.',
           '4. Circulation - Check HR, rhythm, perfusion, BP. Unstable? Consider high airway pressure/gas trapping as cause.',
-          '5. Depth - Ensure adequate anaesthesia and analgesia.',
+          '5. Depth - Ensure adequate anesthesia and analgesia.',
           '6. If not resolving - call for help AND ABG, 12-lead ECG, CXR.',
         ],
         panels: [
@@ -194,7 +194,7 @@ const qrhSections = [
         title: '2-4 Hypotension',
         icon: 'arrow-down',
         intro:
-          'Commonly due to deep anaesthesia, neuraxial autonomic effects, hypovolaemia or combined causes. Rapidly exclude O2 delivery, airway and breathing problems first.',
+          'Commonly due to deep anesthesia, neuraxial autonomic effects, hypovolaemia or combined causes. Rapidly exclude O2 delivery, airway and breathing problems first.',
         steps: [
           '1. Adequate Oxygen Delivery - Pause surgery. Increase FGF AND 100% O2 AND check FiO2. Inspect breathing system.',
           '2. Airway - Position, noise, capnogram, patency.',
@@ -235,15 +235,15 @@ const qrhSections = [
         title: '2-5 Hypertension',
         icon: 'arrow-up',
         intro:
-          'Most commonly due to inappropriate depth of anaesthesia or inadequate analgesia. Rapidly exclude O2 delivery, airway and breathing problems first.',
+          'Most commonly due to inappropriate depth of anesthesia or inadequate analgesia. Rapidly exclude O2 delivery, airway and breathing problems first.',
         steps: [
-          '1. Immediate Actions - Recheck BP AND increase anaesthesia AND reduce stimulus.',
+          '1. Immediate Actions - Recheck BP AND increase anesthesia AND reduce stimulus.',
           '2. Adequate Oxygen Delivery - Check FGF AND FiO2. Inspect breathing system.',
           '3. Airway - Position, noise, capnogram, patency.',
           '4. Breathing - Exclude hypoxia and hypercarbia. Chest, SpO2, VTexp, EtCO2.',
           '5. Circulation - Rate, rhythm, perfusion. Increase BP check frequency. Check cuff size/position. Consider intra-arterial monitoring.',
-          '6. Depth - Ensure adequate anaesthesia and analgesia.',
-          '7. Consider underlying problems: inadequate anaesthesia/analgesia, drug error, omitted antihypertensives, distended bladder, surgical tourniquet, fluid overload, phaeochromocytoma, raised ICP, thyrotoxicosis.',
+          '6. Depth - Ensure adequate anesthesia and analgesia.',
+          '7. Consider underlying problems: inadequate anesthesia/analgesia, drug error, omitted antihypertensives, distended bladder, surgical tourniquet, fluid overload, phaeochromocytoma, raised ICP, thyrotoxicosis.',
           '8. Call for help and consider temporising drug.',
         ],
         panels: [
@@ -282,7 +282,7 @@ const qrhSections = [
             lines: [
               'Glycopyrrolate 5 ug.kg-1 (adult 200-400 ug)',
               'Ephedrine 100 ug.kg-1 (adult 3-12 mg)',
-              'Atropine 10 ug.kg-1 (adult 300-600 ug)',
+              'Atropine 10 ug.kg-1 (adult 500-1000 ug)',
               'Isoprenaline 0.5 ug.kg.min-1 (adult 5 ug.min-1)',
             ],
           },
@@ -300,7 +300,7 @@ const qrhSections = [
           '3. Airway - Position, noise, capnogram, patency.',
           '4. Breathing - Chest, SpO2, VTexp, EtCO2. Exclude hypoxia and hypercarbia as causes.',
           '5. Circulation - Rhythm, perfusion, BP.',
-          'If sinus tachycardia - treat underlying cause (hypovolaemia, hypoxia, pain, light anaesthesia, pyrexia).',
+          'If sinus tachycardia - treat underlying cause (hypovolaemia, hypoxia, pain, light anesthesia, pyrexia).',
           'If broad complex - consider VT. Treat as per ALS guidelines. If haemodynamically unstable -> synchronised DC cardioversion.',
           'If narrow complex - consider AF, SVT. Consider adenosine, verapamil, or synchronised DC cardioversion if unstable.',
           '6. Depth - Correct depth and analgesia.',
@@ -367,11 +367,11 @@ const qrhSections = [
         steps: [
           '1. Call for help. Note the time. Stop/do not start non-essential surgery.',
           '2. Call for cardiac arrest trolley, anaphylaxis treatment pack and investigation pack.',
-          '3. Remove all potential causative agents and maintain anaesthesia. Important culprits: antibiotics, neuromuscular blocking agents, patent blue, chlorhexidine, IV colloids. Change to inhalational anaesthetic if not already.',
+          '3. Remove all potential causative agents and maintain anesthesia. Important culprits: antibiotics, neuromuscular blocking agents, patent blue, chlorhexidine, IV colloids. Change to inhalational anesthetic if not already.',
           '4. Give 100% oxygen and ensure adequate ventilation. Maintain airway; if necessary secure with TT.',
           "5. Elevate patient's legs if hypotension.",
           '6. If SBP <50 mmHg or cardiac arrest - start CPR immediately -> 2-1.',
-          '7. Give adrenaline bolus and repeat as necessary. Consider adrenaline infusion after 3 boluses. If hypotension resistant -> metaraminol/noradrenaline infusion +/- vasopressin. Give glucagon if beta-blocked and unresponsive to adrenaline.',
+          '7. Give adrenaline bolus and repeat as necessary. Consider adrenaline infusion after 3 boluses. If hypotension resistant -> metaraminol/noradrenaline infusion +/- vasopressin. Give glucagon if beta-blocked and unresponsive to adrenaline. Hydrocortisone and chlorphenamine are no longer part of acute treatment (can consider for refractory reactions or skin symptoms).',
           '8. Give rapid IV crystalloid: 20 ml.kg-1 initial bolus, repeated until hypotension resolved.',
           '9. If bronchospasm persists -> 3-4.',
           '10. Take 5-10 ml clotted blood for serum tryptase as soon as stable. Plan repeat at 1-2 h and >24 h.',
@@ -410,13 +410,13 @@ const qrhSections = [
         intro: 'Expected or unexpected major haemorrhage.',
         steps: [
           '1. Call for help, inform theatre team, note the time.',
-          '2. Increase FiO2. Consider cautiously reducing inhalational/IV anaesthetics.',
+          '2. Increase FiO2. Consider cautiously reducing inhalational/IV anesthetics.',
           '3. Check and expose intravenous access.',
           '4. Control any obvious bleeding (pressure, uterotonics, tourniquet, haemostatic dressings).',
           '5. Call blood bank (assign one person to liaise). Activate major haemorrhage protocol. Communicate speed required and volume needed.',
           '6. Begin active patient warming.',
           '7. Use rapid infusion and fluid warming equipment.',
-          '8. Discuss management plan between surgical, anaesthetic and nursing teams. Liaise with haematologist if needed. Consider interventional radiology and cell salvage.',
+          '8. Discuss management plan between surgical, anesthetic and nursing teams. Liaise with haematologist if needed. Consider interventional radiology and cell salvage.',
           '9. Monitor: point-of-care testing (Hb, lactate, coagulation). Lab testing including calcium and fibrinogen.',
           '10. Replace calcium and consider tranexamic acid.',
           '11. If bleeding continues - consider recombinant factor VIIa: liaise with haematologist.',
@@ -452,7 +452,7 @@ const qrhSections = [
         intro:
           'Last resort when all other attempts to oxygenate have failed. Cardiac arrest -> 2-1.',
         steps: [
-          '1. Check optimal airway management in place and maintain anaesthesia. Supply 100% O2 by tightly fitting facemask, supraglottic airway or nasal high-flow.',
+          '1. Check optimal airway management in place and maintain anesthesia. Supply 100% O2 by tightly fitting facemask, supraglottic airway or nasal high-flow.',
           '2. Consider ONE final attempt at rescue oxygenation via upper airway if not already done.',
           '3. Declare CICO and call for help (additional staff and surgical airway expertise - ENT, ICU).',
           '4. Call for airway rescue trolley then cardiac arrest trolley.',
@@ -462,7 +462,7 @@ const qrhSections = [
           "8. Operator position: right-handed -> patient's left side; left-handed -> patient's right side.",
           "9. Perform 'laryngeal handshake' to identify laryngeal anatomy.",
           '10. Perform FoNA via cricothyroid membrane - scalpel-bougie-tube technique.',
-          '11. Secure tube, continue to oxygenate, ensure adequate depth of anaesthesia.',
+          '11. Secure tube, continue to oxygenate, ensure adequate depth of anesthesia.',
         ],
         panels: [
           {
@@ -498,13 +498,13 @@ const qrhSections = [
         title: '3-4 Bronchospasm',
         icon: 'wind',
         intro:
-          'Signs: expiratory wheeze, prolonged expiration, increased inflation pressures, desaturation, hypercapnia, upsloping capnogram, silent chest. Can occur alone or as part of another problem.',
+          'Signs: expiratory wheeze, prolonged expiration, increased inflation pressures, desaturation, hypercapnia, upsloping capnograph, silent chest. Can occur alone or as part of another problem.',
         steps: [
           '1. Call for help and inform theatre team.',
           '2. Give 100% oxygen.',
           '3. Stop surgery/other stimulation.',
           '4. Fully expose chest: inspect, percuss, palpate, auscultate. Absence of wheeze may indicate severe bronchospasm with no air movement.',
-          '5. Deepen anaesthesia. Inhalational agents are bronchodilators. Avoid isoflurane/desflurane if possible - airway irritants if increased rapidly.',
+          '5. Deepen anesthesia. Inhalational agents are bronchodilators. Avoid isoflurane/desflurane if possible - airway irritants if increased rapidly.',
           '6. Exclude mimics: mispositioned/occluded airway device, endobronchial or oesophageal intubation, occluded breathing system hoses, pulmonary oedema, ARDS, laryngospasm, pneumothorax.',
           '7. Consider anaphylaxis - if suspected -> 3-1.',
           '8. Treat bronchospasm: first line salbutamol by MDI or nebuliser (remove HME filter or nebulise downstream); IV is second line.',
@@ -575,13 +575,13 @@ const qrhSections = [
         title: '3-6 Laryngospasm and Stridor',
         icon: 'comment-slash',
         intro:
-          'Laryngospasm usually occurs when a patient is in a light plane of anaesthesia and their airway is stimulated. Stridor is a sign associated with laryngospasm (but can have other causes). A correctly positioned tracheal tube rules out laryngospasm.',
+          'Laryngospasm usually occurs when a patient is in a light plane of anesthesia and their airway is stimulated. Stridor is a sign associated with laryngospasm (but can have other causes). A correctly positioned tracheal tube rules out laryngospasm.',
         steps: [
           '1. Call for help and inform theatre team.',
           '2. Perform jaw thrust and stop any other stimulation.',
           '3. Remove airway devices and anything that may be stimulating or obstructing - suction catheters, blood, vomit (direct visualisation and suction if in doubt).',
           '4. Give CPAP with 100% O2 and face mask. Avoid over-vigorous inflation (stomach inflation). Insert oro/nasopharyngeal airway if unsure airway is clear above larynx.',
-          '5. If problem persists: continue CPAP, deepen anaesthesia, give neuromuscular blocker.',
+          '5. If problem persists: continue CPAP, deepen anesthesia, give neuromuscular blocker.',
           '6. Consider tracheal intubation particularly if likely to recur.',
           '7. Use NG tube to decompress the stomach.',
           '8. Consider other causes: foreign body, infection, anaphylaxis, sub-glottic stenosis, tumour, vocal cord paralysis.',
@@ -642,7 +642,7 @@ const qrhSections = [
           '1. Call for help and inform theatre team. Note the time.',
           '2. Aim to abandon or finish surgery as soon as possible.',
           '3. Call for MH treatment pack/dantrolene and cardiac arrest trolley.',
-          '4. Maintain anaesthesia with TIVA. Neuromuscular block with non-depolarising drug.',
+          '4. Maintain anesthesia with TIVA. Neuromuscular block with non-depolarising drug.',
           '5. Allocate enough team members to perform 6, 7 and 8 simultaneously.',
           '6. Eliminate trigger drug: Turn off vaporisers and remove from workstation. Set FGF to 100% O2 maximum flow. Hyperventilate (2-3x normal minute volume). Place activated charcoal filters on both limbs of breathing circuit. Change soda lime and circuit when feasible.',
           '7. Give dantrolene: 2-3 mg.kg-1 immediate IV bolus (adult ~200 mg). Repeat 1 mg.kg-1 every 5 min until EtCO2 <6 kPa and temp <38.5C. Pause and observe; repeat to maintain goals. Continue for 24-48 h post-crisis.',
@@ -655,7 +655,7 @@ const qrhSections = [
             tone: 'yellow',
             title: 'AVOID:',
             lines: [
-              'Volatile anaesthetics · Suxamethonium',
+              'Volatile anesthetics · Suxamethonium',
               'Calcium channel blockers (interaction with dantrolene)',
             ],
           },
@@ -705,12 +705,12 @@ const qrhSections = [
       },
       {
         key: 'qrh-last',
-        title: '3-10 Local Anaesthetic Toxicity',
+        title: '3-10 Local Anesthetic Toxicity',
         icon: 'syringe',
         intro:
           'Signs of severe toxicity: sudden altered mental status/severe agitation/loss of consciousness ± tonic-clonic convulsions · cardiovascular collapse: sinus bradycardia, conduction blocks, asystole, VT. May occur some time after initial injection.',
         steps: [
-          '1. Stop injecting local anaesthetic (remember infusion pumps).',
+          '1. Stop injecting local anesthetic (remember infusion pumps).',
           '2. Call for help and inform immediate clinical team.',
           '3. Call for cardiac arrest trolley and lipid rescue pack.',
           '4. Give 100% O2 and ensure adequate lung ventilation. Maintain airway; if necessary secure with TT. Avoid hypercarbia - consider mild hyperventilation.',
@@ -775,7 +775,7 @@ const qrhSections = [
           'Signs (unconscious patient): ST elevation/depression · T wave flattening/inversion · arrhythmias · haemodynamic abnormalities · new regional wall motion abnormalities. Symptoms (conscious patient): chest pain, breathlessness, dizziness, nausea. High index of suspicion in patients with pre-existing cardiac history or risk factors.',
         steps: [
           '1. Call for cardiac arrest trolley and 12-lead ECG machine.',
-          '2. Ensure adequate oxygenation and anaesthesia/analgesia.',
+          '2. Ensure adequate oxygenation and anesthesia/analgesia.',
           '3. Treat haemodynamic instability: cardiac arrest (->2-1) · hypotension (->2-4) · hypertension (->2-5) · bradycardia (->2-6) · tachycardia (->2-7).',
           '4. Apply CM5 continuous ECG monitoring. Obtain 12-lead ECG as soon as possible.',
           '5. If ischaemia does not resolve: call for help, inform team, stop/rapidly complete surgery. Start GTN (not if hypotensive). EXTREME CAUTION with GTN if hypotensive.',
@@ -852,7 +852,7 @@ const qrhSections = [
           'Severe sepsis: hypotension persisting after initial fluid challenge of 30 ml.kg-1 OR blood lactate >=4 mmol.l-1 if infection most likely cause. Septic shock: sepsis with end organ dysfunction.',
         steps: [
           '1. Call for help and inform theatre team.',
-          '2. Increase FiO2. Consider reducing anaesthetic agent. Intubate patient.',
+          '2. Increase FiO2. Consider reducing anesthetic agent. Intubate patient.',
           '3. Give crystalloid IV: adult >=30 ml.kg-1 · child >=20 ml.kg-1. Continue fluid challenge if haemodynamic improvement. Do not use hydroxyethyl starches.',
           '4. Take bloods: ABG, lactate, FBC, U&Es, coagulation and cultures.',
           '5. Give empiric IV antimicrobials within 1 h (seek microbiology advice).',
@@ -926,12 +926,12 @@ const qrhSections = [
         title: '4-2 Mains Electricity Failure',
         icon: 'bolt',
         intro:
-          'Unexpected total power failure is rare and unpredictable. Ability to safely deliver and maintain anaesthesia is immediately compromised.',
+          'Unexpected total power failure is rare and unpredictable. Ability to safely deliver and maintain anesthesia is immediately compromised.',
         steps: [
           '1. Call for help - extra staff to monitor patient and source additional equipment.',
           '2. Liaise with local coordinator to activate appropriate local plan. If immediate evacuation necessary -> 4-3.',
           '3. Get additional light into theatre: open doors and blinds, hand torches, portable lights, mobile phones, laryngoscopes.',
-          '4. Ensure ventilation continues: manual ventilation if required. Consider moving to spontaneous ventilation. Maintain anaesthesia.',
+          '4. Ensure ventilation continues: manual ventilation if required. Consider moving to spontaneous ventilation. Maintain anesthesia.',
           '5. Check pulse and blood pressure manually if monitors have failed.',
           '6. Check mains oxygen supply is intact. If failed -> 4-1.',
           '7. Unplug unnecessary equipment. Use correct socket for essential equipment (SPS = red; UPS = blue - use sparingly as supply is limited).',
@@ -944,16 +944,16 @@ const qrhSections = [
         title: '4-3 Emergency Evacuation',
         icon: 'running',
         intro:
-          'Anaesthetised or sedated patient requires unplanned transfer because of environmental hazard (flood, fire, smoke, structural collapse, noxious gas).',
+          'Anesthetized or sedated patient requires unplanned transfer because of environmental hazard (flood, fire, smoke, structural collapse, noxious gas).',
         steps: [
-          '1. Consider if patient can be safely moved. If not - ensure adequate depth, adequate reserve (100% O2, low flow, fill vaporiser), adequate NMB if relevant. Evacuate all staff including anaesthetist when indicated. Inform rescue services and theatre coordinator.',
+          '1. Consider if patient can be safely moved. If not - ensure adequate depth, adequate reserve (100% O2, low flow, fill vaporiser), adequate NMB if relevant. Evacuate all staff including anesthetist when indicated. Inform rescue services and theatre coordinator.',
           '2. Stop any operative procedure as soon as safe. Pack and cover wounds.',
           '3. Transfer patient to bed or trolley (operating table in extremis).',
           '4. Evacuate non-essential staff. Consider calling for help - be aware their own safety may preclude attendance.',
           '5. Airway: consider tracheal intubation for improved airway security if time allows.',
           '6. Breathing/ventilation: minimise O2 usage (lowest flows possible). Self-inflating bag +/- supplemental O2. Mechanical ventilator or C-circuit require higher flows.',
           '7. Circulation: ensure adequacy and security of IV access. Take adequate supplies of fluid +/- infusion sets. Take vasopressor(s) and/or resuscitation drug box.',
-          '8. Maintenance of anaesthesia: intermittent bolus propofol is simplest and quickest.',
+          '8. Maintenance of anesthesia: intermittent bolus propofol is simplest and quickest.',
         ],
         panels: [
           {
@@ -962,7 +962,7 @@ const qrhSections = [
             lines: [
               'O2 · Propofol/hypnotic · Neuromuscular blockade · Vasopressor(s) · Analgesics · IV fluids · Neuromuscular reversal if extubation anticipated',
               '',
-              'MUSTER POINT: Anaesthetised patient -> area with appropriate access to O2 and medications (theatre, recovery or critical care in safe zone).',
+              'MUSTER POINT: Anesthetized patient -> area with appropriate access to O2 and medications (theatre, recovery or critical care in safe zone).',
             ],
           },
         ],
@@ -1048,13 +1048,13 @@ export default function EmergencyScreen() {
   };
 
   return (
-    <ScreenWrapper title="Emergency & Crisis Management" subtitle="Association of Anaesthetists - Quick Reference Handbook (QRH) June 2023">
+    <ScreenWrapper title="Emergency & Crisis Management" subtitle="Association of Anesthetists — Quick Reference Handbook (QRH) June 2023">
       <View style={styles.alertBox}>
         <View style={styles.alertRow}>
           <FontAwesome5 name="exclamation-triangle" size={14} color="#721c24" style={styles.alertIcon} />
           <Text style={styles.alertText}>
             <Text style={styles.alertStrong}>Emergency Use Only: </Text>
-            Always apply clinical judgement. These guidelines do not replace individual clinical assessment.
+            Always apply clinical judgement. These guidelines do not replace individual clinical assessment. Source: anesthetists.org/QRH.
           </Text>
         </View>
       </View>
@@ -1335,4 +1335,3 @@ const styles = StyleSheet.create({
   },
   calcCardTitle: { fontSize: 16, fontWeight: '700', color: '#1f2937', marginBottom: SPACING.sm },
 });
-

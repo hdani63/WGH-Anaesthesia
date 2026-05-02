@@ -5,7 +5,7 @@ import CollapsibleCard from '../components/CollapsibleCard';
 import PatientInfoCard from '../components/PatientInfoCard';
 import CalcButton from '../components/CalcButton';
 import ResultDisplay from '../components/ResultDisplay';
-import { PickerSelect } from '../components/FormControls';
+import { PickerSelect, CheckboxItem } from '../components/FormControls';
 import { COLORS, SPACING } from '../utils/theme';
 
 export default function ICUCalculatorsScreen() {
@@ -16,10 +16,16 @@ export default function ICUCalculatorsScreen() {
     const [map, setMap] = useState('');
     const [heartRate, setHeartRate] = useState('');
     const [respRate, setRespRate] = useState('');
-    const [wbc, setWbc] = useState('');
-    const [hematocrit, setHematocrit] = useState('');
-    const [creatinine, setCreatinine] = useState('');
-    const [gcs, setGcs] = useState('15');
+  const [wbc, setWbc] = useState('');
+  const [hematocrit, setHematocrit] = useState('');
+  const [creatinine, setCreatinine] = useState('');
+  const [gcs, setGcs] = useState('15');
+  const [apacheSodium, setApacheSodium] = useState('');
+  const [apachePotassium, setApachePotassium] = useState('');
+  const [arterialPH, setArterialPH] = useState('');
+  const [oxygenationScore, setOxygenationScore] = useState('0');
+  const [acuteRF, setAcuteRF] = useState(false);
+  const [chronicHealth, setChronicHealth] = useState('0');
   const [apacheResult, setApacheResult] = useState(null);
 
   // SOFA
@@ -41,9 +47,153 @@ export default function ICUCalculatorsScreen() {
     };
 
     const handleCalculateApache = () => {
+      const temp = parseFloat(temperature);
+      const mapVal = parseFloat(map);
+      const hr = parseFloat(heartRate);
+      const rr = parseFloat(respRate);
+      const wbcVal = parseFloat(wbc);
+      const hct = parseFloat(hematocrit);
+      const creat = parseFloat(creatinine);
+      const g = parseInt(gcs, 10);
+      const sodium = parseFloat(apacheSodium);
+      const potassium = parseFloat(apachePotassium);
+      const ph = parseFloat(arterialPH);
+      const oxyScore = parseInt(oxygenationScore, 10) || 0;
+      const chronicPts = parseInt(chronicHealth, 10) || 0;
+      const age = parseInt(patient.age, 10) || 0;
+
+      const missing = [];
+      if (Number.isNaN(temp)) missing.push('Temperature');
+      if (Number.isNaN(mapVal)) missing.push('MAP');
+      if (Number.isNaN(hr)) missing.push('Heart Rate');
+      if (Number.isNaN(rr)) missing.push('Respiratory Rate');
+      if (Number.isNaN(sodium)) missing.push('Sodium');
+      if (Number.isNaN(potassium)) missing.push('Potassium');
+      if (Number.isNaN(ph)) missing.push('Arterial pH');
+      if (Number.isNaN(wbcVal)) missing.push('WBC');
+      if (Number.isNaN(hct)) missing.push('Hematocrit');
+      if (Number.isNaN(creat)) missing.push('Creatinine');
+
+      if (missing.length) {
+        setApacheResult({ text: `Please complete: ${missing.join(', ')}`, type: 'warning' });
+        return;
+      }
+
+      let tScore = 4;
+      if (temp >= 41) tScore = 4;
+      else if (temp >= 39) tScore = 3;
+      else if (temp >= 38.5) tScore = 1;
+      else if (temp >= 36) tScore = 0;
+      else if (temp >= 34) tScore = 1;
+      else if (temp >= 32) tScore = 2;
+      else if (temp >= 30) tScore = 3;
+      else tScore = 4;
+
+      let mScore;
+      if (mapVal >= 160) mScore = 4;
+      else if (mapVal >= 130) mScore = 3;
+      else if (mapVal >= 110) mScore = 2;
+      else if (mapVal >= 70) mScore = 0;
+      else if (mapVal >= 50) mScore = 2;
+      else mScore = 4;
+
+      let hrScore;
+      if (hr >= 180) hrScore = 4;
+      else if (hr >= 140) hrScore = 3;
+      else if (hr >= 110) hrScore = 2;
+      else if (hr >= 70) hrScore = 0;
+      else if (hr >= 55) hrScore = 2;
+      else if (hr >= 40) hrScore = 3;
+      else hrScore = 4;
+
+      let rrScore;
+      if (rr >= 50) rrScore = 4;
+      else if (rr >= 35) rrScore = 3;
+      else if (rr >= 25) rrScore = 1;
+      else if (rr >= 12) rrScore = 0;
+      else if (rr >= 10) rrScore = 1;
+      else if (rr >= 6) rrScore = 2;
+      else rrScore = 4;
+
+      let phScore;
+      if (ph >= 7.7) phScore = 4;
+      else if (ph >= 7.6) phScore = 3;
+      else if (ph >= 7.5) phScore = 1;
+      else if (ph >= 7.33) phScore = 0;
+      else if (ph >= 7.25) phScore = 2;
+      else if (ph >= 7.15) phScore = 3;
+      else phScore = 4;
+
+      let naScore;
+      if (sodium >= 180) naScore = 4;
+      else if (sodium >= 160) naScore = 3;
+      else if (sodium >= 155) naScore = 2;
+      else if (sodium >= 150) naScore = 1;
+      else if (sodium >= 130) naScore = 0;
+      else if (sodium >= 120) naScore = 2;
+      else if (sodium >= 111) naScore = 3;
+      else naScore = 4;
+
+      let kScore;
+      if (potassium >= 7) kScore = 4;
+      else if (potassium >= 6) kScore = 3;
+      else if (potassium >= 5.5) kScore = 1;
+      else if (potassium >= 3.5) kScore = 0;
+      else if (potassium >= 3) kScore = 1;
+      else if (potassium >= 2.5) kScore = 2;
+      else kScore = 4;
+
+      let creatScore;
+      if (creat >= 3.5) creatScore = 4;
+      else if (creat >= 2.0) creatScore = 3;
+      else if (creat >= 1.5) creatScore = 2;
+      else if (creat >= 0.6) creatScore = 0;
+      else creatScore = 2;
+      if (acuteRF) creatScore = Math.min(creatScore * 2, 8);
+
+      let hctScore;
+      if (hct >= 60) hctScore = 4;
+      else if (hct >= 50) hctScore = 2;
+      else if (hct >= 46) hctScore = 1;
+      else if (hct >= 30) hctScore = 0;
+      else if (hct >= 20) hctScore = 2;
+      else hctScore = 4;
+
+      let wbcScore;
+      if (wbcVal >= 40) wbcScore = 4;
+      else if (wbcVal >= 20) wbcScore = 2;
+      else if (wbcVal >= 15) wbcScore = 1;
+      else if (wbcVal >= 3) wbcScore = 0;
+      else if (wbcVal >= 1) wbcScore = 2;
+      else wbcScore = 4;
+
+      const gcsScore = 15 - g;
+      const aps =
+        tScore + mScore + hrScore + rrScore + oxyScore + phScore + naScore + kScore + creatScore + hctScore + wbcScore + gcsScore;
+
+      let ageScore;
+      if (age >= 75) ageScore = 6;
+      else if (age >= 65) ageScore = 5;
+      else if (age >= 55) ageScore = 3;
+      else if (age >= 45) ageScore = 2;
+      else ageScore = 0;
+
+      const total = aps + ageScore + chronicPts;
+
+      let mortality;
+      let type;
+      if (total <= 4) { mortality = '<4%'; type = 'success'; }
+      else if (total <= 9) { mortality = '~8%'; type = 'success'; }
+      else if (total <= 14) { mortality = '~15%'; type = 'warning'; }
+      else if (total <= 19) { mortality = '~25%'; type = 'warning'; }
+      else if (total <= 24) { mortality = '~40%'; type = 'warning'; }
+      else if (total <= 29) { mortality = '~55%'; type = 'danger'; }
+      else if (total <= 34) { mortality = '~75%'; type = 'danger'; }
+      else { mortality = '>85%'; type = 'danger'; }
+
       setApacheResult({
-        text: 'APACHE II Score: Calculation in progress\nSimplified implementation for demonstration',
-        type: 'info',
+        text: `APACHE II Score: ${total}\nEstimated hospital mortality: ${mortality}\nAPS: ${aps} | Age points: ${ageScore} | Chronic health: ${chronicPts}\nAge sourced from Patient Information panel above. Scores ≥25 are associated with >50% mortality.`,
+        type,
       });
     };
 
@@ -68,6 +218,9 @@ export default function ICUCalculatorsScreen() {
       } else if (total <= 12) {
         interpretation = 'High mortality risk (40-50%)';
         type = 'warning';
+      } else if (total <= 14) {
+        interpretation = 'Very high mortality risk (~50%)';
+        type = 'danger';
       } else {
         interpretation = 'Very high mortality risk (>80%)';
         type = 'danger';
@@ -157,12 +310,45 @@ export default function ICUCalculatorsScreen() {
         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="40" value={hematocrit} onChangeText={setHematocrit} />
         <Text style={styles.label}>Creatinine (mg/dL)</Text>
         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="1.0" value={creatinine} onChangeText={setCreatinine} />
+        <Text style={styles.label}>Sodium (mEq/L)</Text>
+        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="140" value={apacheSodium} onChangeText={setApacheSodium} />
+        <Text style={styles.label}>Potassium (mEq/L)</Text>
+        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="4.0" value={apachePotassium} onChangeText={setApachePotassium} />
+        <Text style={styles.label}>Arterial pH</Text>
+        <TextInput style={styles.input} keyboardType="decimal-pad" placeholder="7.40" value={arterialPH} onChangeText={setArterialPH} />
         <PickerSelect label="Glasgow Coma Scale" options={[
           { value: '15', label: '15 (Normal)' }, { value: '14', label: '14' }, { value: '13', label: '13' },
           { value: '12', label: '12' }, { value: '11', label: '11' }, { value: '10', label: '10' },
           { value: '9', label: '9' }, { value: '8', label: '8' }, { value: '7', label: '7' },
           { value: '6', label: '6' }, { value: '5', label: '5' }, { value: '4', label: '4' }, { value: '3', label: '3 (Lowest)' },
         ]} selected={gcs} onSelect={setGcs} />
+        <PickerSelect
+          label="Oxygenation"
+          options={[
+            { value: '0', label: '0 pts — PaO₂ >70 mmHg (FiO₂ <0.5), or A-aDO₂ <200' },
+            { value: '1', label: '1 pt — PaO₂ 61-70 mmHg (FiO₂ <0.5)' },
+            { value: '2', label: '2 pts — A-aDO₂ 200-349 (FiO₂ ≥0.5)' },
+            { value: '3', label: '3 pts — PaO₂ 55-60 mmHg, or A-aDO₂ 350-499' },
+            { value: '4', label: '4 pts — PaO₂ <55 mmHg, or A-aDO₂ ≥500' },
+          ]}
+          selected={oxygenationScore}
+          onSelect={setOxygenationScore}
+        />
+        <CheckboxItem
+          label="Acute renal failure (doubles creatinine points)"
+          checked={acuteRF}
+          onToggle={() => setAcuteRF((v) => !v)}
+        />
+        <PickerSelect
+          label="Chronic Health Points"
+          options={[
+            { value: '0', label: '0 — No severe chronic organ disease' },
+            { value: '2', label: '2 — Elective postoperative patient with severe organ insufficiency*' },
+            { value: '5', label: '5 — Non-operative or emergency postoperative with severe organ insufficiency*' },
+          ]}
+          selected={chronicHealth}
+          onSelect={setChronicHealth}
+        />
         <CalcButton title="Calculate APACHE II" onPress={handleCalculateApache} />
         {apacheResult && <ResultDisplay result={apacheResult.text} type={apacheResult.type} />}
       </CollapsibleCard>
@@ -190,7 +376,7 @@ export default function ICUCalculatorsScreen() {
           { value: '2', label: 'Dopamine ≤5 or dobutamine (2 points)' }, { value: '3', label: 'Dopamine >5 or epi ≤0.1 or norepi ≤0.1 (3 points)' },
           { value: '4', label: 'Dopamine >15 or epi >0.1 or norepi >0.1 (4 points)' },
         ]} selected={sofa.cardiovascular} onSelect={v => setSofa(p => ({ ...p, cardiovascular: v }))} />
-        <PickerSelect label="Central Nervous System (GCS)" options={[
+        <PickerSelect label="Central Nervous System (Glasgow Coma Scale)" options={[
           { value: '0', label: '15 (0 points)' }, { value: '1', label: '13-14 (1 point)' },
           { value: '2', label: '10-12 (2 points)' }, { value: '3', label: '6-9 (3 points)' }, { value: '4', label: '3-5 (4 points)' },
         ]} selected={sofa.cns} onSelect={v => setSofa(p => ({ ...p, cns: v }))} />

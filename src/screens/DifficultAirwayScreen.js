@@ -299,7 +299,7 @@ export default function DifficultAirwayScreen() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        title="Obstetric General Anaesthesia & Failed Intubation"
+        title="Obstetric General Anesthesia & Failed Intubation"
         icon="female"
         open={activeCard === 'obstetric'}
         onToggle={(nextOpen) => toggleCard('obstetric', nextOpen)}
@@ -391,7 +391,7 @@ export default function DifficultAirwayScreen() {
             headerColor: '#dc3545',
             borderColor: '#f1aeb5',
             bodyColor: '#fff5f5',
-            items: ['Senior anaesthetist', 'ENT surgeon', 'ICU consultant', 'Theatre coordinator'],
+            items: ['Senior anesthetist', 'ENT surgeon', 'ICU consultant', 'Theatre coordinator'],
           },
           {
             title: 'Equipment Check',
