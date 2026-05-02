@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
 
@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
   const clearSession = useAuthStore((s) => s.clearSession);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrating, setIsHydrating] = useState(true);
+  const checkedTokenRef = useRef(null);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -42,7 +43,12 @@ export function AuthProvider({ children }) {
       try {
         const savedToken = token;
         const savedUser = user || null;
-        if (!savedToken) return;
+        if (!savedToken) {
+          checkedTokenRef.current = null;
+          return;
+        }
+        if (checkedTokenRef.current === savedToken) return;
+        checkedTokenRef.current = savedToken;
 
         // Prefer server-verified profile when available.
         try {

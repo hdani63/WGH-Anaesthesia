@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -28,21 +28,19 @@ export default function DepartmentalTeachingScreen() {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [sheetUrl, setSheetUrl] = useState('');
   const [sheetKey, setSheetKey] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [fetchLoading, setFetchLoading] = useState(false);
 
-  useEffect(() => {
-    fetchTeachingSchedule();
-  }, []);
-
-  const fetchTeachingSchedule = async () => {
+  const fetchTeachingSchedule = async (forceRefresh = false) => {
     try {
       setFetchLoading(true);
       const teachingSchedule = await departmentService.getTeachingSchedule();
 
       if (teachingSchedule?.url) {
-        const formattedUrl = formatGoogleSheetsUrl(teachingSchedule.url);
+        const formattedUrl = forceRefresh
+          ? `${formatGoogleSheetsUrl(teachingSchedule.url)}&t=${Date.now()}`
+          : formatGoogleSheetsUrl(teachingSchedule.url);
         setSheetUrl(formattedUrl);
+        return formattedUrl;
       } else {
         Alert.alert('Error', 'Failed to load teaching schedule');
       }
@@ -50,12 +48,15 @@ export default function DepartmentalTeachingScreen() {
       Alert.alert('Error', 'Unable to connect to server');
     } finally {
       setFetchLoading(false);
-      setLoading(false);
     }
+
+    return '';
   };
 
-  const handleOpenSchedule = () => {
-    if (sheetUrl) {
+  const handleOpenSchedule = async () => {
+    const nextUrl = sheetUrl || await fetchTeachingSchedule();
+
+    if (nextUrl) {
       setSheetKey((previous) => previous + 1);
       setSheetVisible(true);
     } else {
@@ -63,20 +64,12 @@ export default function DepartmentalTeachingScreen() {
     }
   };
 
-  const handleRefresh = () => {
-    setSheetUrl(`${sheetUrl}&t=${Date.now()}`);
+  const handleRefresh = async () => {
+    const nextUrl = await fetchTeachingSchedule(true);
+    if (nextUrl && sheetVisible) {
+      setSheetKey((previous) => previous + 1);
+    }
   };
-
-  if (loading) {
-    return (
-      <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={styles.loadingText}>Loading teaching schedule...</Text>
-        </View>
-      </ScreenWrapper>
-    );
-  }
 
   return (
     <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
@@ -106,8 +99,12 @@ export default function DepartmentalTeachingScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.outlineBtn} onPress={handleOpenSchedule} disabled={fetchLoading}>
-          <FontAwesome5 name="table" size={13} color={COLORS.primary} style={styles.btnIcon} />
-          <Text style={styles.outlineBtnText}>Open Teaching Schedule</Text>
+          {fetchLoading ? (
+            <ActivityIndicator size="small" color={COLORS.primary} style={styles.btnIcon} />
+          ) : (
+            <FontAwesome5 name="table" size={13} color={COLORS.primary} style={styles.btnIcon} />
+          )}
+          <Text style={styles.outlineBtnText}>{fetchLoading ? 'Loading...' : 'Open Teaching Schedule'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.infoBtn} onPress={handleRefresh} disabled={fetchLoading}>
