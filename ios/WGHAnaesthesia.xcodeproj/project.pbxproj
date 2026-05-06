@@ -21,7 +21,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WGHAnaesthesia/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = WGHAnaesthesia/Info.plist; sourceTree = "<group>"; };
 		28CC53061826F353343179BE /* Pods-WGHAnaesthesia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WGHAnaesthesia.debug.xcconfig"; path = "Target Support Files/Pods-WGHAnaesthesia/Pods-WGHAnaesthesia.debug.xcconfig"; sourceTree = "<group>"; };
-		416DE373831F50E212FAF72B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = WGHAnaesthesia/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		416DE373831F50E212FAF72B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = WGHAnaesthesia/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		57B7E14775C72F133469CAD2 /* libPods-WGHAnaesthesia.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WGHAnaesthesia.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65329A12333909671135A835 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-WGHAnaesthesia/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = WGHAnaesthesia/SplashScreen.storyboard; sourceTree = "<group>"; };
@@ -73,7 +73,6 @@
 				28CC53061826F353343179BE /* Pods-WGHAnaesthesia.debug.xcconfig */,
 				E8E55C362C0200D0F2FC192F /* Pods-WGHAnaesthesia.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -339,6 +338,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = WGHAnaesthesia/WGHAnaesthesia.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PL432DVHYM;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -375,6 +375,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = WGHAnaesthesia/WGHAnaesthesia.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PL432DVHYM;
 				INFOPLIST_FILE = WGHAnaesthesia/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
