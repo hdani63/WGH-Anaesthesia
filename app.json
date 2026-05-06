@@ -4,10 +4,10 @@
     "slug": "wgh-anaesthesia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#1e4d8e"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#1e4d8e"
       },
       "package": "com.wgh.anaesthesia"
@@ -26,7 +26,15 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-asset"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/Logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#1e4d8e"
+        }
+      ]
     ]
   }
 }
