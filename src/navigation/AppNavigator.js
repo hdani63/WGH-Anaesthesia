@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
@@ -35,6 +35,14 @@ import AIEducationScreen from '../screens/AIEducationScreen';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+
+const WhiteTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#ffffff',
+  },
+};
 
 function AuthNavigator() {
   return (
@@ -101,7 +109,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={WhiteTheme}>
       {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
