@@ -120,6 +120,16 @@ export function AuthProvider({ children }) {
     clearSession();
   }, [clearSession]);
 
+  const deleteAccount = useCallback(async () => {
+    const userId = user?._id || user?.id || user?.userId;
+    if (!userId) {
+      throw new Error('Unable to find user ID.');
+    }
+
+    await authService.deleteUser(userId, token);
+    clearSession();
+  }, [user, token, clearSession]);
+
   const value = useMemo(
     () => ({
       user,
@@ -130,8 +140,9 @@ export function AuthProvider({ children }) {
       login,
       signup,
       logout,
+      deleteAccount,
     }),
-    [user, token, isLoading, isHydrating, login, signup, logout]
+    [user, token, isLoading, isHydrating, login, signup, logout, deleteAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

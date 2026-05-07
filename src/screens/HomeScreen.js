@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Alert, Modal, Pressable, View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -25,9 +25,55 @@ const TOOLS = [
 ];
 
 export default function HomeScreen({ navigation }) {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount, isLoading } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const menuButtonRef = useRef(null);
   const { width } = useWindowDimensions();
   const isCompactHeader = width < 768;
+
+  const toggleMenu = () => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+      return;
+    }
+
+    menuButtonRef.current?.measureInWindow((x, y, buttonWidth, buttonHeight) => {
+      setMenuAnchor({
+        top: y + buttonHeight + 8,
+        right: Math.max(SPACING.md, width - x - buttonWidth),
+      });
+      setIsMenuOpen(true);
+    });
+  };
+
+  const handleLogout = () => {
+    setIsMenuOpen(false);
+    logout();
+  };
+
+  const handleDeleteAccount = () => {
+    setIsMenuOpen(false);
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and remove your access to the app.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAccount();
+              Alert.alert('Account Deleted', 'Your account has been deleted.');
+            } catch (err) {
+              Alert.alert('Unable to Delete Account', err instanceof Error ? err.message : 'Please try again.');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <LinearGradient
@@ -58,16 +104,47 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
           <View style={[styles.headerRight, isCompactHeader && styles.headerRightCompact]}>
-            <View style={[styles.userBadge, isCompactHeader && styles.userBadgeCompact]}>
-              <Text style={styles.userNameText}>{user?.fullName || 'WGH User'}</Text>
-              
-            </View>
-            <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
-              <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.white} />
-              <Text style={styles.logoutText}>Logout</Text>
+            <TouchableOpacity
+              ref={menuButtonRef}
+              style={styles.menuButton}
+              onPress={toggleMenu}
+              activeOpacity={0.8}
+            >
+              <MaterialCommunityIcons name="dots-vertical" size={28} color={COLORS.white} />
             </TouchableOpacity>
           </View>
           </LinearGradient>
+
+          <Modal
+            visible={isMenuOpen}
+            transparent
+            animationType="none"
+            statusBarTranslucent
+            onRequestClose={() => setIsMenuOpen(false)}
+          >
+            <Pressable style={styles.menuOverlay} onPress={() => setIsMenuOpen(false)} />
+            <View style={[styles.menuDropdownWrap, menuAnchor]}>
+              <View style={styles.menuDropdown}>
+                <View style={styles.menuUserRow}>
+                  <FontAwesome5 name="user-circle" size={18} color={COLORS.medicalBlue} />
+                  <Text style={styles.menuUserText}>{user?.fullName || 'WGH User'}</Text>
+                </View>
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout} activeOpacity={0.75}>
+                  <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.medicalBlue} />
+                  <Text style={styles.menuItemText}>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={handleDeleteAccount}
+                  activeOpacity={0.75}
+                  disabled={isLoading}
+                >
+                  <FontAwesome5 name="trash-alt" size={14} color={COLORS.danger || '#dc3545'} />
+                  <Text style={styles.deleteMenuText}>Delete Account</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
 
         <View style={styles.gridWrap}>
           <View style={styles.grid}>
@@ -129,7 +206,7 @@ const styles = StyleSheet.create({
   safeAreaGradient: { flex: 1 },
   safeArea: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { paddingBottom: 24 },
+  content: { paddingBottom: 24, position: 'relative' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -155,40 +232,70 @@ const styles = StyleSheet.create({
     marginRight: SPACING.md,
   },
   headerTextWrap: { flex: 1, minWidth: 0 },
-  headerRight: { alignItems: 'flex-end', marginLeft: SPACING.sm, flexShrink: 0 },
-  headerRightCompact: { alignItems: 'flex-start', marginLeft: 0 },
+  headerRight: { alignItems: 'flex-end', marginLeft: SPACING.sm, flexShrink: 0, position: 'relative', zIndex: 10 },
+  headerRightCompact: { alignItems: 'flex-end', marginLeft: 0 },
   headerTitle: { fontSize: 22, fontWeight: '700', color: COLORS.white },
   headerSub: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2, lineHeight: 18 },
-  userBadge: {
-    alignItems: 'flex-end',
-    marginBottom: 8,
-  },
-  userBadgeCompact: { alignItems: 'flex-start' },
-  userNameText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.white,
-  },
-  userRoleText: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 2,
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  menuButton: {
+    width: 44,
+    height: 40,
     borderColor: 'rgba(255,255,255,0.4)',
     borderWidth: 1,
     borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  logoutText: {
-    color: COLORS.white,
-    fontSize: 12,
+  menuDropdown: {
+    width: 190,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    paddingVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 20,
+  },
+  menuDropdownWrap: {
+    position: 'absolute',
+    zIndex: 50,
+    elevation: 50,
+  },
+  menuOverlay: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  menuUserRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+  },
+  menuUserText: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: '700',
+    marginLeft: 10,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
+  menuItemText: {
+    color: COLORS.text,
+    fontSize: 13,
     fontWeight: '600',
-    marginLeft: 6,
+    marginLeft: 10,
+  },
+  deleteMenuText: {
+    color: COLORS.danger || '#dc3545',
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 10,
   },
   gridWrap: { paddingHorizontal: SPACING.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },

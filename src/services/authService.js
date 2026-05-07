@@ -33,4 +33,15 @@ export const authService = {
       },
     });
   },
+
+  async deleteUser(userId, token) {
+    return request(`/users/${userId}`, {
+      method: 'DELETE',
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : undefined,
+    });
+  },
 };
