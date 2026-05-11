@@ -25,7 +25,7 @@ const TOOLS = [
 ];
 
 export default function HomeScreen({ navigation }) {
-  const { user, logout, deleteAccount, isLoading, isGuest, isFullyAuthenticated } = useAuth();
+  const { user, logout, deleteAccount, isLoading, isGuest } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuButtonRef = useRef(null);
@@ -75,9 +75,7 @@ export default function HomeScreen({ navigation }) {
     );
   };
 
-  /**
-   * All tools are accessible to both guests and authenticated users.
-   */
+  // All tools are accessible to both guests and authenticated users.
   const handleToolPress = (toolKey) => {
     navigation.navigate(toolKey);
   };
@@ -183,53 +181,44 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.gridWrap}>
           <View style={styles.grid}>
-          {TOOLS.map(tool => {
-            const isLocked = isGuest && tool.key === 'AIEducation';
-            return (
-              <TouchableOpacity
-                key={tool.key}
-                style={[styles.card, SHADOW, tool.highlight && styles.cardHighlight]}
-                onPress={() => handleToolPress(tool.key)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.cardIconWrap}>
-                  {tool.key === 'AIEducation' ? (
-                    <View style={styles.aiIconWrap}>
-                      <View style={styles.aiIconBox}>
-                        <Text style={styles.aiIconText}>AI</Text>
-                      </View>
-                      <Text style={styles.aiSparkleMain}>✦</Text>
-                      <Text style={styles.aiSparkleSmall}>✦</Text>
+          {TOOLS.map(tool => (
+            <TouchableOpacity
+              key={tool.key}
+              style={[styles.card, SHADOW, tool.highlight && styles.cardHighlight]}
+              onPress={() => handleToolPress(tool.key)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.cardIconWrap}>
+                {tool.key === 'AIEducation' ? (
+                  <View style={styles.aiIconWrap}>
+                    <View style={styles.aiIconBox}>
+                      <Text style={styles.aiIconText}>AI</Text>
                     </View>
-                  ) : tool.iconSet === 'MaterialCommunityIcons' ? (
-                    <MaterialCommunityIcons
-                      name={tool.icon}
-                      size={22}
-                      color={tool.key === 'LabourAnalgesia' ? COLORS.white : (tool.highlight ? COLORS.white : COLORS.medicalBlue)}
-                    />
-                  ) : (
-                    <FontAwesome5
-                      name={tool.icon}
-                      size={22}
-                      color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
-                    />
-                  )}
-                </View>
-                <Text style={[styles.cardTitle, tool.highlight && styles.cardTitleHighlight]}>
-                  {tool.title}
-                </Text>
-                {tool.badge && !isLocked && (
-                  <Text style={styles.badge}>{tool.badge}</Text>
-                )}
-                {isLocked && (
-                  <View style={styles.lockBadgeRow}>
-                    <FontAwesome5 name="lock" size={9} color="#ffc107" />
-                    <Text style={styles.lockBadgeText}> Sign in</Text>
+                    <Text style={styles.aiSparkleMain}>✦</Text>
+                    <Text style={styles.aiSparkleSmall}>✦</Text>
                   </View>
+                ) : tool.iconSet === 'MaterialCommunityIcons' ? (
+                  <MaterialCommunityIcons
+                    name={tool.icon}
+                    size={22}
+                    color={tool.key === 'LabourAnalgesia' ? COLORS.white : (tool.highlight ? COLORS.white : COLORS.medicalBlue)}
+                  />
+                ) : (
+                  <FontAwesome5
+                    name={tool.icon}
+                    size={22}
+                    color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
+                  />
                 )}
-              </TouchableOpacity>
-            );
-          })}
+              </View>
+              <Text style={[styles.cardTitle, tool.highlight && styles.cardTitleHighlight]}>
+                {tool.title}
+              </Text>
+              {tool.badge && (
+                <Text style={styles.badge}>{tool.badge}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
           {TOOLS.length % 3 !== 0 && Array.from({ length: 3 - (TOOLS.length % 3) }).map((_, i) => (
             <View key={`spacer-${i}`} style={styles.cardSpacer} />
           ))}
@@ -386,16 +375,6 @@ const styles = StyleSheet.create({
     color: '#ffc107',
     fontWeight: '600',
     marginTop: 4,
-  },
-  lockBadgeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  lockBadgeText: {
-    fontSize: 10,
-    color: '#ffc107',
-    fontWeight: '600',
   },
   cardSpacer: {
     width: '31%',
