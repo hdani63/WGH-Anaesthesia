@@ -27,15 +27,17 @@ export const useAuthStore = create(
     (set) => ({
       token: null,
       user: null,
+      isGuest: false,
       hasHydrated: false,
-      setSession: ({ token, user }) => set({ token: token || null, user: user || null }),
-      clearSession: () => set({ token: null, user: null }),
+      setSession: ({ token, user }) => set({ token: token || null, user: user || null, isGuest: false }),
+      clearSession: () => set({ token: null, user: null, isGuest: false }),
+      setGuestMode: (value) => set({ isGuest: Boolean(value), token: null, user: null }),
       setHydrated: (value) => set({ hasHydrated: Boolean(value) }),
     }),
     {
       name: 'wgh-auth-store',
       storage: createJSONStorage(() => fileStorage),
-      partialize: (state) => ({ token: state.token, user: state.user }),
+      partialize: (state) => ({ token: state.token, user: state.user, isGuest: state.isGuest }),
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
       },

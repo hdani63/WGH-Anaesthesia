@@ -15,7 +15,7 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignupScreen({ navigation }) {
-  const { signup, isLoading } = useAuth();
+  const { signup, continueAsGuest, isLoading } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -126,6 +126,26 @@ export default function SignupScreen({ navigation }) {
                 Already have an account? <Text style={styles.linkTextStrong}>Login</Text>
               </Text>
             </TouchableOpacity>
+
+            {/* Divider */}
+            <View style={styles.dividerRow}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>or</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Guest mode — required by Apple App Store Guideline 5.1.1 */}
+            <TouchableOpacity
+              style={styles.guestButton}
+              onPress={continueAsGuest}
+              activeOpacity={0.75}
+            >
+              <Text style={styles.guestButtonText}>Continue as Guest</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.guestNote}>
+              Login is optional. You can explore all clinical tools as a guest.
+            </Text>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -187,4 +207,38 @@ const styles = StyleSheet.create({
   linkButton: { marginTop: SPACING.md, alignItems: 'center' },
   linkText: { fontSize: 13, color: COLORS.textMuted },
   linkTextStrong: { color: COLORS.primary, fontWeight: '600' },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: SPACING.md,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.border,
+  },
+  dividerText: {
+    marginHorizontal: SPACING.sm,
+    fontSize: 12,
+    color: COLORS.textMuted,
+  },
+  guestButton: {
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+    borderRadius: 10,
+    paddingVertical: 11,
+    alignItems: 'center',
+  },
+  guestButtonText: {
+    color: COLORS.primary,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  guestNote: {
+    marginTop: SPACING.sm,
+    fontSize: 11,
+    color: COLORS.textMuted,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
 });

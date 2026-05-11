@@ -27,9 +27,11 @@ function extractUser(payload) {
 export function AuthProvider({ children }) {
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
+  const isGuest = useAuthStore((s) => s.isGuest);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const setSession = useAuthStore((s) => s.setSession);
   const clearSession = useAuthStore((s) => s.clearSession);
+  const setGuestMode = useAuthStore((s) => s.setGuestMode);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrating, setIsHydrating] = useState(true);
   const checkedTokenRef = useRef(null);
@@ -43,6 +45,12 @@ export function AuthProvider({ children }) {
       try {
         const savedToken = token;
         const savedUser = user || null;
+
+        // Guest sessions don't need server verification
+        if (isGuest) {
+          return;
+        }
+
         if (!savedToken) {
           checkedTokenRef.current = null;
           return;
@@ -73,7 +81,7 @@ export function AuthProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [hasHydrated, token, user, setSession]);
+  }, [hasHydrated, token, user, isGuest, setSession]);
 
   const login = useCallback(async ({ email, password }) => {
     setIsLoading(true);
@@ -83,6 +91,7 @@ export function AuthProvider({ children }) {
       const nextUser = extractUser(result);
       const nextToken = extractToken(result);
       if (nextToken) {
+        // Clear any guest session before setting authenticated session
         setSession({ token: nextToken, user: nextUser });
       }
       return result;
@@ -116,6 +125,15 @@ export function AuthProvider({ children }) {
     }
   }, [setSession]);
 
+  /**
+   * Enters guest mode — no server call required.
+   * Complies with Apple App Store Review Guideline 5.1.1 which requires
+   * apps to allow users to access core functionality without creating an account.
+   */
+  const continueAsGuest = useCallback(() => {
+    setGuestMode(true);
+  }, [setGuestMode]);
+
   const logout = useCallback(async () => {
     clearSession();
   }, [clearSession]);
@@ -134,15 +152,18 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       token,
+      isGuest,
       isLoading,
       isHydrating,
-      isAuthenticated: Boolean(token),
+      isAuthenticated: Boolean(token) || isGuest,
+      isFullyAuthenticated: Boolean(token),
       login,
       signup,
+      continueAsGuest,
       logout,
       deleteAccount,
     }),
-    [user, token, isLoading, isHydrating, login, signup, logout, deleteAccount]
+    [user, token, isGuest, isLoading, isHydrating, login, signup, continueAsGuest, logout, deleteAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
