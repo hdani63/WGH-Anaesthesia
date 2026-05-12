@@ -48,7 +48,7 @@ export default function LoginScreen({ navigation }) {
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View style={[styles.card, SHADOW]}>
-            <Text style={styles.title}>Anaesthesia Reference</Text>
+            <Text style={styles.title}>Anaesthesia Companion</Text>
             <Text style={styles.subtitle}>Sign in to continue</Text>
 
             <View style={styles.fieldWrap}>

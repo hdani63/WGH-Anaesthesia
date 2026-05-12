@@ -101,10 +101,10 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View style={styles.headerTextWrap}>
               <Text style={styles.headerTitle} numberOfLines={1}>
-                Anaesthesia Reference
+                Anaesthesia Companion
               </Text>
               <Text style={styles.headerSub} numberOfLines={2}>
-                Anaesthesia Reference App
+                Anaesthesia Companion App
               </Text>
             </View>
           </View>
@@ -226,7 +226,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>© 2025 Anaesthesia Reference App</Text>
+            <Text style={styles.footerText}>© 2025 Anaesthesia Companion App</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

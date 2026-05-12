@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "Anaesthesia Reference",
+    "name": "Anaesthesia Companion",
     "slug": "anaesthesia-reference",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Logo2.png",
+    "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Logo2.png",
+      "image": "./assets/Logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#007AFF"
     },
     "ios": {
       "supportsTablet": true,
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Logo2.png",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anaesthesia.reference"
@@ -29,10 +29,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/Logo2.png",
+          "image": "./assets/Logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#007AFF"
         }
       ]
     ]

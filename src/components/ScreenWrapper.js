@@ -90,8 +90,8 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
               <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
             </View>
             <View>
-              <Text style={styles.appHeaderTitle}>Anaesthesia Reference</Text>
-              <Text style={styles.appHeaderSubtitle}>Clinical Anaesthesia Reference App</Text>
+              <Text style={styles.appHeaderTitle}>Anaesthesia Companion</Text>
+              <Text style={styles.appHeaderSubtitle}>Clinical Anaesthesia Companion App</Text>
             </View>
           </View>
 

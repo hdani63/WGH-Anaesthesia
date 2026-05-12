@@ -40,7 +40,7 @@ const WhiteTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#ffffff',
+    background: '#007AFF',
   },
 };
 
@@ -68,7 +68,7 @@ function MainNavigator() {
         headerBackTitleVisible: false,
       }}
     >
-      <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'Anaesthesia Reference' }} />
+      <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'Anaesthesia Companion' }} />
       <MainStack.Screen name="AnaesthesiaCalculators" component={AnaesthesiaCalculatorsScreen} options={{ title: 'Anaesthesia Calculators' }} />
       <MainStack.Screen name="Preoperative" component={PreoperativeScreen} options={{ title: 'Preoperative Assessment' }} />
       <MainStack.Screen name="Postoperative" component={PostoperativeScreen} options={{ title: 'Postoperative & Recovery' }} />
@@ -102,7 +102,7 @@ export default function AppNavigator() {
 
   if (isHydrating) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#007AFF' }}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );

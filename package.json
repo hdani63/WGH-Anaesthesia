@@ -1,7 +1,7 @@
 {
   "name": "anaesthesia-reference-app",
   "version": "1.0.0",
-  "description": "Anaesthesia Reference - Clinical Reference App",
+  "description": "Anaesthesia Companion - Clinical Anaesthesia App",
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",

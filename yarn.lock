@@ -2443,6 +2443,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"anaesthesia-reference-app@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "anaesthesia-reference-app@workspace:."
+  dependencies:
+    "@react-navigation/bottom-tabs": "npm:^7.15.9"
+    "@react-navigation/native": "npm:^7.2.2"
+    "@react-navigation/native-stack": "npm:^7.14.10"
+    "@types/react": "npm:~19.2.10"
+    babel-preset-expo: "npm:^55.0.15"
+    crypto-js: "npm:^4.2.0"
+    expo: "npm:~55.0.23"
+    expo-asset: "npm:~55.0.17"
+    expo-file-system: "npm:~55.0.19"
+    expo-linear-gradient: "npm:~55.0.13"
+    expo-linking: "npm:~55.0.15"
+    expo-sharing: "npm:~55.0.18"
+    expo-splash-screen: "npm:~55.0.20"
+    expo-web-browser: "npm:~55.0.15"
+    glob: "npm:^13.0.6"
+    pdfjs-dist: "npm:^5.6.205"
+    react: "npm:19.2.0"
+    react-native: "npm:0.83.6"
+    react-native-blob-util: "npm:^0.24.7"
+    react-native-pdf: "npm:^7.0.4"
+    react-native-safe-area-context: "npm:~5.6.2"
+    react-native-screens: "npm:~4.23.0"
+    react-native-webview: "npm:13.16.0"
+    typescript: "npm:~5.9.2"
+    zustand: "npm:^5.0.12"
+  languageName: unknown
+  linkType: soft
+
 "anser@npm:^1.4.9":
   version: 1.4.10
   resolution: "anser@npm:1.4.10"
@@ -6221,38 +6253,6 @@ __metadata:
   checksum: 10c0/5b61ca583a95e2dd85d7078400190efd452e05751a64accb8c06ce4db65d7e0b0cde9917d705e826a2e05cc2548f61efde115ffa374c3e436d04be45c889e5b4
   languageName: node
   linkType: hard
-
-"wgh-anaesthesia-app@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "wgh-anaesthesia-app@workspace:."
-  dependencies:
-    "@react-navigation/bottom-tabs": "npm:^7.15.9"
-    "@react-navigation/native": "npm:^7.2.2"
-    "@react-navigation/native-stack": "npm:^7.14.10"
-    "@types/react": "npm:~19.2.10"
-    babel-preset-expo: "npm:^55.0.15"
-    crypto-js: "npm:^4.2.0"
-    expo: "npm:~55.0.23"
-    expo-asset: "npm:~55.0.17"
-    expo-file-system: "npm:~55.0.19"
-    expo-linear-gradient: "npm:~55.0.13"
-    expo-linking: "npm:~55.0.15"
-    expo-sharing: "npm:~55.0.18"
-    expo-splash-screen: "npm:~55.0.20"
-    expo-web-browser: "npm:~55.0.15"
-    glob: "npm:^13.0.6"
-    pdfjs-dist: "npm:^5.6.205"
-    react: "npm:19.2.0"
-    react-native: "npm:0.83.6"
-    react-native-blob-util: "npm:^0.24.7"
-    react-native-pdf: "npm:^7.0.4"
-    react-native-safe-area-context: "npm:~5.6.2"
-    react-native-screens: "npm:~4.23.0"
-    react-native-webview: "npm:13.16.0"
-    typescript: "npm:~5.9.2"
-    zustand: "npm:^5.0.12"
-  languageName: unknown
-  linkType: soft
 
 "whatwg-fetch@npm:^3.0.0":
   version: 3.6.20
