@@ -160,7 +160,7 @@ export default function DepartmentalProtocolsScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
+    <ScreenWrapper title="Clinical Protocols" subtitle="Anaesthesia Clinical Protocols">
       {/* Existing protocols from database */}
       <CollapsibleCard title="IV Cannulation Request Protocol" icon="syringe">
         <SectionHeader title="Protocol Overview" icon="info-circle" />
@@ -286,7 +286,7 @@ export default function DepartmentalProtocolsScreen() {
         <View style={styles.contactColumn}>
           <ContactCard
             title="Weekdays 09:00-17:00"
-            detail="Anesthesiology Duty Consultant via Hospital Switchboard. Dial 0 and request Anesthesiology Duty Consultant."
+            detail="Anesthesiology Duty Consultant via Switchboard. Dial 0 and request Anesthesiology Duty Consultant."
             icon="user-md"
             borderColor={COLORS.success}
           />
@@ -306,10 +306,10 @@ export default function DepartmentalProtocolsScreen() {
 
         <SectionHeader title="Quality Assurance & Review" icon="star" color={COLORS.warning} />
         <View style={styles.qualityBox}>
-          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the Anaesthesia Department.</Text>
+          <Text style={styles.sectionItem}>• This protocol is reviewed annually by the clinical team.</Text>
           <Text style={styles.sectionItem}>• All IV cannulation requests are logged for quality improvement purposes.</Text>
-          <Text style={styles.sectionItem}>• Feedback on protocol effectiveness should be directed to the department lead.</Text>
-          <Text style={styles.sectionItem}>• Training updates are communicated through departmental meetings and bulletins.</Text>
+          <Text style={styles.sectionItem}>• Feedback on protocol effectiveness should be directed to the lead clinician.</Text>
+          <Text style={styles.sectionItem}>• Training updates are communicated through clinical meetings and bulletins.</Text>
         </View>
       </CollapsibleCard>
 
@@ -334,7 +334,7 @@ export default function DepartmentalProtocolsScreen() {
         ) : apiProtocols.length === 0 ? (
           <View style={styles.placeholderCard}>
             <FontAwesome5 name="folder-plus" size={32} color={COLORS.textMuted} style={styles.placeholderIcon} />
-            <Text style={styles.placeholderText}>Additional departmental protocols will be added here as they become available.</Text>
+            <Text style={styles.placeholderText}>Additional clinical protocols will be added here as they become available.</Text>
           </View>
         ) : (
           <View>

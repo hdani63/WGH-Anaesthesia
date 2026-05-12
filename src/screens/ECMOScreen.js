@@ -235,7 +235,7 @@ export default function ECMOScreen() {
           <FontAwesome5 name="info-circle" size={14} color="#0c5460" style={styles.disclaimerIcon} />
           <Text style={styles.disclaimerText}>
             <Text style={styles.disclaimerStrong}>ECMO Specialist Use: </Text>
-            These calculations are for ECMO specialists and perfusionists. Always follow institutional protocols and consult with ECMO team.
+            These calculations are for ECMO specialists and perfusionists. Always follow local protocols and consult with the ECMO team.
           </Text>
         </View>
       </View>

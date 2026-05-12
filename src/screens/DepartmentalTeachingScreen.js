@@ -72,7 +72,7 @@ export default function DepartmentalTeachingScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Teaching Resources" subtitle="Educational materials and training resources for the Anaesthesia Department">
+    <ScreenWrapper title="Clinical Teaching Resources" subtitle="Educational materials and training resources for Anaesthesia">
       <View style={styles.resourceCard}>
         <View style={styles.resourceHeader}>
           <View style={styles.resourceIconWrap}>
@@ -118,7 +118,7 @@ export default function DepartmentalTeachingScreen() {
       <View style={styles.footerCard}>
         <Text style={styles.footerTitle}>Important Note</Text>
         <Text style={styles.footerText}>
-          Always verify dates and venues in the live sheet before departmental sessions.
+          Always verify dates and venues in the live sheet before scheduled sessions.
         </Text>
       </View>
 

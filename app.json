@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "WGH Anaesthesia",
-    "slug": "wgh-anaesthesia",
+    "name": "Anaesthesia Reference",
+    "slug": "anaesthesia-reference",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/Logo2.png",
@@ -13,14 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.wgh.anaesthesia"
+      "bundleIdentifier": "com.anaesthesia.reference"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/Logo2.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.wgh.anaesthesia"
+      "package": "com.anaesthesia.reference"
     },
     "web": {
       "favicon": "./assets/favicon.png"

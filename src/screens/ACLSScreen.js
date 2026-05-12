@@ -67,10 +67,10 @@ const algorithms = [
 
 const notes = [
   'All algorithms are based on American Heart Association 2020 Guidelines',
-  'These are quick reference guides - always follow your institution\'s protocols',
+  'These are quick reference guides - always follow current clinical protocols',
   'Click any algorithm to view the full PDF inside the app',
   'Algorithms can be downloaded for offline access',
-  'For emergencies, refer to your institution\'s emergency response system',
+  'For emergencies, refer to your local emergency response system',
 ];
 
 export default function ACLSScreen() {

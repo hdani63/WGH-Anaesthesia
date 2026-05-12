@@ -82,7 +82,7 @@ export default function SignupScreen({ navigation }) {
               <TextInput
                 value={email}
                 onChangeText={setEmail}
-                placeholder="name@wgh.com"
+                placeholder="name@example.com"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 style={styles.input}
