@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anaesthesia.reference'
+    namespace 'com.wgh.anaesthesia'
     defaultConfig {
-        applicationId 'com.anaesthesia.reference'
+        applicationId 'com.wgh.anaesthesia'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

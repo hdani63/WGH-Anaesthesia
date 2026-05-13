@@ -13,14 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anaesthesia.reference"
+      "bundleIdentifier": "com.wgh.anaesthesia"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anaesthesia.reference"
+      "package": "com.wgh.anaesthesia"
     },
     "web": {
       "favicon": "./assets/favicon.png"
