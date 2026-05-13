@@ -27,7 +27,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.wgh.anaesthesia</string>
+				<string>com.anaesthesia.reference</string>
 			</array>
 		</dict>
 	</array>

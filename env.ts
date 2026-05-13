@@ -6,4 +6,4 @@ const runtimeProcess = globalThis as typeof globalThis & {
 	};
 };
 
-export const BACKEND_URL = runtimeProcess.process?.env?.EXPO_PUBLIC_API_URL || 'https://wgh-api.projectco.space/api';
+export const BACKEND_URL = runtimeProcess.process?.env?.EXPO_PUBLIC_API_URL || '';

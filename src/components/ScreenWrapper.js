@@ -55,7 +55,7 @@ function resolveTitleIcon(title, icon) {
   if (t.includes('teaching')) return 'graduation-cap';
   if (t.includes('critical transfer')) return 'ambulance';
   if (t.includes('neuraxial')) return 'tint';
-  if (t.includes('departmental protocols')) return 'clipboard-list';
+  if (t.includes('clinical protocols')) return 'clipboard-list';
   if (t.includes('perioperative medication')) return 'prescription-bottle-alt';
   if (t.includes('rotem')) return 'vial';
   if (t.includes('labour analgesia')) return 'human-pregnant';

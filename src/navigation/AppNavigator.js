@@ -82,10 +82,10 @@ function MainNavigator() {
       <MainStack.Screen name="AnaestheticDrugDosing" component={AnaestheticDrugDosingScreen} options={{ title: 'Anaesthetic Drugs' }} />
       <MainStack.Screen name="DifficultAirway" component={DifficultAirwayScreen} options={{ title: 'Difficult Airway' }} />
       <MainStack.Screen name="ACLS" component={ACLSScreen} options={{ title: 'ACLS Algorithms' }} />
-      <MainStack.Screen name="DepartmentalTeaching" component={DepartmentalTeachingScreen} options={{ title: 'Departmental Teaching' }} />
+      <MainStack.Screen name="DepartmentalTeaching" component={DepartmentalTeachingScreen} options={{ title: 'Clinical Teaching' }} />
       <MainStack.Screen name="CriticalTransfer" component={CriticalTransferScreen} options={{ title: 'Critical Transfer' }} />
       <MainStack.Screen name="NeuraxialAnticoagulation" component={NeuraxialAnticoagulationScreen} options={{ title: 'RA & Anticoag' }} />
-      <MainStack.Screen name="DepartmentalProtocols" component={DepartmentalProtocolsScreen} options={{ title: 'Departmental Protocols' }} />
+      <MainStack.Screen name="DepartmentalProtocols" component={DepartmentalProtocolsScreen} options={{ title: 'Clinical Protocols' }} />
       <MainStack.Screen name="PerioperativeMedication" component={PerioperativeMedicationScreen} options={{ title: 'Perioperative Medication' }} />
       <MainStack.Screen name="ROTEM" component={ROTEMScreen} options={{ title: 'ROTEM' }} />
       <MainStack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />

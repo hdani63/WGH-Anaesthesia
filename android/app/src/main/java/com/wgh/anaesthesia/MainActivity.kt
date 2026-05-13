@@ -1,4 +1,4 @@
-package com.wgh.anaesthesia
+package com.anaesthesia.reference
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

@@ -8,11 +8,11 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
-  { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
+  // { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
+  // { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Clinical Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Clinical Protocols', badge: 'Protocols', highlight: true },
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   safeAreaGradient: { flex: 1 },
   safeArea: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { paddingBottom: 24, position: 'relative' },
+  content: { flexGrow: 1, paddingBottom: 24, position: 'relative' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.lg,
-    marginTop: SPACING.sm,
+    marginTop: 'auto',
     backgroundColor: '#343a40',
   },
   footerText: { fontSize: 12, color: COLORS.white, textAlign: 'center' },

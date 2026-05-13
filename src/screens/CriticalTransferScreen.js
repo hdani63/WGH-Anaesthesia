@@ -137,7 +137,7 @@ const SECTIONS = {
         items: [
           { key: 'debriefingSession', label: 'A debriefing session has been conducted with the transfer team to discuss any issues' },
           { key: 'incidentsReported', label: "Any incidents, near-misses, or equipment failures have been reported through the hospital's incident reporting system (e.g., Datix)" },
-          { key: 'transferLoggedAudit', label: 'The transfer is logged for departmental audit and review purposes' },
+          { key: 'transferLoggedAudit', label: 'The transfer is logged for audit and review purposes' },
         ],
       },
     ],

@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-const AUTH_STORE_FILE = `${FileSystem.documentDirectory}wgh_auth_store_v1.json`;
+const AUTH_STORE_FILE = `${FileSystem.documentDirectory}anaesthesia_companion_auth_store_v1.json`;
 
 const fileStorage = {
   getItem: async () => {
@@ -35,7 +35,7 @@ export const useAuthStore = create(
       setHydrated: (value) => set({ hasHydrated: Boolean(value) }),
     }),
     {
-      name: 'wgh-auth-store',
+      name: 'anaesthesia-companion-auth-store',
       storage: createJSONStorage(() => fileStorage),
       partialize: (state) => ({ token: state.token, user: state.user, isGuest: state.isGuest }),
       onRehydrateStorage: () => (state) => {
