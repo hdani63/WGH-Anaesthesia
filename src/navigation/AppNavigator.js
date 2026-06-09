@@ -68,7 +68,7 @@ function MainNavigator() {
         headerBackTitleVisible: false,
       }}
     >
-      <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'WGH Anaesthesia' }} />
+      <MainStack.Screen name="Home" component={HomeScreen} options={{ title: 'Anaesthesia Companion' }} />
       <MainStack.Screen name="AnaesthesiaCalculators" component={AnaesthesiaCalculatorsScreen} options={{ title: 'Anaesthesia Calculators' }} />
       <MainStack.Screen name="Preoperative" component={PreoperativeScreen} options={{ title: 'Preoperative Assessment' }} />
       <MainStack.Screen name="Postoperative" component={PostoperativeScreen} options={{ title: 'Postoperative & Recovery' }} />

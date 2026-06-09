@@ -101,7 +101,7 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View style={styles.headerTextWrap}>
               <Text style={styles.headerTitle} numberOfLines={1}>
-                WGH Anaesthesia
+                Anaesthesia Companion
               </Text>
               <Text style={styles.headerSub} numberOfLines={2}>
                 Anaesthesia For Wexford General Hospital
@@ -226,7 +226,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>© 2025 WGH Anaesthesia - Wexford General Hospital Anaesthesia Department</Text>
+            <Text style={styles.footerText}>© 2025 Anaesthesia Companion - Wexford General Hospital Anaesthesia Department</Text>
             <Text style={styles.footerMuted}>For medical professional use only</Text>
           </View>
         </ScrollView>

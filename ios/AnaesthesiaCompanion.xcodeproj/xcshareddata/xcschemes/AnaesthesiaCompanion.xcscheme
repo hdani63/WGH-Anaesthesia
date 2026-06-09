@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "WGHAnaesthesia.app"
-               BlueprintName = "WGHAnaesthesia"
-               ReferencedContainer = "container:WGHAnaesthesia.xcodeproj">
+               BuildableName = "AnaesthesiaCompanion.app"
+               BlueprintName = "AnaesthesiaCompanion"
+               ReferencedContainer = "container:AnaesthesiaCompanion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "WGHAnaesthesiaTests.xctest"
-               BlueprintName = "WGHAnaesthesiaTests"
-               ReferencedContainer = "container:WGHAnaesthesia.xcodeproj">
+               BuildableName = "AnaesthesiaCompanionTests.xctest"
+               BlueprintName = "AnaesthesiaCompanionTests"
+               ReferencedContainer = "container:AnaesthesiaCompanion.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "WGHAnaesthesia.app"
-            BlueprintName = "WGHAnaesthesia"
-            ReferencedContainer = "container:WGHAnaesthesia.xcodeproj">
+            BuildableName = "AnaesthesiaCompanion.app"
+            BlueprintName = "AnaesthesiaCompanion"
+            ReferencedContainer = "container:AnaesthesiaCompanion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "WGHAnaesthesia.app"
-            BlueprintName = "WGHAnaesthesia"
-            ReferencedContainer = "container:WGHAnaesthesia.xcodeproj">
+            BuildableName = "AnaesthesiaCompanion.app"
+            BlueprintName = "AnaesthesiaCompanion"
+            ReferencedContainer = "container:AnaesthesiaCompanion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

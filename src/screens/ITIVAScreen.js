@@ -33,7 +33,7 @@ export default function ITIVAScreen() {
               <FontAwesome5 name="stethoscope" size={24} color={COLORS.white} />
             </View>
             <View>
-              <Text style={styles.appHeaderTitle}>WGH Anaesthesia</Text>
+              <Text style={styles.appHeaderTitle}>Anaesthesia Companion</Text>
               <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
             </View>
           </View>
