@@ -70,7 +70,7 @@ export default function AIEducationScreen() {
           <FontAwesome5 name="exclamation-triangle" size={14} color="#8a6d1d" />
           <Text style={styles.bannerTitle}>Clinical Disclaimer</Text>
         </View>
-        <Text style={styles.bannerText}>AI responses are decision-support aids only. Always apply clinical judgement and verify against current WGH protocols and guidelines.</Text>
+        <Text style={styles.bannerText}>AI responses are decision-support aids only. Always apply clinical judgement and verify against current local protocols and guidelines.</Text>
       </View>
 
       <View style={styles.tabs}>

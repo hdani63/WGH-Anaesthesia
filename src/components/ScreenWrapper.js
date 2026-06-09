@@ -91,7 +91,7 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
             </View>
             <View>
               <Text style={styles.appHeaderTitle}>Anaesthesia Companion</Text>
-              <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
+              <Text style={styles.appHeaderSubtitle}>Anaesthesia Companion App</Text>
             </View>
           </View>
 

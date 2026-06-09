@@ -99,7 +99,7 @@ export default function PdfViewerScreen({ route }) {
             </View>
             <View>
               <Text style={styles.appHeaderTitle}>Anaesthesia Companion</Text>
-              <Text style={styles.appHeaderSubtitle}>Anaesthesia For Wexford General Hospital</Text>
+              <Text style={styles.appHeaderSubtitle}>Anaesthesia Companion App</Text>
             </View>
           </View>
           <FontAwesome5 name="hospital" size={38} color="rgba(255,255,255,0.8)" />

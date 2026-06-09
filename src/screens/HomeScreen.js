@@ -15,7 +15,7 @@ const TOOLS = [
   { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
-  { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'WGH', highlight: true },
+  { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'Protocols', highlight: true },
   { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
   { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
   { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
@@ -104,7 +104,7 @@ export default function HomeScreen({ navigation }) {
                 Anaesthesia Companion
               </Text>
               <Text style={styles.headerSub} numberOfLines={2}>
-                Anaesthesia For Wexford General Hospital
+                Anaesthesia Companion App
               </Text>
             </View>
           </View>
@@ -133,7 +133,7 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.menuUserRow}>
                   <FontAwesome5 name="user-circle" size={18} color={COLORS.medicalBlue} />
                   <Text style={styles.menuUserText}>
-                    {isGuest ? 'Guest' : (user?.fullName || 'WGH User')}
+                    {isGuest ? 'Guest' : (user?.fullName || 'User')}
                   </Text>
                 </View>
 
@@ -226,7 +226,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>© 2025 Anaesthesia Companion - Wexford General Hospital Anaesthesia Department</Text>
+            <Text style={styles.footerText}>© 2025 Anaesthesia Companion App</Text>
             <Text style={styles.footerMuted}>For medical professional use only</Text>
           </View>
         </ScrollView>

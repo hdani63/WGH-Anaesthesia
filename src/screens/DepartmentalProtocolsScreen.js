@@ -160,7 +160,7 @@ export default function DepartmentalProtocolsScreen() {
   };
 
   return (
-    <ScreenWrapper title="Departmental Protocols" subtitle="Wexford General Hospital Anaesthesia Department">
+    <ScreenWrapper title="Departmental Protocols" subtitle="Anaesthesia Department Protocols">
       {/* Existing protocols from database */}
       <CollapsibleCard title="IV Cannulation Request Protocol" icon="syringe">
         <SectionHeader title="Protocol Overview" icon="info-circle" />

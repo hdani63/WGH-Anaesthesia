@@ -1,7 +1,7 @@
 {
   "name": "wgh-anaesthesia-app",
   "version": "1.0.0",
-  "description": "WGH Anaesthesia - Wexford General Hospital",
+  "description": "Anaesthesia Companion App",
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
