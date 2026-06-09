@@ -104,15 +104,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('ANAESTHESIA_UPLOAD_STORE_FILE')) {
+                storeFile file(ANAESTHESIA_UPLOAD_STORE_FILE)
+                storePassword ANAESTHESIA_UPLOAD_STORE_PASSWORD
+                keyAlias ANAESTHESIA_UPLOAD_KEY_ALIAS
+                keyPassword ANAESTHESIA_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Use the production upload keystore when its credentials are present
+            // (configured in ~/.gradle/gradle.properties), otherwise fall back to debug.
+            signingConfig project.hasProperty('ANAESTHESIA_UPLOAD_STORE_FILE') ? signingConfigs.release : signingConfigs.debug
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
