@@ -32,6 +32,8 @@ import ELibraryScreen from '../screens/ELibraryScreen';
 import ITIVAScreen from '../screens/ITIVAScreen';
 import PdfViewerScreen from '../screens/PdfViewerScreen';
 import AIEducationScreen from '../screens/AIEducationScreen';
+import AntimicrobialsScreen from '../screens/AntimicrobialsScreen';
+import RegulatoryScreen from '../screens/RegulatoryScreen';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -92,6 +94,8 @@ function MainNavigator() {
       <MainStack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
       <MainStack.Screen name="ITIVA" component={ITIVAScreen} options={{ title: 'iTIVA' }} />
       <MainStack.Screen name="AIEducation" component={AIEducationScreen} options={{ title: 'AI Education' }} />
+      <MainStack.Screen name="Antimicrobials" component={AntimicrobialsScreen} options={{ title: 'Antimicrobial Guidelines' }} />
+      <MainStack.Screen name="Regulatory" component={RegulatoryScreen} options={{ title: 'Regulatory & Safety' }} />
       <MainStack.Screen name="PdfViewerScreen" component={PdfViewerScreen} options={{ title: 'PDF Viewer' }} />
     </MainStack.Navigator>
   );

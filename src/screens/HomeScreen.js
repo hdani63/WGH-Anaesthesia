@@ -8,20 +8,29 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
-  { key: 'AnaesthesiaCalculators', icon: 'calculator', title: 'Anaesthesia Calculators', badge: 'Core Tools', highlight: true },
+  { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment' },
+  { key: 'Postoperative', icon: 'bed', title: 'Postoperative & Recovery' },
   { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
+  { key: 'ICUCalculators', icon: 'heartbeat', title: 'ICU Calculators' },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
+  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
+  { key: 'QualitySafety', icon: 'shield-alt', title: 'Quality & Safety' },
+  { key: 'GeneralMedical', icon: 'notes-medical', title: 'General Medical' },
+  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
   { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
+  { key: 'CriticalTransfer', icon: 'ambulance', title: 'Critical Transfer', badge: 'New', highlight: true },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
   { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'Protocols', highlight: true },
   { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
-  { key: 'ROTEM', icon: 'vial', title: 'ROTEM', badge: 'Protocols', highlight: true },
+  { key: 'ROTEM', icon: 'vial', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', highlight: true },
   { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
   { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
   { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
   { key: 'AIEducation', title: 'AI Education', highlight: true },
+  { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'Stewardship', highlight: true },
+  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', highlight: true },
 ];
 
 export default function HomeScreen({ navigation }) {
