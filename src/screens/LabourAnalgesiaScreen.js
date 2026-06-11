@@ -293,7 +293,7 @@ export default function LabourAnalgesiaScreen() {
 
         <View style={styles.secondaryAlert}>
           <Text style={styles.secondaryAlertTitle}>After Completion - Seek Advice If:</Text>
-          <Text style={styles.bulletItem}>• Pain relief remains inadequate after catheter adjustment/top-up</Text>
+          <Text style={styles.bulletItem}>• Pain relief inadequate after withdrawing catheter and/or further top-up</Text>
           <Text style={styles.bulletItem}>• Complications develop (for example profound hypotension)</Text>
         </View>
       </CollapsibleCard>
@@ -347,7 +347,12 @@ export default function LabourAnalgesiaScreen() {
           items={[
             'Request for pain relief and not suitable for epidural',
             'Failed epidural (multiple attempts or ineffective)',
-            'Contraindication to epidural (coagulopathy, spinal abnormalities, site infection, local anaesthetic allergy, specific neurological disorders)',
+            'Contraindication to epidural:',
+            '  • Coagulopathy or thrombocytopenia',
+            '  • Spinal abnormalities or previous lumbar surgery with metal',
+            '  • Infection at proposed epidural site or severe sepsis',
+            '  • Allergy to local anaesthetics',
+            '  • Certain neurological disorders',
             'Gestational age >= 37 weeks',
             'Able to understand and operate PCA device',
             'Informed consent obtained',

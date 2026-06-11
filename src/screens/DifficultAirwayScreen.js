@@ -128,15 +128,6 @@ export default function DifficultAirwayScreen() {
             <Text style={styles.outlineBtnText}>Download PDF</Text>
           </TouchableOpacity>
         </View>
-        <GuidelineSection title="Key Points" items={[
-          'Plan A: Facemask ventilation and tracheal intubation',
-          'Plan B: Maintaining oxygenation — Supraglottic Airway Device',
-          'Plan C: Facemask ventilation',
-          'Plan D: Emergency front of neck access (CICO)',
-          'Maximum 3+1 intubation attempts',
-          'Declare failed intubation early',
-        ]} />
-        <Text style={styles.noteText}>Refer to the full DAS PDF for complete algorithms.</Text>
       </CollapsibleCard>
 
       <CollapsibleCard
@@ -258,7 +249,7 @@ export default function DifficultAirwayScreen() {
           },
         ]} />
         <View style={styles.warningBox}>
-          <Text style={styles.warningText}>Important: MILS may be ineffective in preventing vertebral movement and can worsen intubation success rates.</Text>
+          <Text style={styles.warningText}>Important: MILS may be ineffective in preventing vertebral movement and can increase subluxation at injury level while worsening intubation success rates.</Text>
         </View>
       </CollapsibleCard>
 
@@ -269,8 +260,11 @@ export default function DifficultAirwayScreen() {
         onToggle={(nextOpen) => toggleCard('extubation', nextOpen)}
       >
         <ProtocolImage source={AIRWAY_IMAGES.extubation1} label="DAS Extubation Algorithm 1" onPress={() => openImageModal(AIRWAY_IMAGES.extubation1, "DAS Extubation Algorithm 1")} />
+        <Text style={styles.imageCaption}>Basic Algorithm</Text>
         <ProtocolImage source={AIRWAY_IMAGES.extubation2} label="DAS Extubation Algorithm 2" onPress={() => openImageModal(AIRWAY_IMAGES.extubation2, "DAS Extubation Algorithm 2")} />
+        <Text style={styles.imageCaption}>Low Risk Algorithm</Text>
         <ProtocolImage source={AIRWAY_IMAGES.extubation3} label="DAS Extubation Algorithm 3" onPress={() => openImageModal(AIRWAY_IMAGES.extubation3, "DAS Extubation Algorithm 3")} />
+        <Text style={styles.imageCaption}>'At Risk' Algorithm</Text>
         <PanelColumns panels={[
           {
             title: 'Low Risk Extubation',
@@ -310,6 +304,7 @@ export default function DifficultAirwayScreen() {
         <ProtocolImage source={AIRWAY_IMAGES.obstetric3} label="Obstetric Algorithm 3" onPress={() => openImageModal(AIRWAY_IMAGES.obstetric3, "Obstetric Algorithm 3")} />
         <ProtocolImage source={AIRWAY_IMAGES.obstetricTable1} label="Obstetric Table 1" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable1, "Obstetric Table 1")} />
         <ProtocolImage source={AIRWAY_IMAGES.obstetricTable2} label="Obstetric Table 2" onPress={() => openImageModal(AIRWAY_IMAGES.obstetricTable2, "Obstetric Table 2")} />
+        <Text style={styles.desc}>Download the complete Obstetric General Anaesthesia & Failed Intubation algorithms and decision tables for offline reference.</Text>
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.primaryBtn} onPress={() => openPdf(OBSTETRIC_DOC.source, OBSTETRIC_DOC.fileName, OBSTETRIC_DOC.title, navigation)}>
             <Text style={styles.primaryBtnText}>View PDF Guidelines</Text>
@@ -391,7 +386,7 @@ export default function DifficultAirwayScreen() {
             headerColor: '#dc3545',
             borderColor: '#f1aeb5',
             bodyColor: '#fff5f5',
-            items: ['Senior anesthetist', 'ENT surgeon', 'ICU consultant', 'Theatre coordinator'],
+            items: ['Senior Anaesthetist: Call immediately', 'ENT Surgeon: For surgical airway', 'ICU Consultant: Critical care backup', 'Theatre Coordinator: Additional resources'],
           },
           {
             title: 'Equipment Check',
@@ -480,6 +475,7 @@ const styles = StyleSheet.create({
   resourceTitleIcon: { marginRight: 6 },
   resourceTitle: { fontSize: 15, fontWeight: '700', color: COLORS.danger },
   tapHint: { fontSize: 12, color: COLORS.textMuted, textAlign: 'center', marginBottom: SPACING.sm },
+  imageCaption: { fontSize: 13, color: COLORS.primary, fontWeight: '600', textAlign: 'center', marginTop: -4, marginBottom: SPACING.sm },
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.9)',

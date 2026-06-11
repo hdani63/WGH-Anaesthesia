@@ -34,9 +34,14 @@ export default function ResultDisplay({ result, type = 'info' }) {
         },
       ]}
     >
-      <Text style={[styles.text, { color: textColors[type] || textColors.info }]}>
-        {result}
-      </Text>
+      {/* Row wrapper + flex:1 on the Text guarantees the text wraps to the
+          available width instead of overflowing and being clipped, even when
+          an ancestor's width is not definitely sized. */}
+      <View style={styles.textRow}>
+        <Text style={[styles.text, { color: textColors[type] || textColors.info }]}>
+          {result}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -47,8 +52,18 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS,
     borderWidth: 1,
     marginTop: SPACING.sm,
+    // Always span the full available width so long result lines wrap
+    // instead of overflowing and being clipped by the parent card.
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  textRow: {
+    flexDirection: 'row',
+    width: '100%',
   },
   text: {
+    flex: 1,
+    flexShrink: 1,
     fontSize: 14,
     lineHeight: 22,
   },

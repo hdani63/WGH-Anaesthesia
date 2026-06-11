@@ -7,30 +7,28 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
+// Home grid mirrors the Replit web app (templates/index_simple.html): the same
+// 18 tools, in the same order, with matching titles, badges and per-tile colors.
+const BLUE = '#007bff';
 const TOOLS = [
   { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment' },
-  { key: 'Postoperative', icon: 'bed', title: 'Postoperative & Recovery' },
-  { key: 'DifficultAirway', icon: 'lungs', title: 'Difficult Airway', badge: 'DAS Guidelines', highlight: true },
-  { key: 'ICUCalculators', icon: 'heartbeat', title: 'ICU Calculators' },
+  { key: 'DifficultAirway', icon: 'lungs-virus', title: 'Difficult Airway', badge: 'DAS Guidelines', bgColor: BLUE },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
   { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
-  { key: 'QualitySafety', icon: 'shield-alt', title: 'Quality & Safety' },
-  { key: 'GeneralMedical', icon: 'notes-medical', title: 'General Medical' },
   { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
-  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Age-Adjusted', highlight: true },
+  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', bgColor: BLUE },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
-  { key: 'CriticalTransfer', icon: 'ambulance', title: 'Critical Transfer', badge: 'New', highlight: true },
-  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'RA & Anticoag', badge: 'ASRA Guidelines', highlight: true },
-  { key: 'DepartmentalProtocols', icon: 'file-medical', title: 'Departmental Protocols', badge: 'Protocols', highlight: true },
-  { key: 'PerioperativeMedication', icon: 'medkit', title: 'Perioperative Medication', badge: '2024 Guidelines', highlight: true },
-  { key: 'ROTEM', icon: 'vial', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', highlight: true },
-  { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', highlight: true },
-  { key: 'ELibrary', icon: 'book', title: 'E-Library', badge: 'Resources', highlight: true },
-  { key: 'ITIVA', icon: 'flask', title: 'iTIVA', badge: 'Simulator', highlight: true },
-  { key: 'AIEducation', title: 'AI Education', highlight: true },
-  { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'Stewardship', highlight: true },
-  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', highlight: true },
+  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', bgColor: BLUE },
+  { key: 'DepartmentalProtocols', icon: 'clipboard-list', title: 'Departmental Protocols', badge: 'WGH', bgColor: BLUE },
+  { key: 'PerioperativeMedication', icon: 'prescription-bottle-alt', title: 'Perioperative Medication', badge: '2024 Guidelines', bgColor: BLUE },
+  { key: 'ROTEM', icon: 'tint', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', bgColor: '#c62828', badgeColor: '#ffcdd2' },
+  { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', bgColor: BLUE },
+  { key: 'ELibrary', icon: 'book-open', title: 'E-Library', badge: 'Resources', bgColor: BLUE },
+  { key: 'ITIVA', icon: 'syringe', title: 'TIVA', badge: 'PK Simulator', bgColor: '#1a3a5c', iconColor: '#7ecfff', badgeColor: '#7ecfff' },
+  { key: 'AIEducation', title: 'AI Education', gradient: ['#0d6efd', '#6610f2'] },
+  { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'WGH Stewardship', bgColor: '#2e7d32', badgeColor: '#a5d6a7' },
+  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', bgColor: '#198754', badgeColor: '#b7f5d0' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -190,44 +188,72 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.gridWrap}>
           <View style={styles.grid}>
-          {TOOLS.map(tool => (
-            <TouchableOpacity
-              key={tool.key}
-              style={[styles.card, SHADOW, tool.highlight && styles.cardHighlight]}
-              onPress={() => handleToolPress(tool.key)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.cardIconWrap}>
-                {tool.key === 'AIEducation' ? (
-                  <View style={styles.aiIconWrap}>
-                    <View style={styles.aiIconBox}>
-                      <Text style={styles.aiIconText}>AI</Text>
+          {TOOLS.map(tool => {
+            const isColored = !!(tool.bgColor || tool.gradient);
+            const iconColor = tool.iconColor || (isColored ? COLORS.white : COLORS.medicalBlue);
+            const cardInner = (
+              <>
+                <View style={styles.cardIconWrap}>
+                  {tool.key === 'AIEducation' ? (
+                    <View style={styles.aiIconWrap}>
+                      <View style={styles.aiIconBox}>
+                        <Text style={styles.aiIconText}>AI</Text>
+                      </View>
+                      <Text style={styles.aiSparkleMain}>✦</Text>
+                      <Text style={styles.aiSparkleSmall}>✦</Text>
                     </View>
-                    <Text style={styles.aiSparkleMain}>✦</Text>
-                    <Text style={styles.aiSparkleSmall}>✦</Text>
-                  </View>
-                ) : tool.iconSet === 'MaterialCommunityIcons' ? (
-                  <MaterialCommunityIcons
-                    name={tool.icon}
-                    size={22}
-                    color={tool.key === 'LabourAnalgesia' ? COLORS.white : (tool.highlight ? COLORS.white : COLORS.medicalBlue)}
-                  />
-                ) : (
-                  <FontAwesome5
-                    name={tool.icon}
-                    size={22}
-                    color={tool.highlight ? COLORS.white : COLORS.medicalBlue}
-                  />
+                  ) : tool.iconSet === 'MaterialCommunityIcons' ? (
+                    <MaterialCommunityIcons name={tool.icon} size={22} color={iconColor} />
+                  ) : (
+                    <FontAwesome5 name={tool.icon} size={22} color={iconColor} />
+                  )}
+                </View>
+                <Text style={[styles.cardTitle, isColored && styles.cardTitleHighlight]}>
+                  {tool.title}
+                </Text>
+                {tool.badge && (
+                  <Text style={[styles.badge, tool.badgeColor && { color: tool.badgeColor }]}>
+                    {tool.badge}
+                  </Text>
                 )}
-              </View>
-              <Text style={[styles.cardTitle, tool.highlight && styles.cardTitleHighlight]}>
-                {tool.title}
-              </Text>
-              {tool.badge && (
-                <Text style={styles.badge}>{tool.badge}</Text>
-              )}
-            </TouchableOpacity>
-          ))}
+              </>
+            );
+
+            if (tool.gradient) {
+              return (
+                <TouchableOpacity
+                  key={tool.key}
+                  style={styles.cardTouchable}
+                  onPress={() => handleToolPress(tool.key)}
+                  activeOpacity={0.7}
+                >
+                  <LinearGradient
+                    colors={tool.gradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.card, styles.cardGradient, SHADOW]}
+                  >
+                    {cardInner}
+                  </LinearGradient>
+                </TouchableOpacity>
+              );
+            }
+
+            return (
+              <TouchableOpacity
+                key={tool.key}
+                style={[
+                  styles.card,
+                  SHADOW,
+                  isColored && { backgroundColor: tool.bgColor, borderColor: tool.bgColor },
+                ]}
+                onPress={() => handleToolPress(tool.key)}
+                activeOpacity={0.7}
+              >
+                {cardInner}
+              </TouchableOpacity>
+            );
+          })}
           {TOOLS.length % 3 !== 0 && Array.from({ length: 3 - (TOOLS.length % 3) }).map((_, i) => (
             <View key={`spacer-${i}`} style={styles.cardSpacer} />
           ))}
@@ -356,6 +382,14 @@ const styles = StyleSheet.create({
   cardHighlight: {
     backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
+  },
+  cardTouchable: {
+    width: '31%',
+    marginBottom: SPACING.md,
+  },
+  cardGradient: {
+    width: '100%',
+    marginBottom: 0,
   },
   cardIconWrap: { marginBottom: 8 },
   aiIconWrap: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },

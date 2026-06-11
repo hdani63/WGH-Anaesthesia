@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, StatusBar } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, StatusBar, Linking } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -10,6 +10,27 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 export default function ITIVAScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
+  const [embedError, setEmbedError] = useState(false);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    timeoutRef.current = setTimeout(() => {
+      setLoading(false);
+      setEmbedError(true);
+    }, 10000);
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
+
+  const handleLoadSuccess = () => {
+    clearTimeout(timeoutRef.current);
+    setLoading(false);
+  };
+
+  const handleLoadError = () => {
+    clearTimeout(timeoutRef.current);
+    setLoading(false);
+    setEmbedError(true);
+  };
 
   return (
     <LinearGradient
@@ -61,31 +82,51 @@ export default function ITIVAScreen() {
 
         {/* WebView content */}
         <View style={styles.webviewContainer}>
-          {loading && (
+          {loading && !embedError && (
             <View style={styles.loaderContainer}>
               <ActivityIndicator size="large" color={COLORS.primary} />
               <Text style={styles.loadingText}>Loading simulator...</Text>
             </View>
           )}
 
-          <WebView
-            source={{ uri: 'https://simtiva.app/' }}
-            style={[styles.webview, loading && styles.webviewHidden]}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={false}
-            scalesPageToFit={true}
-            userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-            onLoadEnd={() => setLoading(false)}
-            onError={() => {
-              setLoading(false);
-            }}
-            onHttpError={() => {
-              setLoading(false);
-            }}
-            allowsInlineMediaPlayback={true}
-            mediaPlaybackRequiresUserAction={false}
-          />
+          {embedError ? (
+            <View style={styles.errorContainer}>
+              <FontAwesome5 name="exclamation-triangle" size={48} color="#f0ad4e" style={styles.errorIcon} />
+              <Text style={styles.errorTitle}>Unable to load inside the app</Text>
+              <Text style={styles.errorMessage}>
+                simtiva.app has restricted in-app embedding. Use the button below to open it directly.
+              </Text>
+              <TouchableOpacity
+                style={styles.openButton}
+                onPress={() => Linking.openURL('https://simtiva.app/')}
+                activeOpacity={0.7}
+              >
+                <FontAwesome5 name="external-link-alt" size={14} color={COLORS.white} style={styles.openButtonIcon} />
+                <Text style={styles.openButtonText}>Open simtiva.app</Text>
+              </TouchableOpacity>
+              <View style={styles.aboutBlurb}>
+                <Text style={styles.aboutText}>
+                  <Text style={styles.aboutBold}>About SimTIVA: </Text>
+                  A free pharmacokinetic simulator for TIVA planning, covering propofol and remifentanil target-controlled infusion models.
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <WebView
+              source={{ uri: 'https://simtiva.app/' }}
+              style={[styles.webview, loading && styles.webviewHidden]}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={false}
+              scalesPageToFit={true}
+              userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+              onLoadEnd={handleLoadSuccess}
+              onError={handleLoadError}
+              onHttpError={handleLoadError}
+              allowsInlineMediaPlayback={true}
+              mediaPlaybackRequiresUserAction={false}
+            />
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -170,4 +211,45 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   loadingText: { marginTop: SPACING.md, fontSize: 14, color: COLORS.textMuted },
+
+  // Embed-failure fallback
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    paddingHorizontal: SPACING.lg,
+  },
+  errorIcon: { marginBottom: SPACING.md },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.medicalBlue,
+    marginBottom: SPACING.sm,
+    textAlign: 'center',
+  },
+  errorMessage: {
+    fontSize: 14,
+    color: COLORS.textMuted,
+    textAlign: 'center',
+    marginBottom: SPACING.lg,
+    lineHeight: 20,
+  },
+  openButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: BORDER_RADIUS,
+    ...SHADOW,
+  },
+  openButtonIcon: { marginRight: 8 },
+  openButtonText: { color: COLORS.white, fontSize: 16, fontWeight: '600' },
+  aboutBlurb: {
+    marginTop: SPACING.lg,
+    paddingHorizontal: SPACING.md,
+  },
+  aboutText: { fontSize: 13, color: COLORS.textMuted, textAlign: 'center', lineHeight: 18 },
+  aboutBold: { fontWeight: '700' },
 });

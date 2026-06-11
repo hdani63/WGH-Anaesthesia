@@ -9,6 +9,12 @@ import ResultDisplay from '../components/ResultDisplay';
 import { RadioGroup, CheckboxItem, PickerSelect } from '../components/FormControls';
 import { COLORS, SPACING } from '../utils/theme';
 import * as Calc from '../utils/calculators';
+import SurgicalRiskSection from './preop/SurgicalRiskSection';
+import FunctionalNutritionSection from './preop/FunctionalNutritionSection';
+import RespiratorySection from './preop/RespiratorySection';
+import FrailtyCognitionMoodSection from './preop/FrailtyCognitionMoodSection';
+import PostoperativeSection from './preop/PostoperativeSection';
+import ICUSection from './preop/ICUSection';
 
 export default function PreoperativeScreen() {
   const [patient, setPatient] = useState({ weight: '', age: '', height: '', gender: 'male' });
@@ -110,12 +116,12 @@ export default function PreoperativeScreen() {
       {/* RCRI */}
       <CollapsibleCard title="Revised Cardiac Risk Index (RCRI)" icon="heartbeat">
         {[
-          ['highRisk', 'High-risk surgery (vascular, major abdominal, thoracic)'],
+          ['highRisk', 'High-risk surgery (intraperitoneal, intrathoracic, suprainguinal vascular)'],
           ['ischemic', 'History of ischemic heart disease'],
-          ['heartFailure', 'History of heart failure'],
-          ['cerebrovascular', 'History of cerebrovascular disease'],
+          ['heartFailure', 'History of congestive heart failure'],
+          ['cerebrovascular', 'History of cerebrovascular disease (TIA/stroke)'],
           ['diabetes', 'Diabetes requiring insulin'],
-          ['creatinine', 'Preoperative creatinine > 2 mg/dL'],
+          ['creatinine', 'Preoperative creatinine > 2 mg/dL (177 µmol/L)'],
         ].map(([k, label]) => (
           <CheckboxItem key={k} label={label} checked={rcriFactors[k]} onToggle={() => toggleRCRI(k)} />
         ))}
@@ -128,7 +134,7 @@ export default function PreoperativeScreen() {
         <PickerSelect
           label="Mallampati Class"
           options={[
-            { value: '1', label: 'Class I - Full visibility of soft palate, uvula, tonsils' },
+            { value: '1', label: 'Class I - Full visibility of soft palate, uvula, fauces' },
             { value: '2', label: 'Class II - Partial visibility of uvula' },
             { value: '3', label: 'Class III - Only base of uvula visible' },
             { value: '4', label: 'Class IV - No visibility of soft palate' },
@@ -214,7 +220,7 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* Child-Pugh */}
-      <CollapsibleCard title="Child-Pugh Score" icon="vial">
+      <CollapsibleCard title="Child-Pugh Score (Hepatic Function)" icon="vial">
         {[
           ['Bilirubin', cpBili, setCpBili, [{ v: '1', l: '<2 (1pt)' }, { v: '2', l: '2-3 (2pt)' }, { v: '3', l: '>3 (3pt)' }]],
           ['Albumin', cpAlbumin, setCpAlbumin, [{ v: '1', l: '>3.5 (1pt)' }, { v: '2', l: '2.8-3.5 (2pt)' }, { v: '3', l: '<2.8 (3pt)' }]],
@@ -250,9 +256,9 @@ export default function PreoperativeScreen() {
       </CollapsibleCard>
 
       {/* Body Weights */}
-      <CollapsibleCard title="Ideal & Lean Body Weight" icon="balance-scale">
+      <CollapsibleCard title="Ideal & Lean Body Weight / BMI" icon="balance-scale">
         <Text style={styles.hint}>Uses patient information above</Text>
-        <CalcButton title="Calculate IBW & LBW" onPress={() => setBwResult(Calc.calculateBodyWeights(patient))} />
+        <CalcButton title="Calculate IBW, LBW & BMI" onPress={() => setBwResult(Calc.calculateBodyWeights(patient))} />
         {bwResult && <ResultDisplay result={bwResult.text} type={bwResult.type} />}
       </CollapsibleCard>
 
@@ -272,39 +278,13 @@ export default function PreoperativeScreen() {
         {capriniResult && <ResultDisplay result={capriniResult.text} type={capriniResult.type} />}
       </CollapsibleCard>
 
-      {/* Quick Reference Guide */}
-      <View style={styles.quickRef}>
-        <View style={styles.quickRefHeader}>
-          <FontAwesome5 name="info-circle" size={14} color={COLORS.white} style={{ marginRight: 8 }} />
-          <Text style={styles.quickRefTitle}>Preoperative Assessment Quick Reference</Text>
-        </View>
-        <View style={styles.quickRefBody}>
-          <View style={styles.quickRefCol}>
-            <Text style={styles.quickRefHeading}>High-Risk Indicators</Text>
-            {['ASA ≥ III', 'RCRI ≥ 2', 'METs < 4', 'Mallampati III-IV', 'STOP-BANG ≥ 3'].map(i => (
-              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
-            ))}
-          </View>
-          <View style={styles.quickRefCol}>
-            <Text style={styles.quickRefHeading}>Cardiac Risk Factors</Text>
-            {['Known CAD/CHF', 'CVA history', 'Insulin-dependent DM', 'Creatinine > 2 mg/dL', 'High-risk surgery'].map(i => (
-              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
-            ))}
-          </View>
-          <View style={styles.quickRefCol}>
-            <Text style={styles.quickRefHeading}>Airway Concerns</Text>
-            {['Mallampati III-IV', 'Thyromental < 6cm', 'Limited neck mobility', 'Previous difficult airway', 'OSA (STOP-BANG ≥ 3)'].map(i => (
-              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
-            ))}
-          </View>
-          <View style={styles.quickRefCol}>
-            <Text style={styles.quickRefHeading}>Special Considerations</Text>
-            {['Liver disease (Child-Pugh B/C)', 'Renal impairment (CrCl < 60)', 'Poor functional status', 'Emergency procedures', 'Multiple comorbidities'].map(i => (
-              <Text key={i} style={styles.quickRefItem}>• {i}</Text>
-            ))}
-          </View>
-        </View>
-      </View>
+      {/* Additional reference sections (match the web app's full Preoperative page) */}
+      <SurgicalRiskSection patient={patient} />
+      <FunctionalNutritionSection patient={patient} />
+      <RespiratorySection patient={patient} />
+      <FrailtyCognitionMoodSection patient={patient} />
+      <PostoperativeSection patient={patient} />
+      <ICUSection patient={patient} />
     </ScreenWrapper>
   );
 }

@@ -167,7 +167,7 @@ export default function NeuraxialAnticoagulationScreen() {
             <DataTable headers={['Drug', 'Low Dose Indications', 'High Dose Indications', 'Pre-Procedure Timing', 'Post-Procedure Timing', 'Catheter Removal']} columnWidths={[170, 190, 190, 170, 180, 170]} rows={[
               ['Rivaroxaban\n(Xarelto)', '10 mg daily\nDVT/PE prophylaxis post-surgery', '15-20 mg daily\nDVT/PE treatment, AF', '72 hours', '6 hours after catheter removal', '6 hours before restarting'],
               ['Apixaban\n(Eliquis)', '2.5 mg BID\nDVT/PE prophylaxis', '5-10 mg BID\nDVT/PE treatment, AF', '72 hours', '6 hours after catheter removal', '6 hours before restarting'],
-              ['Edoxaban\n(Lixiana)', 'N/A', '30-60 mg daily\nDVT/PE treatment, AF', '72 hours', '6 hours after catheter removal', '6 hours before restarting'],
+              ['Edoxaban\n(Savaysa/Lixiana)', 'N/A', '30-60 mg daily\nDVT/PE treatment, AF', '72 hours', '6 hours after catheter removal', '6 hours before restarting'],
               ['Dabigatran\n(Pradaxa)', '110-220 mg daily\nDVT/PE prophylaxis', '150 mg BID\nDVT/PE treatment, AF', '48-72 hours*', '6 hours after catheter removal', '6 hours before restarting'],
             ]} />
           </CollapsibleCard>
@@ -178,7 +178,7 @@ export default function NeuraxialAnticoagulationScreen() {
             color={COLORS.warning}
             bgColor="#fff9e6"
             items={[
-              '48 hours if CrCl >80 mL/min',
+              '48 hours if normal renal function (CrCl >80 mL/min)',
               '72 hours if CrCl 50-80 mL/min',
               '96 hours if CrCl 30-50 mL/min',
               'Avoid if CrCl <30 mL/min or with P-gp inhibitors',
@@ -239,9 +239,9 @@ export default function NeuraxialAnticoagulationScreen() {
 
           <CollapsibleCard title="Bridging Therapy">
             <DataTable headers={['Risk Category', 'Clinical Conditions', 'Recommendation', 'Agent & Timing']} columnWidths={[170, 260, 180, 230]} rows={[
-              ['High Risk\nAnnual risk >10%', 'Mechanical mitral valve\nRecent VTE\nAF with CHADS2 >=5\nSevere thrombophilia', 'Bridging Recommended', 'UFH or LMWH\nStart 36-48h after warfarin stop\nStop 4-6h pre-procedure\nResume 12-24h post-procedure'],
-              ['Moderate Risk\nAnnual risk 5-10%', 'AF with CHADS2 3-4\nVTE within 3-12 months\nNon-severe thrombophilia\nActive cancer', 'Consider Bridging', 'Individual assessment based on patient factors and bleeding risk'],
-              ['Low Risk\nAnnual risk <5%', 'AF with CHADS2 0-2\nVTE >12 months ago\nBioprosthetic valve >3 months', 'No Bridging', 'Stop warfarin 5 days pre-procedure and resume without heparin bridge'],
+              ['High Risk\nAnnual risk >10%', 'Mechanical mitral valve\nMechanical aortic valve + risk factors\nVTE within 3 months\nAF with CHADS₂ ≥5 or stroke <3 months\nSevere thrombophilia', 'Bridging Recommended', 'UFH or LMWH\nStart 36-48h after warfarin stop\nStop 4-6h pre-procedure\nResume 12-24h post-procedure'],
+              ['Moderate Risk\nAnnual risk 5-10%', 'Bileaflet aortic valve + risk factors\nAF with CHADS₂ 3-4\nVTE within 3-12 months\nNon-severe thrombophilia\nActive cancer', 'Consider Bridging', 'Individual assessment based on patient factors and bleeding risk'],
+              ['Low Risk\nAnnual risk <5%', 'Bileaflet aortic valve without risk factors\nAF with CHADS₂ 0-2\nVTE >12 months ago\nBioprosthetic valve >3 months', 'No Bridging', 'Stop warfarin 5 days pre-procedure and resume without heparin bridge'],
             ]} />
 
             <View style={styles.protocolWrap}>
@@ -252,7 +252,7 @@ export default function NeuraxialAnticoagulationScreen() {
                 bgColor="#fff8e1"
                 items={[
                   'Day -5: Stop warfarin',
-                  'Day -3: Check INR and start bridging if indicated',
+                  'Day -3: Check INR\n  • If INR >2.0: Start bridging\n  • If INR <2.0: Delay bridging',
                   'Day -1: Check INR (target <1.5), last LMWH dose',
                   'Day 0: Confirm INR <1.4-1.5 before neuraxial block',
                 ]}
@@ -263,10 +263,11 @@ export default function NeuraxialAnticoagulationScreen() {
                 color={COLORS.success}
                 bgColor="#eefaf0"
                 items={[
-                  'Day 0 evening: Resume warfarin',
+                  'Day 0 Evening: Resume warfarin (usual dose)\n  • Consider loading dose if high risk',
                   'Day +1: Start bridging 12-24h post-procedure if hemostasis adequate',
                   'Day +2 onward: Continue daily INR checks',
-                  'Stop bridging when INR is therapeutic (>=2.0)',
+                  'Stop bridging when INR is therapeutic (≥2.0)',
+                  'Target INR reached: Stop bridging therapy\n  • Continue warfarin monitoring',
                 ]}
               />
             </View>
@@ -304,10 +305,10 @@ export default function NeuraxialAnticoagulationScreen() {
 
           <CollapsibleCard title="Special Situations">
             <DataTable headers={['Clinical Scenario', 'Recommendation', 'Monitoring', 'Additional Considerations']} columnWidths={[170, 220, 190, 210]} rows={[
-              ['Emergency Surgery', 'Consider vitamin K 2.5-5 mg IV\nFFP or PCC if urgent\nAlternative anaesthesia technique', 'Serial INR monitoring\nClose neurologic observation', 'Discuss with hematology\nDocument risk-benefit assessment'],
-              ['Renal Impairment\nCrCl <30 mL/min', 'Avoid DOAC where possible\nReduce LMWH dose\nConsider monitored UFH', 'Anti-Xa for LMWH\nFrequent INR checks', 'Nephrology input\nExtended drug clearance awareness'],
-              ['Pregnancy', 'LMWH preferred\nWeight-based dosing\nSwitch to UFH near delivery', 'Anti-Xa levels\nPlatelet count\nFetal monitoring', 'Obstetric consultation\nLabor epidural planning'],
-              ['Active Cancer', 'LMWH often preferred\nExtended prophylaxis in selected patients', 'Platelet count\nAnti-Xa if indicated', 'Coordinate with oncology\nConsider chemotherapy timing'],
+              ['Emergency Surgery', 'Consider vitamin K 2.5-5 mg IV\nFFP or PCC if urgent\nAlternative anaesthesia technique', 'Serial INR monitoring\nClose neurologic observation\nICU monitoring if indicated', 'Discuss with hematology\nDocument risk-benefit assessment'],
+              ['Renal Impairment\nCrCl <30 mL/min', 'Avoid DOAC where possible\nReduce LMWH dose by 50%\nConsider monitored UFH', 'Anti-Xa for LMWH\nFrequent INR checks', 'Nephrology input\nExtended drug clearance awareness\nConsider dialysis timing'],
+              ['Pregnancy', 'LMWH preferred\nWeight-based dosing\nSwitch to UFH near delivery', 'Anti-Xa levels\nPlatelet count\nFetal monitoring', 'Obstetric consultation\nLabor epidural planning\nPostpartum bridging'],
+              ['Active Cancer', 'LMWH often preferred\nExtended prophylaxis in selected patients', 'Platelet count\nAnti-Xa if indicated\nBleeding complications', 'Coordinate with oncology\nConsider chemotherapy timing\nPerformance status'],
             ]} />
 
             <InfoBox

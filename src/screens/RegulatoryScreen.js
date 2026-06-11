@@ -134,7 +134,7 @@ export default function RegulatoryScreen() {
         <ColumnHeading icon="play-circle" color={COLORS.success}>Before Use</ColumnHeading>
         <Numbered n={1}>Confirm you are a qualified healthcare professional or supervised trainee.</Numbered>
         <Numbered n={2}>Ensure you have a stable connection for up-to-date content.</Numbered>
-        <Numbered n={3}>Verify the app version matches the current release.</Numbered>
+        <Numbered n={3}>Verify the app version in the footer matches the current release.</Numbered>
         <Numbered n={4}>Do not use this app as your sole reference — always cross-check with BNF, SPC, and local protocols.</Numbered>
 
         <ColumnHeading icon="cogs" color={COLORS.primary}>During Use</ColumnHeading>
@@ -148,7 +148,7 @@ export default function RegulatoryScreen() {
         <Numbered n={1}>Document clinical decisions in the patient record — not in this app.</Numbered>
         <Numbered n={2}>Report any discrepancies or errors to the developer promptly.</Numbered>
         <Numbered n={3}>Do not share screenshots of patient-specific outputs outside your clinical record system.</Numbered>
-        <Numbered n={4}>Check for updates by verifying the version shown in the app.</Numbered>
+        <Numbered n={4}>Check for updates by verifying the version shown in the footer.</Numbered>
       </InfoCard>
 
       {/* Warnings & Limitations */}
@@ -182,6 +182,7 @@ export default function RegulatoryScreen() {
         <Bullet>All clinical calculations are processed locally on your device.</Bullet>
         <Bullet>No patient identifiers should be entered into this app.</Bullet>
         <Bullet>If a patient identifier is accidentally entered, it is not transmitted or retained beyond the current session.</Bullet>
+        <Bullet>For further details see the Privacy Policy.</Bullet>
       </InfoCard>
 
       {/* Feedback & Incident Reporting */}
@@ -203,7 +204,7 @@ export default function RegulatoryScreen() {
           <FontAwesome5 name="bug" size={20} color={COLORS.danger} style={{ marginBottom: 6 }} />
           <Text style={styles.reportTitle}>Technical Issue</Text>
           <Text style={styles.reportText}>Report calculator malfunctions, display errors, or app crashes.</Text>
-          <TouchableOpacity style={[styles.reportBtn, { backgroundColor: COLORS.danger }]} onPress={() => mailto('Anaesthesia Companion Technical Issue', 'Version: v2.1.0\nDevice: \nIssue description: ')}>
+          <TouchableOpacity style={[styles.reportBtn, { backgroundColor: COLORS.danger }]} onPress={() => mailto('Anaesthesia Companion Technical Issue', 'Version: v2.1.0\nDevice/Browser: \nIssue description: ')}>
             <Text style={styles.reportBtnText}>Report Issue</Text>
           </TouchableOpacity>
         </View>

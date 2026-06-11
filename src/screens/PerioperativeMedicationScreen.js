@@ -240,11 +240,12 @@ const MEDICATIONS = [
   { name: 'Prasugrel (Effient)', cls: 'Antiplatelet', rec: 'Hold', stop: '7 days', restart: '24–48h if hemostasis achieved', notes: 'As above' },
   { name: 'Ticagrelor (Brilinta)', cls: 'Antiplatelet', rec: 'Hold', stop: '5 days', restart: '24–48h if hemostasis achieved', notes: 'As above' },
   { name: 'Warfarin (Coumadin)', cls: 'Anticoagulant (VKA)', rec: 'Hold/bridge if high VTE risk', stop: '5 days', restart: 'When INR <2, hemostasis', notes: 'Bridge with LMWH for high-risk VTE/valve' },
-  { name: 'Apixaban (Eliquis)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'Longer for renal impairment' },
-  { name: 'Rivaroxaban (Xarelto)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'Longer for renal impairment' },
-  { name: 'Dabigatran (Pradaxa)', cls: 'DOAC', rec: 'Hold', stop: '24–72h (72h if renal impaired)', restart: '24–48h if no bleeding', notes: 'Renally excreted' },
-  { name: 'Edoxaban (Savaysa, Lixiana)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'As above' },
+  { name: 'Apixaban (Eliquis)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'Longer for renal impairment. For neuraxial anaesthesia: longer off period' },
+  { name: 'Rivaroxaban (Xarelto)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'Longer for renal impairment. For neuraxial anaesthesia: longer off period' },
+  { name: 'Dabigatran (Pradaxa)', cls: 'DOAC', rec: 'Hold', stop: '24–72h (72h if renal impaired)', restart: '24–48h if no bleeding', notes: 'Renally excreted. For neuraxial anaesthesia: longer off period' },
+  { name: 'Edoxaban (Savaysa, Lixiana)', cls: 'DOAC', rec: 'Hold', stop: '24–48h', restart: '24–48h if no bleeding', notes: 'As above. For neuraxial anaesthesia: longer off period' },
   { name: 'Enoxaparin (Lovenox)', cls: 'LMWH', rec: 'Hold', stop: '12–24h', restart: '12–24h if no bleeding', notes: 'Use for bridging' },
+  { name: 'Dalteparin (Fragmin)', cls: 'LMWH', rec: 'Hold', stop: '12–24h', restart: '12–24h if no bleeding', notes: 'Use for bridging; same as enoxaparin LMWH timing' },
   { name: 'Heparin (unfractionated)', cls: 'Anticoagulant', rec: 'Hold', stop: '4–6h', restart: '12–24h if no bleeding', notes: 'IV infusion stopped ~4hrs pre-op' },
   { name: 'Ibuprofen', cls: 'NSAID', rec: 'Hold', stop: '24h', restart: 'When bleeding risk resolved', notes: 'Increased bleeding risk' },
   { name: 'Naproxen', cls: 'NSAID', rec: 'Hold', stop: '3 days', restart: 'When bleeding risk resolved', notes: 'Increased bleeding risk' },
@@ -265,7 +266,9 @@ const MEDICATIONS = [
   { name: 'Metformin', cls: 'Biguanide (oral diabetic)', rec: 'Hold', stop: '24–48h (major/contrast), day of', restart: 'When eating, renal fxn stable', notes: 'Prevent lactic acidosis' },
   { name: 'Sulfonylureas (Glyburide, Glipizide, Gliclazide, etc.)', cls: 'Oral diabetic', rec: 'Hold', stop: 'Day of surgery', restart: 'When eating', notes: 'Hypoglycemia risk' },
   { name: 'Empagliflozin (Jardiance), Dapagliflozin (Farxiga), Canagliflozin (Invokana), Ertugliflozin (Steglatro)', cls: 'SGLT2 inhibitor', rec: 'Hold', stop: '3 days (4 for ertugliflozin)', restart: 'When eating, normal renal fxn', notes: 'Risk of euglycemic DKA' },
-  { name: 'GLP-1 agonists (Liraglutide, Semaglutide, Exenatide, Dulaglutide, etc.)', cls: 'Injectable diabetic', rec: 'Hold', stop: 'Daily: day of surgery; Weekly (semaglutide/dulaglutide): 7 days prior', restart: 'When eating, no vomiting', notes: 'Aspiration risk — weekly preparations require 1-week hold (SAMBA/ASA 2023)' },
+  { name: 'GLP-1 agonists (Liraglutide, Semaglutide, Exenatide, Dulaglutide, Tirzepatide, etc.)', cls: 'Injectable diabetic', rec: 'Hold', stop: 'Daily: day of surgery; Weekly (semaglutide/dulaglutide/tirzepatide): 7 days prior', restart: 'When eating, no vomiting', notes: 'Aspiration risk — weekly preparations require 1-week hold (SAMBA/ASA 2023)' },
+  { name: 'Insulin (Basal/bolus)', cls: 'Insulin (diabetes)', rec: 'Hold short-acting, reduce long-acting on morning of surgery; restart when eating, titrate to intake', stop: 'Morning of surgery (short-acting); reduce long-acting', restart: 'When eating, titrate to intake', notes: 'Avoid hypo/hyperglycaemia; follow local insulin protocol' },
+  { name: 'TZDs / Pioglitazone (Thiazolidinediones)', cls: 'Oral diabetic', rec: 'Hold', stop: 'Day of surgery', restart: 'When eating, fluid status stable', notes: 'Risk of fluid retention/oedema; hold perioperatively' },
   { name: 'Metoprolol, Atenolol, Bisoprolol, Propranolol', cls: 'Beta-blocker', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'Do not stop abruptly; may worsen cardiac risk' },
   { name: 'All ACE inhibitors', cls: 'ACE inhibitor', rec: 'Hold morning of surgery', stop: 'Morning of surgery', restart: 'When stable, normotensive', notes: 'Risk of intra-op hypotension' },
   { name: 'All ARBs', cls: 'ARB', rec: 'Hold morning of surgery', stop: 'Morning of surgery', restart: 'When stable, normotensive', notes: 'Risk of intra-op hypotension' },
@@ -275,7 +278,7 @@ const MEDICATIONS = [
   { name: 'Levothyroxine, Liothyronine', cls: 'Thyroid hormone', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'Maintain euthyroid state' },
   { name: 'Methimazole, Propylthiouracil (PTU)', cls: 'Antithyroid', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'Prevent thyroid storm' },
   { name: 'Prednisone, Hydrocortisone, Dexamethasone', cls: 'Corticosteroid', rec: 'Continue; consider stress dose', stop: 'N/A', restart: 'N/A', notes: 'Prevent adrenal crisis in chronic users' },
-  { name: 'Etanercept, Adalimumab, Infliximab, Certolizumab', cls: 'Biologic DMARD', rec: 'Hold 1–2 dosing cycles before surgery', stop: '1–2 cycles', restart: 'After wound healing, no infection', notes: 'Per ACR 2022 guidelines' },
+  { name: 'Etanercept, Adalimumab, Infliximab, Certolizumab', cls: 'Biologic DMARD', rec: 'Hold 1–2 dosing cycles before surgery', stop: '1–2 cycles', restart: 'After wound healing, no infection', notes: 'Per ACR 2017 & 2022 guidelines' },
   { name: 'Methotrexate, Hydroxychloroquine, Sulfasalazine, Leflunomide', cls: 'Nonbiologic DMARD', rec: 'Continue (unless infection/renal/lung dz)', stop: 'N/A', restart: 'N/A', notes: 'Per ACR 2022 guidelines' },
   { name: 'Omeprazole, Pantoprazole, Famotidine', cls: 'PPI/H2-blocker', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'No important peri-op issues' },
   { name: 'Salbutamol (Albuterol), Ipratropium', cls: 'Inhaled bronchodilator', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'Maintain asthma/COPD control' },
@@ -354,7 +357,7 @@ function getSectionKey(medication) {
   if (cls.includes('antiplatelet') || cls.includes('anticoagulant')) return 'antithrombotic';
   if (cls.includes('nsaid')) return 'nsaid';
   if (cls.includes('ssri') || cls.includes('snri') || cls.includes('tca') || cls.includes('antipsychotic') || cls.includes('maoi') || cls.includes('mood stabilizer')) return 'psychiatric';
-  if (cls.includes('diabetes')) return 'diabetes';
+  if (cls.includes('diabetes') || cls.includes('insulin')) return 'diabetes';
   if (cls.includes('beta-blocker') || cls.includes('ace inhibitor') || cls.includes('arb') || cls.includes('ccb') || cls.includes('diuretic') || cls.includes('statin')) return 'cardio';
   if (cls.includes('thyroid') || cls.includes('corticosteroid')) return 'endocrine';
   if (cls.includes('biologic') || cls.includes('dmard')) return 'immuno';
@@ -407,7 +410,7 @@ export default function PerioperativeMedicationScreen() {
     if (c.includes('anticoagulant')) return { backgroundColor: COLORS.danger, color: COLORS.white };
     if (c.includes('antiplatelet')) return { backgroundColor: COLORS.warning, color: COLORS.dark };
     if (c.includes('ssri') || c.includes('snri') || c.includes('tca') || c.includes('antipsychotic') || c.includes('mood stabilizer')) return { backgroundColor: COLORS.info, color: COLORS.white };
-    if (c.includes('diabetes')) return { backgroundColor: COLORS.success, color: COLORS.white };
+    if (c.includes('diabetes') || c.includes('insulin')) return { backgroundColor: COLORS.success, color: COLORS.white };
     if (c.includes('thyroid') || c.includes('corticosteroid')) return { backgroundColor: COLORS.dark, color: COLORS.white };
     if (c.includes('biologic') || c.includes('dmard')) return { backgroundColor: COLORS.warning, color: COLORS.dark };
     if (c.includes('herbal') || c.includes('hormonal') || c.includes('ppi') || c.includes('bronchodilator')) return { backgroundColor: COLORS.light, color: COLORS.dark };
@@ -574,7 +577,7 @@ export default function PerioperativeMedicationScreen() {
               <Text style={styles.updatesTitle}>Key Updates (2024)</Text>
               <Text style={styles.updateItem}>• SGLT2 inhibitors: hold 3 days pre-op (4 days for ertugliflozin) to reduce euglycemic DKA risk.</Text>
               <Text style={styles.updateItem}>• Biologics/DMARDs: most non-biologic DMARDs can continue; biologics often held 1-2 dosing cycles pre-op.</Text>
-              <Text style={styles.updateItem}>• GLP-1 agonists: hold day before/day of surgery per local anaesthesia protocol due to aspiration risk.</Text>
+              <Text style={styles.updateItem}>• GLP-1 agonists: daily agents (liraglutide, exenatide) — hold day of surgery; weekly agents (semaglutide, dulaglutide, tirzepatide) — hold 1 week prior due to prolonged delayed gastric emptying and aspiration risk (SAMBA/ASA 2023).</Text>
               <Text style={styles.updateItem}>• Oral contraceptives/HRT: hold around 4 weeks before major high-VTE-risk surgery.</Text>
               <Text style={styles.updateItem}>• ACE inhibitors/ARBs: hold morning of surgery and restart when stable.</Text>
               <Text style={styles.updateItem}>• Antiplatelets: individualize around stent/ACS status; consult cardiology when needed.</Text>
@@ -632,6 +635,25 @@ export default function PerioperativeMedicationScreen() {
                 Advise all patients to stop herbal medications and supplements at least 1–2 weeks before elective surgery. Many interact significantly with anaesthetic agents, anticoagulants, and other perioperative drugs. Always take a full herbal/supplement history at preoperative assessment.
               </Text>
             </View>
+          </View>
+
+          {/* Risk Category Legend */}
+          <View style={styles.herbalLegendRow}>
+            {[
+              { label: 'Bleeding', bg: COLORS.danger, color: COLORS.white },
+              { label: 'Sedation / CNS', bg: '#ffc107', color: COLORS.dark },
+              { label: 'Cardiovascular', bg: COLORS.info, color: COLORS.white },
+              { label: 'Hypoglycaemia', bg: COLORS.success, color: COLORS.white },
+              { label: 'Drug Interactions', bg: COLORS.dark, color: COLORS.white },
+              { label: 'GI / Electrolyte', bg: '#fd7e14', color: COLORS.white },
+              { label: 'Immune / Allergy', bg: COLORS.primary, color: COLORS.white },
+              { label: 'Hormonal', bg: '#8e44ad', color: COLORS.white },
+              { label: 'Neurotoxicity', bg: COLORS.dark, color: COLORS.white },
+            ].map((item, idx) => (
+              <View key={`legend-${idx}`} style={[styles.herbalLegendBadge, { backgroundColor: item.bg }]}>
+                <Text style={[styles.herbalLegendText, { color: item.color }]}>{item.label}</Text>
+              </View>
+            ))}
           </View>
 
           <View style={styles.chartCard}>
@@ -800,6 +822,23 @@ const styles = StyleSheet.create({
   noticeText: { fontSize: 12, color: COLORS.text, lineHeight: 17, marginBottom: 2 },
   noticeSubText: { fontSize: 11, color: COLORS.textMuted, lineHeight: 16 },
 
+  herbalLegendRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginBottom: SPACING.sm,
+  },
+  herbalLegendBadge: {
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginRight: 4,
+    marginBottom: 4,
+  },
+  herbalLegendText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
   herbalAlertBox: {
     backgroundColor: '#fff3cd',
     borderRadius: 8,

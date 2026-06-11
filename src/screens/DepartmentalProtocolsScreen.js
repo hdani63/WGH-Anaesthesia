@@ -172,7 +172,7 @@ export default function DepartmentalProtocolsScreen() {
 
         <SectionHeader title="Key Principles" icon="lightbulb" color={COLORS.success} />
         <InfoSection title="Rationale" icon="check-circle" items={[
-          'Optimizes Anesthesiology resource utilization',
+          'Optimizes Anaesthesiology resource utilization',
           'Ensures appropriate escalation pathway',
           'Provides consultant-level oversight for difficult cases',
           'Maintains audit trail for quality improvement',
@@ -195,44 +195,49 @@ export default function DepartmentalProtocolsScreen() {
             'Medical teams: 10 teams of Medical NCHDs operating at ward level',
             'Surgical teams: 4 teams of Surgical NCHDs operating at ward level',
             'At least one person per shift should possess the required cannulation skills',
-            'Attempt cannulation within your specialty before involving Anesthesiology',
+            'Attempt cannulation within your specialty before involving Anaesthesiology',
           ]}
         />
 
         <StepCard
           step="2"
           title="Notify Admitting Consultant"
-          intro="If not successful, the primary team must notify the patient\'s admitting consultant."
+          intro="If not successful, the primary team must notify the patient's admitting consultant."
           items={[
-            'Admitting consultant is made aware of a sick patient with no IV access',
-            'Confirms registrar-level cannulation attempts have failed',
-            'Triggers formal cross-specialty request for assistance',
+            'They have a sick patient with no IV access',
+            'Their Registrar is unable to cannulate',
+            'It is necessary for the Admitting Consultant to request assistance from another specialty',
           ]}
         />
 
         <StepCard
           step="3"
-          title="Contact Consultant Anesthesiologist"
-          intro="The admitting consultant should contact the consultant anesthesiologist on-call."
+          title="Contact Consultant Anaesthesiologist"
+          intro="The admitting consultant should contact the consultant anaesthesiologist on-call."
           items={[
-            'Who to contact: duty consultant of the day, based in theatre',
-            'How to contact: dial O and request switchboard connection',
-            'Duty consultant coordinates available anaesthesia staff response',
-            'Best placed to identify the least-delay response clinician',
+            'Who to contact: Duty Consultant of the day, based in Theatre',
+            "How to contact: Dial 'O' and request Switchboard to connect directly with the Anaesthesiology Duty Consultant",
+            'Why this level: The Duty Consultant is the coordinator of Anaesthesiology staff',
+            'Benefit: Best placed to identify which Anaesthesiologist can assist with least delay',
           ]}
         />
 
-        <StepCard
-          step="4"
-          title="Complete Audit Documentation"
-          intro="A member of the admitting team should complete the audit process in parallel."
-          items={[
-            'Bring a patient sticker to theatre reception',
-            'Locate the IV Cannulation Request Audit Book',
-            'Record patient details, requesting team, location, request time, and requester',
-            'Data contributes to rolling feedback and quality improvement',
-          ]}
-        />
+        <View style={styles.stepCard}>
+          <View style={styles.stepTitleRow}>
+            <View style={styles.stepNumberBadge}><Text style={styles.stepNumberText}>4</Text></View>
+            <Text style={styles.stepTitle}>Complete Audit Documentation</Text>
+          </View>
+          <Text style={styles.stepIntro}>Meanwhile, a member of the admitting team should complete the audit process.</Text>
+          <Text style={styles.sectionItem}>• Bring a <Text style={{fontWeight:'700'}}>Patient Sticker</Text> to Theatre Reception</Text>
+          <Text style={styles.sectionItem}>• Locate the <Text style={{fontWeight:'700'}}>IV Cannulation Request Audit Book</Text></Text>
+          <Text style={styles.sectionItem}>• Insert details of:</Text>
+          <Text style={[styles.sectionItem, {paddingLeft: 20}]}>– Patient information</Text>
+          <Text style={[styles.sectionItem, {paddingLeft: 20}]}>– Team requesting</Text>
+          <Text style={[styles.sectionItem, {paddingLeft: 20}]}>– Location</Text>
+          <Text style={[styles.sectionItem, {paddingLeft: 20}]}>– Time Requested</Text>
+          <Text style={[styles.sectionItem, {paddingLeft: 20}]}>– Person Requesting</Text>
+          <Text style={styles.sectionItem}>• Note: There will be intermittent feedback from this rolling audit</Text>
+        </View>
 
         <SectionHeader title="Operating Hours & Out-of-Hours Procedure" icon="clock" />
         <DataTable
@@ -241,9 +246,9 @@ export default function DepartmentalProtocolsScreen() {
           rows={[
             [
               'WEEKDAYS\n09:00 - 17:00',
-              'Admitting consultant contacts anesthesiology duty consultant via switchboard (dial O)',
-              'Follow 4-step process, duty consultant coordinates and deploys best available anesthesiologist',
-              'Required: bring patient sticker to theatre reception and complete audit book',
+              "Admitting Consultant contacts Anaesthesiology Duty Consultant via Switchboard (dial 'O')",
+              'Follow 4-step process above\nDuty Consultant coordinates response\nBest available Anaesthesiologist deployed\nMay not be 1st or 2nd on-call',
+              'Required: Bring Patient Sticker to Theatre Reception. Complete Audit Book',
             ],
             [
               'OUT OF HOURS\n17:00 - 09:00\nWeekends',
@@ -278,7 +283,7 @@ export default function DepartmentalProtocolsScreen() {
           <FontAwesome5 name="exclamation-triangle" size={14} color="#856404" style={styles.importantNoteIcon} />
           <Text style={styles.importantNote}>
             <Text style={styles.importantNoteStrong}>Important Distinction: </Text>
-            If central venous cannulation is required, this must continue as a formal consultation with Anesthesiology in the existing manner and be performed in theatre under sterile conditions.
+            If central venous cannulation is required, this should continue to be arranged as a formal Consultation with Anaesthesiology in the existing manner and will be performed in Theatre under sterile and safe conditions in an Anaesthesiology Induction Room.
           </Text>
         </View>
 
@@ -286,13 +291,13 @@ export default function DepartmentalProtocolsScreen() {
         <View style={styles.contactColumn}>
           <ContactCard
             title="Weekdays 09:00-17:00"
-            detail="Anesthesiology Duty Consultant via Hospital Switchboard. Dial 0 and request Anesthesiology Duty Consultant."
+            detail={'Anaesthesiology Duty Consultant via Hospital Switchboard. Dial: 0. Request: "Anaesthesiology Duty Consultant"'}
             icon="user-md"
             borderColor={COLORS.success}
           />
           <ContactCard
             title="Out of Hours"
-            detail="1st-on-call Anesthesiologist direct contact via Switchboard. Available 17:00-09:00 and weekends."
+            detail="1st-on-call Anaesthesiologist. Direct contact required. Contact via Hospital Switchboard. Available 17:00-09:00 and weekends."
             icon="clock"
             borderColor={COLORS.warning}
           />

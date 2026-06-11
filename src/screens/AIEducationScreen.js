@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   levelChipText: { fontSize: 11, fontWeight: '700', color: '#1a3a5c' },
   levelChipTextActive: { color: COLORS.white },
   resultScroll: { maxHeight: 250 },
-  resultBox: { marginTop: SPACING.md, borderWidth: 1, borderColor: COLORS.border, borderRadius: BORDER_RADIUS, overflow: 'hidden', backgroundColor: COLORS.white },
+  resultBox: { marginTop: SPACING.md, borderWidth: 1, borderColor: COLORS.border, borderRadius: BORDER_RADIUS, overflow: 'hidden', backgroundColor: COLORS.white, width: '100%', alignSelf: 'stretch' },
   resultHeader: { backgroundColor: COLORS.medicalBlue, paddingHorizontal: SPACING.md, paddingVertical: 10 },
   resultHeaderText: { color: COLORS.white, fontWeight: '700' },
   resultContent: { padding: SPACING.md },
