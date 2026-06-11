@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: SPACING.md,
     paddingBottom: 40,
+    alignItems: 'stretch',
   },
   appHeader: {
     flexDirection: 'row',

@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderRadius: BORDER_RADIUS,
     marginBottom: SPACING.sm,
-    overflow: 'hidden',
+    width: '100%',
+    alignSelf: 'stretch',
   },
   header: {
     flexDirection: 'row',
@@ -105,5 +106,8 @@ const styles = StyleSheet.create({
   },
   body: {
     padding: SPACING.md,
+    width: '100%',
+    alignSelf: 'stretch',
+    minWidth: 0,
   },
 });

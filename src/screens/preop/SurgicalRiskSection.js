@@ -19,7 +19,7 @@ function calculateSORT(asa, urgency, severity, malignancy, age) {
   const risk = p < 1 ? 'Low' : p < 5 ? 'Moderate' : 'High';
   const type = p < 1 ? 'success' : p < 5 ? 'warning' : 'danger';
   return {
-    text: `Predicted 30-day in-hospital mortality: ${prob}%\nRisk category: ${risk}\n\nSORT model (Protopapa et al., Br J Anaesth 2014). For elective & emergency non-cardiac surgery.`,
+    text: `Predicted 30-day in-hospital mortality: ${prob}%\nRisk category: ${risk}\n\nSORT model (Protopapa et al., Br J Anaesth 2014).\nFor elective & emergency non-cardiac surgery.`,
     type,
   };
 }

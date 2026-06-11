@@ -24,6 +24,9 @@ export default function ResultDisplay({ result, type = 'info' }) {
     info: '#bee5eb',
   };
 
+  const color = textColors[type] || textColors.info;
+  const lines = String(result).split('\n');
+
   return (
     <View
       style={[
@@ -34,14 +37,11 @@ export default function ResultDisplay({ result, type = 'info' }) {
         },
       ]}
     >
-      {/* Row wrapper + flex:1 on the Text guarantees the text wraps to the
-          available width instead of overflowing and being clipped, even when
-          an ancestor's width is not definitely sized. */}
-      <View style={styles.textRow}>
-        <Text style={[styles.text, { color: textColors[type] || textColors.info }]}>
-          {result}
-        </Text>
-      </View>
+      {lines.map((line, i) => (
+        <View key={i} style={styles.lineRow}>
+          <Text style={[styles.text, { color }]}>{line.length > 0 ? line : ' '}</Text>
+        </View>
+      ))}
     </View>
   );
 }
@@ -52,18 +52,18 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS,
     borderWidth: 1,
     marginTop: SPACING.sm,
-    // Always span the full available width so long result lines wrap
-    // instead of overflowing and being clipped by the parent card.
-    width: '100%',
     alignSelf: 'stretch',
+    width: '100%',
+    minWidth: 0,
   },
-  textRow: {
+  lineRow: {
     flexDirection: 'row',
     width: '100%',
   },
   text: {
     flex: 1,
     flexShrink: 1,
+    minWidth: 0,
     fontSize: 14,
     lineHeight: 22,
   },
