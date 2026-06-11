@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Modal, Pressable, View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert, Modal, Pressable, View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,30 +11,31 @@ import { useAuth } from '../context/AuthContext';
 // 18 tools, in the same order, with matching titles, badges and per-tile colors.
 const BLUE = '#007bff';
 const TOOLS = [
-  { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment' },
-  { key: 'DifficultAirway', icon: 'lungs-virus', title: 'Difficult Airway', badge: 'DAS Guidelines', bgColor: BLUE },
-  { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms' },
-  { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis' },
-  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields' },
-  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing' },
-  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', bgColor: BLUE },
-  { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching' },
-  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', bgColor: BLUE },
-  { key: 'DepartmentalProtocols', icon: 'clipboard-list', title: 'Departmental Protocols', badge: 'WGH', bgColor: BLUE },
-  { key: 'PerioperativeMedication', icon: 'prescription-bottle-alt', title: 'Perioperative Medication', badge: '2024 Guidelines', bgColor: BLUE },
-  { key: 'ROTEM', icon: 'tint', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', bgColor: '#c62828', badgeColor: '#ffcdd2' },
-  { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', bgColor: BLUE },
-  { key: 'ELibrary', icon: 'book-open', title: 'E-Library', badge: 'Resources', bgColor: BLUE },
-  { key: 'ITIVA', icon: 'syringe', title: 'TIVA', badge: 'PK Simulator', bgColor: '#1a3a5c', iconColor: '#7ecfff', badgeColor: '#7ecfff' },
-  { key: 'AIEducation', title: 'AI Education', gradient: ['#0d6efd', '#6610f2'] },
-  { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'WGH Stewardship', bgColor: '#2e7d32', badgeColor: '#a5d6a7' },
-  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', bgColor: '#198754', badgeColor: '#b7f5d0' },
+  { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment', keywords: 'preoperative assessment history examination fasting npo asa classification airway mallampati risk consent thyromental' },
+  { key: 'DifficultAirway', icon: 'lungs-virus', title: 'Difficult Airway', badge: 'DAS Guidelines', bgColor: BLUE, keywords: 'difficult airway das guidelines intubation failed intubation videolaryngoscopy cico cant intubate oxygenate bougie surgical airway front of neck' },
+  { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms', keywords: 'acls advanced cardiac life support resuscitation cpr cardiac arrest bradycardia tachycardia aha algorithm pea vf vt' },
+  { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis', keywords: 'emergency crisis qrh quick reference handbook anaphylaxis malignant hyperthermia local anaesthetic toxicity last bronchospasm cardiac arrest theatre' },
+  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields', keywords: 'specialized fields cardiac thoracic neuro paediatric pediatric obstetric liver transplant trauma vascular' },
+  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing', keywords: 'drug dosing calculator analgesic sedative vasopressor antibiotic reversal neostigmine sugammadex weight based dose' },
+  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', bgColor: BLUE, keywords: 'anaesthetic drugs propofol thiopentone ketamine fentanyl morphine atracurium rocuronium suxamethonium atropine ephedrine adrenaline induction muscle relaxant opioid age adjusted' },
+  { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching', keywords: 'departmental teaching education training case presentation postgraduate registrar tutorial lecture' },
+  { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', bgColor: BLUE, keywords: 'neuraxial anticoagulation spinal epidural asra lmwh doac heparin warfarin rivaroxaban apixaban dabigatran enoxaparin timing stop restart bridging' },
+  { key: 'DepartmentalProtocols', icon: 'clipboard-list', title: 'Departmental Protocols', badge: 'WGH', bgColor: BLUE, keywords: 'departmental protocols iv cannulation central line cvc request out of hours wgh switchboard consultant' },
+  { key: 'PerioperativeMedication', icon: 'prescription-bottle-alt', title: 'Perioperative Medication', badge: '2024 Guidelines', bgColor: BLUE, keywords: 'perioperative medication management aspirin clopidogrel plavix metformin sglt2 glp1 beta blocker ace inhibitor statin antiplatelet anticoagulant stop restart surgery' },
+  { key: 'ROTEM', icon: 'tint', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', bgColor: '#c62828', badgeColor: '#ffcdd2', keywords: 'rotem thromboelastometry coagulation fibrinogen extem intem fibtem aptem clot formation coagulopathy haemorrhage transfusion massive transfusion protocol mtp pack tranexamic acid obstetric trauma bleed activate bleep 239' },
+  { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', bgColor: BLUE, keywords: 'labour analgesia epidural cse combined spinal epidural remifentanil pca obstetric anaesthesia caesarean section top up obstetrics' },
+  { key: 'ELibrary', icon: 'book-open', title: 'E-Library', badge: 'Resources', bgColor: BLUE, keywords: 'e-library library guidelines documents resources reference pdf download anaesthesia' },
+  { key: 'ITIVA', icon: 'syringe', title: 'TIVA', badge: 'PK Simulator', bgColor: '#1a3a5c', iconColor: '#7ecfff', badgeColor: '#7ecfff', keywords: 'tiva total intravenous anaesthesia propofol infusion tci target controlled infusion marsh schnider pk pharmacokinetics simulator bis' },
+  { key: 'AIEducation', title: 'AI Education', gradient: ['#0d6efd', '#6610f2'], keywords: 'ai artificial intelligence education drug interaction medication review airway assessment fasting planning regional anaesthesia case planning dose calculation herbal' },
+  { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'WGH Stewardship', bgColor: '#2e7d32', badgeColor: '#a5d6a7', keywords: 'antimicrobials antibiotics microbiology prophylaxis surgical prophylaxis sepsis pneumonia uti urinary tract infection empiric tazocin co-amoxiclav ceftriaxone gentamicin clindamycin vancomycin teicoplanin meropenem start smart then focus cdiff clostridium cellulitis meningitis' },
+  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', bgColor: '#198754', badgeColor: '#b7f5d0', keywords: 'regulatory safety eu mdr compliance intended use disclaimer classification medical device' },
 ];
 
 export default function HomeScreen({ navigation }) {
   const { user, logout, deleteAccount, isLoading, isGuest } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [search, setSearch] = useState('');
   const menuButtonRef = useRef(null);
   const { width } = useWindowDimensions();
   const isCompactHeader = width < 768;
@@ -86,6 +87,16 @@ export default function HomeScreen({ navigation }) {
   const handleToolPress = (toolKey) => {
     navigation.navigate(toolKey);
   };
+
+  // Filter the tool grid by title or keywords (mirrors the web app's search bar).
+  const query = search.trim().toLowerCase();
+  const filteredTools = query
+    ? TOOLS.filter(
+        tool =>
+          tool.title.toLowerCase().includes(query) ||
+          (tool.keywords || '').toLowerCase().includes(query)
+      )
+    : TOOLS;
 
   return (
     <LinearGradient
@@ -186,9 +197,35 @@ export default function HomeScreen({ navigation }) {
             </View>
           </Modal>
 
+        <View style={styles.searchWrap}>
+          <View style={styles.searchBar}>
+            <FontAwesome5 name="search" size={14} color={COLORS.textMuted || '#6c757d'} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Search tools, drugs, protocols…"
+              placeholderTextColor={COLORS.textMuted || '#6c757d'}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
+              returnKeyType="search"
+              clearButtonMode="while-editing"
+            />
+            {search.length > 0 && (
+              <TouchableOpacity onPress={() => setSearch('')} style={styles.searchClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <FontAwesome5 name="times" size={14} color={COLORS.textMuted || '#6c757d'} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
         <View style={styles.gridWrap}>
+          {filteredTools.length === 0 && (
+            <Text style={styles.noResults}>No tools found — try a different term.</Text>
+          )}
           <View style={styles.grid}>
-          {TOOLS.map(tool => {
+          {filteredTools.map(tool => {
             const isColored = !!(tool.bgColor || tool.gradient);
             const iconColor = tool.iconColor || (isColored ? COLORS.white : COLORS.medicalBlue);
             const cardInner = (
@@ -254,7 +291,7 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
             );
           })}
-          {TOOLS.length % 3 !== 0 && Array.from({ length: 3 - (TOOLS.length % 3) }).map((_, i) => (
+          {filteredTools.length % 3 !== 0 && Array.from({ length: 3 - (filteredTools.length % 3) }).map((_, i) => (
             <View key={`spacer-${i}`} style={styles.cardSpacer} />
           ))}
           </View>
@@ -364,6 +401,31 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginLeft: 10,
+  },
+  searchWrap: { paddingHorizontal: SPACING.sm, marginBottom: SPACING.md },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
+    paddingHorizontal: SPACING.md,
+    height: 44,
+  },
+  searchIcon: { marginRight: SPACING.sm },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: COLORS.text,
+    paddingVertical: 0,
+  },
+  searchClear: { paddingLeft: SPACING.sm },
+  noResults: {
+    textAlign: 'center',
+    color: COLORS.textMuted || '#6c757d',
+    fontSize: 13,
+    paddingVertical: SPACING.lg,
   },
   gridWrap: { paddingHorizontal: SPACING.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
