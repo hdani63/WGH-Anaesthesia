@@ -64,42 +64,40 @@ export default function RegulatoryScreen() {
         <Row label="App Name">Anaesthesia Companion</Row>
         <Row label="Version">v2.1.0</Row>
         <Row label="Release Date">May 2026</Row>
-        <Row label="Platform">Mobile Application (iOS / Android)</Row>
-        <Row label="Access">Guest access available; optional account</Row>
-        <Row label="Developer">Danial Hussain</Row>
+        <Row label="Platform">Progressive Web Application (PWA)</Row>
+        <Row label="Developer">Dr. Danial Hussain, WGH Anaesthesia Department</Row>
         <Row label="Contact">
           <Text style={styles.link} onPress={() => mailto('Anaesthesia Companion')}>{DEV_EMAIL}</Text>
         </Row>
-        <Row label="App Type">Independent clinical reference & decision support</Row>
-        <Row label="Intended Users">Clinicians and trainees in anaesthesia</Row>
+        <Row label="App Type">Clinical reference & educational resource</Row>
         <Row label="Last Content Review">May 2026 (v2.1.0)</Row>
       </InfoCard>
 
       {/* Intended Purpose */}
       <InfoCard title="Intended Purpose" icon="bullseye" color={COLORS.success}>
         <Text style={styles.lead}>
-          Anaesthesia Companion brings together anaesthesia-related guidelines, protocols, algorithms, teaching notes, and resources in one place for clinicians and trainees. Use it to review perioperative planning, emergency algorithms, airway management summaries, regional anaesthesia timing references, and more.
+          Anaesthesia Companion is a clinical reference and educational resource for anaesthesia and critical care professionals at Wexford General Hospital. It brings together guidelines, protocols, algorithms, and teaching materials in one accessible place.
         </Text>
 
         <ColumnHeading icon="check-circle" color={COLORS.success}>What it provides</ColumnHeading>
-        <Bullet>Weight- and age-adjusted drug dose reference tables</Bullet>
-        <Bullet>Validated clinical scoring tools (APACHE II, SOFA, RCRI, Apfel, etc.)</Bullet>
-        <Bullet>Regional anaesthesia & anticoagulation timing guidance (ASRA 5th Ed)</Bullet>
+        <Bullet>Guideline and protocol reference text (DAS, ASRA, AAGBI, ALS, OAA/RCOA)</Bullet>
+        <Bullet>Anticoagulation timing reference tables (ASRA 5th Ed.)</Bullet>
         <Bullet>Emergency algorithm reference (QRH 2023, ALS/Resus Council UK)</Bullet>
         <Bullet>Airway management algorithm summaries (DAS guidelines)</Bullet>
         <Bullet>Labour analgesia protocols (OAA/RCOA)</Bullet>
-        <Bullet>Perioperative medication management guidance</Bullet>
-        <Bullet>Teaching notes and educational resources for trainees</Bullet>
-        <Bullet>ROTEM-guided haemorrhage management pathways</Bullet>
+        <Bullet>Perioperative medication management reference</Bullet>
+        <Bullet>ROTEM-guided haemorrhage pathway reference</Bullet>
+        <Bullet>Departmental protocols and teaching materials</Bullet>
+        <Bullet>Antimicrobial prescribing guidelines</Bullet>
 
         <ColumnHeading icon="times-circle" color={COLORS.danger}>What it is not</ColumnHeading>
+        <Bullet color={COLORS.danger}>A clinical decision-making tool or calculator</Bullet>
         <Bullet color={COLORS.danger}>A substitute for clinical judgement or direct patient assessment</Bullet>
         <Bullet color={COLORS.danger}>A diagnostic or prescribing tool</Bullet>
         <Bullet color={COLORS.danger}>A replacement for current BNF, SPC, or institutional protocols</Bullet>
         <Bullet color={COLORS.danger}>A system for storing or processing identifiable patient data</Bullet>
         <Bullet color={COLORS.danger}>Suitable for use by non-healthcare professionals without supervision</Bullet>
-        <Bullet color={COLORS.danger}>Validated for veterinary or non-human medicine</Bullet>
-        <Bullet color={COLORS.danger}>A definitive source — all content must be confirmed against current standards and your patient's situation</Bullet>
+        <Bullet color={COLORS.danger}>A definitive source — all content must be confirmed against current standards</Bullet>
 
         <View style={styles.alertWarn}>
           <FontAwesome5 name="exclamation-triangle" size={13} color="#856404" style={{ marginRight: 8, marginTop: 2 }} />
@@ -138,55 +136,58 @@ export default function RegulatoryScreen() {
         <Numbered n={4}>Do not use this app as your sole reference — always cross-check with BNF, SPC, and local protocols.</Numbered>
 
         <ColumnHeading icon="cogs" color={COLORS.primary}>During Use</ColumnHeading>
-        <Numbered n={1}>Enter accurate patient weight, age, and sex before calculating doses.</Numbered>
-        <Numbered n={2}>Review all outputs critically — no software output overrides clinical judgement.</Numbered>
-        <Numbered n={3}>For paediatric patients, confirm all doses with a senior clinician.</Numbered>
-        <Numbered n={4}>Dose ranges reflect standard adult references; adjust for renal, hepatic, and cardiac status.</Numbered>
-        <Numbered n={5}>Scoring systems provide risk estimates, not diagnoses.</Numbered>
+        <Numbered n={1}>Review all content critically — no reference material overrides clinical judgement.</Numbered>
+        <Numbered n={2}>For paediatric patients, confirm all information with a senior clinician.</Numbered>
+        <Numbered n={3}>Always check that guidelines referenced are current for your institution.</Numbered>
+        <Numbered n={4}>Do not enter patient identifiers into this app.</Numbered>
 
         <ColumnHeading icon="flag-checkered" color={COLORS.danger}>After Use</ColumnHeading>
         <Numbered n={1}>Document clinical decisions in the patient record — not in this app.</Numbered>
         <Numbered n={2}>Report any discrepancies or errors to the developer promptly.</Numbered>
-        <Numbered n={3}>Do not share screenshots of patient-specific outputs outside your clinical record system.</Numbered>
+        <Numbered n={3}>Do not share screenshots of patient-related information outside your clinical record system.</Numbered>
         <Numbered n={4}>Check for updates by verifying the version shown in the footer.</Numbered>
       </InfoCard>
 
       {/* Warnings & Limitations */}
       <InfoCard title="Warnings & Known Limitations" icon="exclamation-triangle" color={COLORS.danger}>
         <ColumnHeading color={COLORS.danger}>Warnings</ColumnHeading>
-        <Bullet color={COLORS.danger}>Not a substitute for clinical judgement. All outputs are advisory. The treating clinician bears full professional responsibility for all clinical decisions.</Bullet>
-        <Bullet color={COLORS.danger}>Drug dose ranges reflect standard published guidelines. Individual pharmacokinetics, comorbidities, and concurrent medications must always be considered.</Bullet>
-        <Bullet color={COLORS.danger}>Emergency situations: Always prioritise direct patient assessment and your institution's emergency protocols over app outputs.</Bullet>
-        <Bullet color={COLORS.danger}>Connectivity: Some features require internet access. Do not rely solely on this app in areas with unreliable connectivity without confirming offline content is current.</Bullet>
-        <Bullet color={COLORS.danger}>Paediatric use: All paediatric dosing outputs require independent verification by a senior clinician.</Bullet>
-        <Bullet color={COLORS.danger}>Pregnancy: Drug doses in pregnancy are not always reflected in standard ranges. Consult specialist obstetric anaesthesia references.</Bullet>
+        <Bullet color={COLORS.danger}>Not a substitute for clinical judgement. All information is for reference and education only. The treating clinician bears full professional responsibility for all clinical decisions.</Bullet>
+        <Bullet color={COLORS.danger}>Emergency situations: Always prioritise direct patient assessment and your institution's emergency protocols over any reference material.</Bullet>
+        <Bullet color={COLORS.danger}>Paediatric use: All information regarding paediatric patients requires independent verification by a senior clinician.</Bullet>
+        <Bullet color={COLORS.danger}>Pregnancy: Consult specialist obstetric anaesthesia references for drug use in pregnancy.</Bullet>
+        <Bullet color={COLORS.danger}>Connectivity: Some features require internet access. Do not rely solely on this app in areas with unreliable connectivity.</Bullet>
 
         <ColumnHeading color="#997404">Known Limitations</ColumnHeading>
-        <Bullet>Framingham Risk Score uses a simplified approximation; validated gender-specific coefficient tables are not fully implemented in this version.</Bullet>
-        <Bullet>Infusion rate calculations assume standard concentrations; verify against your pharmacy's prepared concentration.</Bullet>
-        <Bullet>ECMO parameters are guidance values only; actual management requires specialist perfusionist and critical care input.</Bullet>
         <Bullet>Drug interactions are not assessed by this app. Always consult the BNF Interactions checker or a clinical pharmacist.</Bullet>
-        <Bullet>Content currency: Guidelines are updated periodically. The last content audit was completed May 2026 (v2.1.0).</Bullet>
+        <Bullet>ECMO parameters are guidance values only; specialist perfusionist and critical care input is required.</Bullet>
         <Bullet>AI tools (where present) use large language models and may produce plausible but inaccurate clinical content. All AI outputs require critical clinician review.</Bullet>
+        <Bullet>Content currency: Guidelines are updated periodically. The last content audit was completed May 2026 (v2.1.0). Users should check for newer versions of referenced guidelines.</Bullet>
       </InfoCard>
 
       {/* Data & Privacy */}
       <InfoCard title="Data & Privacy" icon="lock" color={COLORS.info}>
         <ColumnHeading>What data is collected</ColumnHeading>
-        <Bullet>No patient data is stored. All calculator inputs are processed locally on the device and are not transmitted to any server.</Bullet>
-        <Bullet>User acknowledgment preferences are stored on your device only.</Bullet>
-        <Bullet>No cookies are used beyond those essential for app functionality.</Bullet>
+        <Bullet>No patient data is stored. This app does not collect, transmit, or retain any patient information.</Bullet>
+        <Bullet>User acknowledgment preferences are stored in browser sessionStorage on your device only and cleared when the session ends.</Bullet>
+        <Bullet>No cookies are used beyond those essential for PWA functionality.</Bullet>
         <Bullet>No analytics, tracking, or user profiling is performed.</Bullet>
+        <Bullet>AI query text (if used) is processed by OpenAI API. Do not enter patient-identifiable information into AI queries.</Bullet>
 
         <ColumnHeading>Privacy by design</ColumnHeading>
-        <Bullet>All clinical calculations are processed locally on your device.</Bullet>
-        <Bullet>No patient identifiers should be entered into this app.</Bullet>
-        <Bullet>If a patient identifier is accidentally entered, it is not transmitted or retained beyond the current session.</Bullet>
-        <Bullet>For further details see the Privacy Policy.</Bullet>
+        <Bullet>Users are instructed not to enter patient identifiers — this is reinforced by the session acknowledgement.</Bullet>
+        <Bullet>If a patient identifier is accidentally entered, it is not transmitted or retained beyond the current browser session.</Bullet>
+        <Bullet>This app is deployed under WGH ICT governance and the HSE Data Protection Framework.</Bullet>
+        <View style={styles.bulletRow}>
+          <Text style={styles.bulletDot}>•</Text>
+          <Text style={styles.bulletText}>
+            For further details see the{' '}
+            <Text style={styles.link} onPress={() => Linking.openURL('/privacy').catch(() => {})}>Privacy Policy</Text>.
+          </Text>
+        </View>
       </InfoCard>
 
-      {/* Feedback & Incident Reporting */}
-      <InfoCard title="Feedback, Errors & Incident Reporting" icon="comment-medical" color={COLORS.warning}>
+      {/* Feedback & Error Reporting */}
+      <InfoCard title="Feedback & Error Reporting" icon="comment-medical" color={COLORS.warning}>
         <Text style={styles.bodyText}>
           Users are encouraged to report any concerns about app performance, clinical content errors, or unexpected behaviour. All reports are reviewed and addressed by the developer.
         </Text>
@@ -194,7 +195,7 @@ export default function RegulatoryScreen() {
         <View style={styles.reportCard}>
           <FontAwesome5 name="envelope" size={20} color={COLORS.primary} style={{ marginBottom: 6 }} />
           <Text style={styles.reportTitle}>Clinical Content Error</Text>
-          <Text style={styles.reportText}>Report incorrect drug doses, scoring errors, or outdated guidelines.</Text>
+          <Text style={styles.reportText}>Report incorrect information, outdated guidelines, or missing content.</Text>
           <TouchableOpacity style={[styles.reportBtn, { backgroundColor: COLORS.primary }]} onPress={() => mailto('Anaesthesia Companion Content Error', 'Version: v2.1.0\nPage: \nError description: ')}>
             <Text style={styles.reportBtnText}>Report Error</Text>
           </TouchableOpacity>
@@ -203,7 +204,7 @@ export default function RegulatoryScreen() {
         <View style={styles.reportCard}>
           <FontAwesome5 name="bug" size={20} color={COLORS.danger} style={{ marginBottom: 6 }} />
           <Text style={styles.reportTitle}>Technical Issue</Text>
-          <Text style={styles.reportText}>Report calculator malfunctions, display errors, or app crashes.</Text>
+          <Text style={styles.reportText}>Report display errors, broken links, or app malfunctions.</Text>
           <TouchableOpacity style={[styles.reportBtn, { backgroundColor: COLORS.danger }]} onPress={() => mailto('Anaesthesia Companion Technical Issue', 'Version: v2.1.0\nDevice/Browser: \nIssue description: ')}>
             <Text style={styles.reportBtnText}>Report Issue</Text>
           </TouchableOpacity>
@@ -212,30 +213,20 @@ export default function RegulatoryScreen() {
         <View style={styles.reportCard}>
           <FontAwesome5 name="lightbulb" size={20} color={COLORS.success} style={{ marginBottom: 6 }} />
           <Text style={styles.reportTitle}>Suggestion</Text>
-          <Text style={styles.reportText}>Suggest new features, tools, or content additions.</Text>
+          <Text style={styles.reportText}>Suggest new reference content, protocols, or features.</Text>
           <TouchableOpacity style={[styles.reportBtn, { backgroundColor: COLORS.success }]} onPress={() => mailto('Anaesthesia Companion Suggestion', 'Version: v2.1.0\nSuggestion: ')}>
             <Text style={styles.reportBtnText}>Send Suggestion</Text>
           </TouchableOpacity>
-        </View>
-
-        <View style={styles.alertDanger}>
-          <FontAwesome5 name="exclamation-circle" size={13} color="#842029" style={{ marginRight: 8, marginTop: 2 }} />
-          <Text style={styles.alertDangerText}>
-            <Text style={{ fontWeight: '700' }}>Patient Safety Incidents: </Text>
-            If a software output may have contributed to patient harm, report the incident through your institution's clinical incident reporting system and notify the developer at{' '}
-            <Text style={styles.link} onPress={() => mailto('Anaesthesia Companion Safety Incident')}>{DEV_EMAIL}</Text>
-            {' '}so the issue can be investigated and corrected urgently.
-          </Text>
         </View>
       </InfoCard>
 
       {/* Disclaimer */}
       <InfoCard title="Disclaimer" icon="gavel" color={COLORS.dark}>
         <Text style={styles.bodyText}>
-          Anaesthesia Companion is an independent reference application developed by an individual clinician. It is not developed or endorsed by any hospital, health service, pharmaceutical company, or regulatory body.
+          Anaesthesia Companion is an independent clinical reference and educational application developed by an individual clinician. It is not developed or endorsed by any hospital, health service, pharmaceutical company, or regulatory body.
         </Text>
         <Text style={styles.bodyText}>
-          All content is provided in good faith based on published evidence-based guidelines. The developer makes no warranty, expressed or implied, regarding accuracy, completeness, or fitness for any particular clinical purpose. The developer accepts no liability for clinical decisions made on the basis of information provided by this app.
+          All content is provided in good faith based on published evidence-based guidelines for educational and reference purposes only. The developer makes no warranty, expressed or implied, regarding accuracy, completeness, or fitness for any particular clinical purpose. The developer accepts no liability for clinical decisions made on the basis of information provided by this app.
         </Text>
         <Text style={[styles.bodyText, { marginBottom: 0 }]}>
           Users are solely responsible for verifying all information against current standards, institutional protocols, and their patient's individual clinical circumstances before any clinical application.

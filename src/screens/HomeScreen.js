@@ -8,16 +8,15 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 // Home grid mirrors the Replit web app (templates/index_simple.html): the same
-// 18 tools, in the same order, with matching titles, badges and per-tile colors.
+// 16 tools, in the same order, with matching titles, badges and per-tile colors.
 const BLUE = '#007bff';
 const TOOLS = [
-  { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment', keywords: 'preoperative assessment history examination fasting npo asa classification airway mallampati risk consent thyromental' },
+  { key: 'Preoperative', icon: 'clipboard-check', title: 'Preoperative Assessment', badge: 'Risk Score Reference', keywords: 'preoperative assessment history examination fasting npo asa classification airway mallampati risk consent thyromental' },
+  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anaesthetic Drugs', badge: 'Dose Reference', bgColor: BLUE, keywords: 'anaesthetic drugs propofol thiopentone ketamine fentanyl morphine atracurium rocuronium suxamethonium atropine ephedrine adrenaline induction muscle relaxant opioid age adjusted' },
+  { key: 'ITIVA', icon: 'syringe', title: 'iTIVA', badge: 'Reference Guide', bgColor: '#6f42c1', badgeColor: '#e2cfff', keywords: 'tiva total intravenous anaesthesia propofol infusion tci target controlled infusion marsh schnider pk pharmacokinetics simulator bis' },
   { key: 'DifficultAirway', icon: 'lungs-virus', title: 'Difficult Airway', badge: 'DAS Guidelines', bgColor: BLUE, keywords: 'difficult airway das guidelines intubation failed intubation videolaryngoscopy cico cant intubate oxygenate bougie surgical airway front of neck' },
   { key: 'ACLS', icon: 'heartbeat', title: 'ACLS Algorithms', keywords: 'acls advanced cardiac life support resuscitation cpr cardiac arrest bradycardia tachycardia aha algorithm pea vf vt' },
   { key: 'Emergency', icon: 'ambulance', title: 'Emergency & Crisis', keywords: 'emergency crisis qrh quick reference handbook anaphylaxis malignant hyperthermia local anaesthetic toxicity last bronchospasm cardiac arrest theatre' },
-  { key: 'Specialized', icon: 'user-md', title: 'Specialized Fields', keywords: 'specialized fields cardiac thoracic neuro paediatric pediatric obstetric liver transplant trauma vascular' },
-  { key: 'DrugDosing', icon: 'pills', title: 'Drug Dosing', keywords: 'drug dosing calculator analgesic sedative vasopressor antibiotic reversal neostigmine sugammadex weight based dose' },
-  { key: 'AnaestheticDrugDosing', icon: 'syringe', title: 'Anesthetic Drugs', badge: 'Age-Adjusted', bgColor: BLUE, keywords: 'anaesthetic drugs propofol thiopentone ketamine fentanyl morphine atracurium rocuronium suxamethonium atropine ephedrine adrenaline induction muscle relaxant opioid age adjusted' },
   { key: 'DepartmentalTeaching', icon: 'graduation-cap', title: 'Departmental Teaching', keywords: 'departmental teaching education training case presentation postgraduate registrar tutorial lecture' },
   { key: 'NeuraxialAnticoagulation', icon: 'tint', title: 'Neuraxial & Anticoagulation', badge: 'ASRA Guidelines', bgColor: BLUE, keywords: 'neuraxial anticoagulation spinal epidural asra lmwh doac heparin warfarin rivaroxaban apixaban dabigatran enoxaparin timing stop restart bridging' },
   { key: 'DepartmentalProtocols', icon: 'clipboard-list', title: 'Departmental Protocols', badge: 'WGH', bgColor: BLUE, keywords: 'departmental protocols iv cannulation central line cvc request out of hours wgh switchboard consultant' },
@@ -25,10 +24,9 @@ const TOOLS = [
   { key: 'ROTEM', icon: 'tint', title: 'Massive Transfusion & ROTEM', badge: 'MTP + Protocols', bgColor: '#c62828', badgeColor: '#ffcdd2', keywords: 'rotem thromboelastometry coagulation fibrinogen extem intem fibtem aptem clot formation coagulopathy haemorrhage transfusion massive transfusion protocol mtp pack tranexamic acid obstetric trauma bleed activate bleep 239' },
   { key: 'LabourAnalgesia', icon: 'human-pregnant', iconSet: 'MaterialCommunityIcons', title: 'Labour Analgesia', badge: 'Protocols', bgColor: BLUE, keywords: 'labour analgesia epidural cse combined spinal epidural remifentanil pca obstetric anaesthesia caesarean section top up obstetrics' },
   { key: 'ELibrary', icon: 'book-open', title: 'E-Library', badge: 'Resources', bgColor: BLUE, keywords: 'e-library library guidelines documents resources reference pdf download anaesthesia' },
-  { key: 'ITIVA', icon: 'syringe', title: 'TIVA', badge: 'PK Simulator', bgColor: '#1a3a5c', iconColor: '#7ecfff', badgeColor: '#7ecfff', keywords: 'tiva total intravenous anaesthesia propofol infusion tci target controlled infusion marsh schnider pk pharmacokinetics simulator bis' },
   { key: 'AIEducation', title: 'AI Education', gradient: ['#0d6efd', '#6610f2'], keywords: 'ai artificial intelligence education drug interaction medication review airway assessment fasting planning regional anaesthesia case planning dose calculation herbal' },
   { key: 'Antimicrobials', icon: 'bacteria', title: 'Antimicrobial Guidelines', badge: 'WGH Stewardship', bgColor: '#2e7d32', badgeColor: '#a5d6a7', keywords: 'antimicrobials antibiotics microbiology prophylaxis surgical prophylaxis sepsis pneumonia uti urinary tract infection empiric tazocin co-amoxiclav ceftriaxone gentamicin clindamycin vancomycin teicoplanin meropenem start smart then focus cdiff clostridium cellulitis meningitis' },
-  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'EU MDR Compliance', bgColor: '#198754', badgeColor: '#b7f5d0', keywords: 'regulatory safety eu mdr compliance intended use disclaimer classification medical device' },
+  { key: 'Regulatory', icon: 'shield-alt', title: 'Regulatory & Safety', badge: 'App Information', bgColor: '#198754', badgeColor: '#b7f5d0', keywords: 'regulatory safety eu mdr compliance intended use disclaimer classification medical device' },
 ];
 
 export default function HomeScreen({ navigation }) {

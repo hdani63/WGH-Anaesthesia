@@ -2,6 +2,8 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import ScreenWrapper from '../components/ScreenWrapper';
 import CollapsibleCard from '../components/CollapsibleCard';
 import { CheckboxItem } from '../components/FormControls';
@@ -204,9 +206,9 @@ export default function CriticalTransferScreen() {
     });
   }, [checkedItems.timeCritical]);
 
-  const generateReport = () => {
+  const buildReportData = () => {
     const lines = [
-      '=== CRITICALCARE TRANSFERCHECK REPORT ===',
+      '=== CRITICAL CARE TRANSFER CHECK REPORT ===',
       `Date: ${formatDateTime(new Date())}`,
       `Checklist Start: ${formatDateTime(startTime)}`,
       `Patient: ${formData.patientName || 'N/A'}`,
@@ -220,21 +222,86 @@ export default function CriticalTransferScreen() {
       '',
     ];
 
-    SECTION_ORDER.forEach((sectionKey) => {
+    const sections = SECTION_ORDER.map((sectionKey) => {
       const section = SECTIONS[sectionKey];
       lines.push(`--- ${section.title} ---`);
-
       const sectionItems = getSectionItems(section).filter((item) => isTimeCritical || item.key !== 'phecProformaReady');
-      sectionItems.forEach((item) => {
-        const checked = checkedItems[item.key] ? '[x]' : '[ ]';
-        const time = timestamps[item.key] ? ` (${formatTime(timestamps[item.key])})` : '';
-        lines.push(`${checked} ${item.label}${time}`);
+      const items = sectionItems.map((item) => {
+        const checked = !!checkedItems[item.key];
+        const time = timestamps[item.key] ? formatTime(timestamps[item.key]) : '';
+        lines.push(`${checked ? '[x]' : '[ ]'} ${item.label}${time ? ` (${time})` : ''}`);
+        return { label: item.label, checked, time };
       });
-
       lines.push('');
+      return { title: section.title, items };
     });
 
-    Alert.alert('Transfer Report', lines.join('\n'), [{ text: 'OK' }]);
+    return { lines, sections };
+  };
+
+  const buildReportHtml = (sections) => {
+    const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const meta = [
+      ['Date', formatDateTime(new Date())],
+      ['Checklist Start', formatDateTime(startTime)],
+      ['Patient', formData.patientName || 'N/A'],
+      ['Reason', formData.transferReason || 'N/A'],
+      ['Referring Consultant', formData.referringConsultant || 'N/A'],
+      ['Receiving Consultant', formData.receivingConsultant || 'N/A'],
+      ['Agreement Documented', formData.agreementDocumented ? formData.agreementDocumented.toUpperCase() : 'N/A'],
+      ['Call Time', callTime ? formatDateTime(callTime) : 'Not set'],
+      ['Completion', `${checkedCount}/${totalItems} (${progress}%)`],
+    ];
+    const metaRows = meta.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('');
+    const sectionHtml = sections.map((section) => {
+      const rows = section.items.map((item) => `
+        <tr>
+          <td class="check">${item.checked ? '&#10003;' : '&#9744;'}</td>
+          <td>${esc(item.label)}</td>
+          <td class="time">${esc(item.time)}</td>
+        </tr>`).join('');
+      return `<h2>${esc(section.title)}</h2><table class="items"><tbody>${rows}</tbody></table>`;
+    }).join('');
+    return `<!DOCTYPE html><html><head><meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <style>
+        body { font-family: -apple-system, Helvetica, Arial, sans-serif; color: #1a1a1a; padding: 16px; }
+        h1 { font-size: 18px; color: #b00020; margin-bottom: 4px; }
+        h2 { font-size: 14px; margin: 16px 0 4px; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .meta th { text-align: left; width: 180px; color: #555; font-weight: 600; padding: 2px 6px; vertical-align: top; }
+        .meta td { padding: 2px 6px; }
+        .items td { padding: 3px 6px; border-bottom: 1px solid #eee; }
+        .items .check { width: 22px; font-size: 14px; }
+        .items .time { width: 70px; color: #555; text-align: right; }
+      </style></head>
+      <body>
+        <h1>Critical Care Transfer Check Report</h1>
+        <table class="meta"><tbody>${metaRows}</tbody></table>
+        ${sectionHtml}
+      </body></html>`;
+  };
+
+  const generateReport = async () => {
+    const { lines, sections } = buildReportData();
+    try {
+      const html = buildReportHtml(sections);
+      const dir = FileSystem.cacheDirectory || FileSystem.documentDirectory;
+      if (!dir || !(await Sharing.isAvailableAsync())) {
+        Alert.alert('Transfer Report', lines.join('\n'), [{ text: 'OK' }]);
+        return;
+      }
+      const fileUri = `${dir}transfer-report.html`;
+      await FileSystem.writeAsStringAsync(fileUri, html, { encoding: FileSystem.EncodingType.UTF8 });
+      await Sharing.shareAsync(fileUri, {
+        mimeType: 'text/html',
+        UTI: 'public.html',
+        dialogTitle: 'Transfer Report',
+      });
+    } catch (e) {
+      // Fall back to an on-screen summary if file export/sharing is unavailable
+      Alert.alert('Transfer Report', lines.join('\n'), [{ text: 'OK' }]);
+    }
   };
 
   const resetChecklist = () => {

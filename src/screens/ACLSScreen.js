@@ -66,11 +66,7 @@ const algorithms = [
 ];
 
 const notes = [
-  'All algorithms are based on American Heart Association 2020 Guidelines',
-  'These are quick reference guides - always follow your institution\'s protocols',
-  'Click any algorithm to view the full PDF inside the app',
-  'Algorithms can be downloaded for offline access',
-  'For emergencies, refer to your institution\'s emergency response system',
+  'AHA 2020 Guidelines. Quick reference only — always follow your institution\'s protocols.',
 ];
 
 export default function ACLSScreen() {
@@ -86,7 +82,7 @@ export default function ACLSScreen() {
   };
 
   return (
-    <ScreenWrapper title="ACLS Algorithms" subtitle="American Heart Association ACLS Guidelines & Emergency Protocols">
+    <ScreenWrapper title="ACLS Algorithms" subtitle="American Heart Association 2020 Guidelines & Emergency Protocols">
       <View style={styles.cardsGrid}>
         {algorithms.map((algo, i) => (
           <View key={i} style={[styles.cardWrap, isTwoColumn ? styles.cardWrapTwo : styles.cardWrapOne]}>

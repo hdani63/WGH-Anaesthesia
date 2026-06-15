@@ -574,6 +574,8 @@ const qrhSections = [
           "Evidence of fire (smoke, heat, odour, flash, flame) on patient, drapes, or in patient's airway.",
         steps: [
           '1. Call for help, inform theatre team. Activate fire alarm. Dial hospital fire emergency number and report location and nature of fire. Bring CO2 extinguisher into theatre.',
+          '2. AIRWAY FIRE / NON-AIRWAY FIRE: Stop laser/diathermy and extinguish the fire (see panels below).',
+          '3. After extinguished: Re-establish ventilation. Minimise O2, avoid N2O (see panels below).',
           '4. Assess patient and devise ongoing management plan. Confirm no secondary fire. Consider intensive care.',
           '5. Keep involved materials/devices for inspection and report to MHRA.',
           '6. If secondary non-patient fire or smoke/fire risk to staff - follow local fire procedures.',

@@ -46,15 +46,15 @@ export function calculateASA(asaClass, emergency) {
 
 export function calculateRCRI(factors) {
   const score = factors.filter(Boolean).length;
-  const riskMap = [
-    [0, 'Low risk (0.4% major cardiac complications)', 'success'],
-    [1, 'Intermediate risk (0.9% major cardiac complications)', 'success'],
-    [2, 'Intermediate risk (7% major cardiac complications)', 'warning'],
-  ];
-  const match = riskMap.find(r => r[0] === score) || [score, 'High risk (11% major cardiac complications)', 'danger'];
+  const bands = {
+    0: { risk: 'Very low risk (<1% major cardiac events)', action: 'Proceed — no further cardiac workup required', type: 'success' },
+    1: { risk: 'Low risk (~1% major cardiac events)', action: 'Proceed — cardiology review if poor functional capacity', type: 'success' },
+    2: { risk: 'Intermediate risk (~2.4% major cardiac events)', action: 'Consider stress testing only if the result will change management', type: 'warning' },
+  };
+  const band = bands[score] || { risk: 'High risk (>=5.4% major cardiac events)', action: 'Cardiology review recommended; consider optimisation before elective surgery', type: 'danger' };
   return {
-    text: `RCRI Score: ${score}/6\n${match[1]}${score >= 2 ? '\nConsider perioperative β-blockade and cardiology consultation' : ''}`,
-    type: match[2],
+    text: `RCRI Score: ${score}/6\n${band.risk}\n${band.action}`,
+    type: band.type,
   };
 }
 
@@ -137,10 +137,11 @@ export function calculateMELD(bilirubin, creatinine, inr, dialysis) {
   const raw = 3.78 * Math.log(adjBil) + 11.2 * Math.log(adjINR) + 9.57 * Math.log(adjCr) + 6.43;
   const score = Math.min(Math.max(Math.round(raw), 6), 40);
   let type, interp, rec;
-  if (score < 10) { type = 'success'; interp = 'Low risk (~6% 3-month mortality)'; rec = 'Standard perioperative care'; }
-  else if (score < 20) { type = 'warning'; interp = 'Moderate risk (27% 3-month mortality)'; rec = 'Consider optimization and monitoring'; }
-  else if (score < 30) { type = 'danger'; interp = 'High risk (76% 3-month mortality)'; rec = 'High-risk surgery, consider postponing elective procedures'; }
-  else { type = 'danger'; interp = 'Very high risk (>80% 3-month mortality)'; rec = 'Extremely high risk, avoid elective surgery'; }
+  if (score < 9) { type = 'success'; interp = 'Low risk (~2% 90-day mortality)'; rec = 'Low perioperative mortality for most procedures'; }
+  else if (score <= 11) { type = 'success'; interp = 'Acceptable risk (~5% 90-day mortality)'; rec = 'Acceptable risk for essential procedures'; }
+  else if (score <= 19) { type = 'warning'; interp = 'Significant risk (~20% 90-day mortality)'; rec = 'Weigh benefit carefully; hepatology review advised'; }
+  else if (score <= 29) { type = 'danger'; interp = 'High risk (~60% 90-day mortality)'; rec = 'Avoid elective surgery; only essential procedures'; }
+  else { type = 'danger'; interp = 'Prohibitive risk (>80% 90-day mortality)'; rec = 'Avoid surgery unless immediately life-saving; liver transplant evaluation'; }
   return { text: `MELD Score: ${score}\n${interp}\n${rec}`, type };
 }
 
@@ -180,12 +181,12 @@ export function calculateCaprini(factors, patient) {
   const weights = { majorSurgery: 2, malignancy: 2, priorVTE: 3, immobility: 1, varicoseVeins: 1, obesity: 1 };
   let totalScore = 0;
   Object.keys(factors).forEach(k => { if (factors[k]) totalScore += (weights[k] || 0); });
-  if (p.age >= 75) totalScore += 4; else if (p.age >= 61) totalScore += 3; else if (p.age >= 41) totalScore += 2;
+  if (p.age >= 75) totalScore += 3; else if (p.age >= 61) totalScore += 2; else if (p.age >= 41) totalScore += 1;
   let type, risk, prophylaxis;
-  if (totalScore <= 2) { type = 'success'; risk = 'Low risk'; prophylaxis = 'Early mobilization, mechanical prophylaxis'; }
-  else if (totalScore <= 4) { type = 'warning'; risk = 'Moderate risk'; prophylaxis = 'LMWH or mechanical prophylaxis'; }
-  else if (totalScore <= 6) { type = 'warning'; risk = 'High risk'; prophylaxis = 'LMWH + mechanical prophylaxis'; }
-  else { type = 'danger'; risk = 'Very high risk'; prophylaxis = 'Extended LMWH + mechanical prophylaxis'; }
+  if (totalScore <= 1) { type = 'success'; risk = 'Low risk (~2% 30-day VTE)'; prophylaxis = 'Early ambulation; consider TED stockings'; }
+  else if (totalScore === 2) { type = 'warning'; risk = 'Moderate risk (~10% 30-day VTE)'; prophylaxis = 'Pharmacological prophylaxis (LMWH) + TED stockings'; }
+  else if (totalScore <= 4) { type = 'warning'; risk = 'High risk (~20-40% 30-day VTE)'; prophylaxis = 'LMWH + TED stockings; extended if major surgery'; }
+  else { type = 'danger'; risk = 'Very high risk (~40-80% 30-day VTE)'; prophylaxis = 'LMWH + TED + IPC; extended prophylaxis 28 days'; }
   return { text: `Caprini Score: ${totalScore}\n${risk} of VTE\nProphylaxis: ${prophylaxis}\nAge: ${p.age} years included`, type };
 }
 
@@ -644,7 +645,7 @@ export function calculateAnaestheticDoses(weight, age, ageGroup) {
     local: {
       lidocaine: { max: fixedDose(Math.min(3 * w, 200)) },
       bupivacaine: { max: fixedDose(Math.min(2 * w, 150)) },
-      ropivacaine: { max: fixedDose(Math.min(3 * w, 250)) },
+      ropivacaine: { max: fixedDose(Math.min(3 * w, 225)) },
     },
     sedatives: {
       midazolam: { premed: singleDose(0.05) },
@@ -652,7 +653,7 @@ export function calculateAnaestheticDoses(weight, age, ageGroup) {
     },
     vasopressors: {
       phenylephrine: { infusion: dose(0.1, 0.5, 1, 0) },
-      ephedrine: { bolus: '5-25' },
+      ephedrine: { bolus: '3-6' },
       norepinephrine: { infusion: dose(0.6, 18, 1, 0) },
       epinephrine: { infusion: dose(0.6, 18, 1, 0) },
       dopamine: { infusion: dose(120, 1200, 1, 0) },
