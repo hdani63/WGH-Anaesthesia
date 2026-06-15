@@ -1,6 +1,6 @@
 {
   "name": "wgh-anaesthesia-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Anaesthesia Companion App",
   "main": "expo/AppEntry.js",
   "scripts": {
