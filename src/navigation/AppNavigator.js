@@ -28,7 +28,7 @@ import DepartmentalProtocolsScreen from '../screens/DepartmentalProtocolsScreen'
 import PerioperativeMedicationScreen from '../screens/PerioperativeMedicationScreen';
 import ROTEMScreen from '../screens/ROTEMScreen';
 import LabourAnalgesiaScreen from '../screens/LabourAnalgesiaScreen';
-import ELibraryScreen from '../screens/ELibraryScreen';
+import ResourcesScreen from '../screens/ResourcesScreen';
 import ITIVAScreen from '../screens/ITIVAScreen';
 import PdfViewerScreen from '../screens/PdfViewerScreen';
 import AIEducationScreen from '../screens/AIEducationScreen';
@@ -91,10 +91,10 @@ function MainNavigator() {
       <MainStack.Screen name="PerioperativeMedication" component={PerioperativeMedicationScreen} options={{ title: 'Perioperative Medication' }} />
       <MainStack.Screen name="ROTEM" component={ROTEMScreen} options={{ title: 'ROTEM' }} />
       <MainStack.Screen name="LabourAnalgesia" component={LabourAnalgesiaScreen} options={{ title: 'Labour Analgesia' }} />
-      <MainStack.Screen name="ELibrary" component={ELibraryScreen} options={{ title: 'E-Library' }} />
+      <MainStack.Screen name="Resources" component={ResourcesScreen} options={{ title: 'Guidelines & Websites' }} />
       <MainStack.Screen name="ITIVA" component={ITIVAScreen} options={{ title: 'iTIVA' }} />
       <MainStack.Screen name="AIEducation" component={AIEducationScreen} options={{ title: 'AI Education' }} />
-      <MainStack.Screen name="Antimicrobials" component={AntimicrobialsScreen} options={{ title: 'Antimicrobial Guidelines' }} />
+      <MainStack.Screen name="Antimicrobials" component={AntimicrobialsScreen} options={{ title: 'Sepsis / Antimicrobial Guidelines' }} />
       <MainStack.Screen name="Regulatory" component={RegulatoryScreen} options={{ title: 'Regulatory & Safety' }} />
       <MainStack.Screen name="PdfViewerScreen" component={PdfViewerScreen} options={{ title: 'PDF Viewer' }} />
     </MainStack.Navigator>

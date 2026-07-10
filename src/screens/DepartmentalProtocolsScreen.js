@@ -318,6 +318,46 @@ export default function DepartmentalProtocolsScreen() {
         </View>
       </CollapsibleCard>
 
+      <CollapsibleCard title="Pre-Operative ECG Criteria" icon="heartbeat">
+        <SectionHeader title="Current Guidelines" icon="clipboard-list" />
+        <Text style={styles.ecgIntro}>A pre-operative ECG is indicated for patients meeting any of the following:</Text>
+        <InfoSection title="Indications" icon="heartbeat" items={[
+          'Patients with a history of breathlessness and chest pain',
+          'Cardiac disease',
+          'Hypertension (HTN)',
+          'All men aged 40 and over',
+          'All women aged 50 and over',
+          'Diabetics',
+          'Patients with a family history of arrhythmia',
+          'Thyroid disease',
+          'BMI over 35',
+          'Drugs — cannabis, cocaine, psychiatric medications',
+          'Epilepsy',
+          'Palpitations and anxiety',
+        ]} />
+        <View style={styles.importantNoteBox}>
+          <FontAwesome5 name="clock" size={14} color="#856404" style={styles.importantNoteIcon} />
+          <Text style={styles.importantNote}>
+            <Text style={styles.importantNoteStrong}>Validity: </Text>
+            An ECG done in the last 6 months is acceptable unless there has been a change in the patient's condition within this time.
+          </Text>
+        </View>
+
+        <SectionHeader title="Proposed New Guidelines" icon="clipboard-check" color={COLORS.warning} />
+        <View style={styles.protocolAlertInfo}>
+          <Text style={styles.alertLine}><Text style={styles.alertStrong}>Source:</Text> HSE Model of Care for Pre-Assessment Services</Text>
+        </View>
+        <InfoSection title="Indications" icon="heartbeat" items={[
+          'Patient history or strong family history of cardiac disease, if not already investigated',
+          'ASA 3 or 4 if no ECG within the last 12 months',
+          'Men and women aged more than 65 years if no ECG available within the last 12 months',
+          'BMI over 40',
+          'Major complex surgery',
+          'Consider in people with cardiovascular, renal or diabetic comorbidities',
+          'If deemed required as per the consultant anaesthesiologist after seeing the patient',
+        ]} />
+      </CollapsibleCard>
+
       <CollapsibleCard title="Paediatric Surgery Cut-off Limit" icon="child">
         <View style={styles.paediatricAlert}>
           <Text style={styles.cutoffTitle}>Paediatric Surgery Cut-off Limit</Text>
@@ -390,6 +430,7 @@ const styles = StyleSheet.create({
     borderColor: '#cfe8ff',
   },
   alertLine: { fontSize: 13, color: COLORS.text, marginBottom: 4, lineHeight: 19 },
+  ecgIntro: { fontSize: 13, color: COLORS.text, marginBottom: SPACING.sm, lineHeight: 19 },
   alertStrong: { fontWeight: '700' },
   infoCard: {
     backgroundColor: '#f8f9fa',
