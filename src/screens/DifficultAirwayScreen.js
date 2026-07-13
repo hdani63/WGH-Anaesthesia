@@ -8,7 +8,7 @@ import { COLORS, SPACING, BORDER_RADIUS } from '../utils/theme';
 import { openPdf, downloadPdf } from '../utils/pdfUtils';
 
 const DAS_DOC = {
-  title: 'DAS Unanticipated Difficult Airway Guideline',
+  title: 'DAS Unanticipated Difficult Intubation Guidelines (2015)',
   fileName: 'das_unanticipated_guidelines_new.pdf',
   source: require('../../assets/pdfs/archive/das_unanticipated_guidelines_new.pdf'),
 };

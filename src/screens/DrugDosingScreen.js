@@ -178,9 +178,9 @@ export default function DrugDosingScreen() {
 
     const doses = {
       acetaminophen: { oral: { min: 10, max: 15, freq: 'q4-6h', maxDaily: 'Max 5 doses/24h' }, iv: { min: 10, max: 15, freq: 'q6h', maxDaily: 'Max 4g/day' } },
-      ibuprofen: { oral: { min: 5, max: 10, freq: 'q6-8h', maxDaily: 'Max 40 mg/kg/day' } },
+      ibuprofen: { oral: { min: 5, max: 10, freq: 'q6-8h', maxDaily: 'Max 40 mg/kg/day' }, iv: { min: 5, max: 10, freq: 'q6-8h', maxDaily: 'Max 40 mg/kg/day' }, im: { min: 5, max: 10, freq: 'q6-8h', maxDaily: 'Max 40 mg/kg/day' } },
       amoxicillin: { oral: { min: 20, max: 40, freq: 'q8h', maxDaily: 'Max 500 mg per dose' } },
-      prednisolone: { oral: { min: 1, max: 2, freq: 'daily or divided BID', maxDaily: 'Max 60 mg/day' } },
+      prednisolone: { oral: { min: 1, max: 2, freq: 'daily or divided BID', maxDaily: 'Max 60 mg/day' }, iv: { min: 1, max: 2, freq: 'daily or divided BID', maxDaily: 'Max 60 mg/day' }, im: { min: 1, max: 2, freq: 'daily or divided BID', maxDaily: 'Max 60 mg/day' } },
     };
     const drugInfo = doses[pedDrug]?.[pedRoute];
 

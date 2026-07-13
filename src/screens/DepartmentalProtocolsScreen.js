@@ -318,46 +318,6 @@ export default function DepartmentalProtocolsScreen() {
         </View>
       </CollapsibleCard>
 
-      <CollapsibleCard title="Pre-Operative ECG Criteria" icon="heartbeat">
-        <SectionHeader title="Current Guidelines" icon="clipboard-list" />
-        <Text style={styles.ecgIntro}>A pre-operative ECG is indicated for patients meeting any of the following:</Text>
-        <InfoSection title="Indications" icon="heartbeat" items={[
-          'Patients with a history of breathlessness and chest pain',
-          'Cardiac disease',
-          'Hypertension (HTN)',
-          'All men aged 40 and over',
-          'All women aged 50 and over',
-          'Diabetics',
-          'Patients with a family history of arrhythmia',
-          'Thyroid disease',
-          'BMI over 35',
-          'Drugs — cannabis, cocaine, psychiatric medications',
-          'Epilepsy',
-          'Palpitations and anxiety',
-        ]} />
-        <View style={styles.importantNoteBox}>
-          <FontAwesome5 name="clock" size={14} color="#856404" style={styles.importantNoteIcon} />
-          <Text style={styles.importantNote}>
-            <Text style={styles.importantNoteStrong}>Validity: </Text>
-            An ECG done in the last 6 months is acceptable unless there has been a change in the patient's condition within this time.
-          </Text>
-        </View>
-
-        <SectionHeader title="Proposed New Guidelines" icon="clipboard-check" color={COLORS.warning} />
-        <View style={styles.protocolAlertInfo}>
-          <Text style={styles.alertLine}><Text style={styles.alertStrong}>Source:</Text> HSE Model of Care for Pre-Assessment Services</Text>
-        </View>
-        <InfoSection title="Indications" icon="heartbeat" items={[
-          'Patient history or strong family history of cardiac disease, if not already investigated',
-          'ASA 3 or 4 if no ECG within the last 12 months',
-          'Men and women aged more than 65 years if no ECG available within the last 12 months',
-          'BMI over 40',
-          'Major complex surgery',
-          'Consider in people with cardiovascular, renal or diabetic comorbidities',
-          'If deemed required as per the consultant anaesthesiologist after seeing the patient',
-        ]} />
-      </CollapsibleCard>
-
       <CollapsibleCard title="Paediatric Surgery Cut-off Limit" icon="child">
         <View style={styles.paediatricAlert}>
           <Text style={styles.cutoffTitle}>Paediatric Surgery Cut-off Limit</Text>
@@ -367,6 +327,48 @@ export default function DepartmentalProtocolsScreen() {
             <MetricCard icon="weight" label="Weight" value="15 kg and over" />
           </View>
           <Text style={styles.cutoffNote}>Applies to non-life-threatening paediatric surgery.</Text>
+        </View>
+      </CollapsibleCard>
+
+      <CollapsibleCard title="ECG Guidelines" icon="heartbeat">
+        <View style={styles.importantNoteBox}>
+          <FontAwesome5 name="pen" size={14} color="#856404" style={styles.importantNoteIcon} />
+          <Text style={styles.importantNote}>
+            Draft content pending department sign-off — please review and update with the specific wording your consultants want before relying on this section.
+          </Text>
+        </View>
+
+        <SectionHeader title="When a Preoperative 12-Lead ECG is Required" icon="clipboard-check" />
+        <InfoSection title="Patient factors" icon="heartbeat" items={[
+          'Age > 65 years',
+          'Known cardiac disease (IHD, arrhythmia, valvular disease, heart failure)',
+          'Hypertension, diabetes mellitus, or renal impairment',
+          'Symptoms suggestive of new or unstable cardiac disease',
+        ]} />
+        <InfoSection title="Surgical factors" icon="user-md" items={[
+          'Intermediate/high-risk surgery (per NICE NG45 / ESC-ESA risk stratification)',
+          'Emergency surgery in a patient with cardiac risk factors',
+          'Any case where intraoperative haemodynamic instability is anticipated',
+        ]} />
+
+        <SectionHeader title="Intraoperative ECG Monitoring" icon="wave-square" />
+        <View style={styles.qualityBox}>
+          <Text style={styles.sectionItem}>• Continuous 3/5-lead ECG monitoring is mandatory for all patients under anaesthesia (AAGBI/Association of Anaesthetists minimum monitoring standards)</Text>
+          <Text style={styles.sectionItem}>• <Text style={{fontWeight:'700'}}>CM5 configuration</Text> is recommended for cases with cardiac risk, as it improves sensitivity for detecting left ventricular ischaemia</Text>
+          <Text style={styles.sectionItem}>• A 12-lead ECG should be obtained promptly for any new arrhythmia, ST-segment change, or haemodynamic instability</Text>
+        </View>
+
+        <SectionHeader title="Escalation of Abnormal Findings" icon="exclamation-triangle" color={COLORS.warning} />
+        <View style={styles.qualityBox}>
+          <Text style={styles.sectionItem}>• New or unexplained abnormal ECG findings must be reviewed by the anaesthetist and discussed with the operating surgeon before proceeding, unless the case is immediately life-threatening</Text>
+          <Text style={styles.sectionItem}>• Cardiology referral should be arranged for new significant abnormalities (e.g. new ST changes, new arrhythmia, new heart block) where time and clinical urgency allow</Text>
+          <Text style={styles.sectionItem}>• Out-of-hours abnormal findings should be escalated to the on-call consultant anaesthetist and, where indicated, the on-call medical/cardiology team</Text>
+        </View>
+
+        <SectionHeader title="ECG Documentation" icon="file-medical" color={COLORS.info} />
+        <View style={styles.qualityBox}>
+          <Text style={styles.sectionItem}>• A copy of the preoperative ECG (and any repeat ECGs) must be filed in the patient chart</Text>
+          <Text style={styles.sectionItem}>• The anaesthetic record should note the ECG was reviewed and any relevant findings prior to induction</Text>
         </View>
       </CollapsibleCard>
 

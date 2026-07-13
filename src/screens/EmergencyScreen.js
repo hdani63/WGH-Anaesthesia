@@ -1003,13 +1003,13 @@ export default function EmergencyScreen() {
   };
 
   return (
-    <ScreenWrapper title="Emergency & Crisis Management" subtitle="Association of Anesthetists — Quick Reference Handbook (QRH) June 2023">
+    <ScreenWrapper title="Emergency & Crisis Management" subtitle="Association of Anaesthetists — Quick Reference Handbook (QRH) June 2023">
       <View style={styles.alertBox}>
         <View style={styles.alertRow}>
           <FontAwesome5 name="exclamation-triangle" size={14} color="#721c24" style={styles.alertIcon} />
           <Text style={styles.alertText}>
             <Text style={styles.alertStrong}>Emergency Use Only: </Text>
-            Always apply clinical judgement. These guidelines do not replace individual clinical assessment. Source: anesthetists.org/QRH.
+            Always apply clinical judgement. These guidelines do not replace individual clinical assessment. Source: anaesthetists.org/QRH — CC BY-NC-SA 4.0.
           </Text>
         </View>
       </View>
@@ -1158,6 +1158,15 @@ export default function EmergencyScreen() {
           ))}
         </View>
       ))}
+
+      {/* REFERENCES FOOTER */}
+      <View style={styles.refBox}>
+        <Text style={styles.refText}>
+          Association of Anaesthetists Quick Reference Handbook, June 2023.
+          anaesthetists.org/Quick-Reference-Handbook. Subject to Creative Commons licence
+          CC BY-NC-SA 4.0. Not intended as standards of medical care.
+        </Text>
+      </View>
     </ScreenWrapper>
   );
 }
@@ -1181,6 +1190,8 @@ const styles = StyleSheet.create({
   qrhSectionTextWrap: { flex: 1 },
   qrhSectionTitle: { fontSize: 16, fontWeight: '700' },
   qrhSectionSubtitle: { fontSize: 12, color: COLORS.textMuted, marginTop: 2 },
+  refBox: { backgroundColor: '#e2e3e5', borderRadius: BORDER_RADIUS, padding: SPACING.sm, marginTop: SPACING.md, marginBottom: SPACING.lg },
+  refText: { fontSize: 11, color: '#41464b', lineHeight: 17 },
   qrhIntro: { fontSize: 13, color: COLORS.text, lineHeight: 20, marginTop: SPACING.sm },
   qrhWarning: {
     marginTop: SPACING.sm,

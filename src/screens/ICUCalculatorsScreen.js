@@ -349,6 +349,7 @@ export default function ICUCalculatorsScreen() {
           selected={chronicHealth}
           onSelect={setChronicHealth}
         />
+        <Text style={styles.footnote}>*Severe organ insufficiency: hepatic cirrhosis/portal HT, NYHA IV heart failure, chronic hypoxia/hypercapnia/polycythaemia, renal dialysis, or immunocompromised state</Text>
         <CalcButton title="Calculate APACHE II" onPress={handleCalculateApache} />
         {apacheResult && <ResultDisplay result={apacheResult.text} type={apacheResult.type} />}
       </CollapsibleCard>
@@ -438,4 +439,5 @@ export default function ICUCalculatorsScreen() {
 const styles = StyleSheet.create({
   label: { fontSize: 14, fontWeight: '600', color: COLORS.text, marginBottom: SPACING.xs },
   input: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 6, padding: 10, fontSize: 14, backgroundColor: COLORS.white, marginBottom: SPACING.md },
+  footnote: { fontSize: 12, color: COLORS.textMuted, marginTop: -SPACING.xs, marginBottom: SPACING.md },
 });

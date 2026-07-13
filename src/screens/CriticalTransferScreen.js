@@ -471,7 +471,7 @@ export default function CriticalTransferScreen() {
         <Text style={styles.refIntro}>
           This checklist is based on core national and international guidance for safe inter-hospital transfer of critically ill patients.
         </Text>
-        <Text style={styles.refItem}>1. ICSI / JFICMI National Standards for Adult Critical Care Services.</Text>
+        <Text style={styles.refItem}>1. ICSI / JFICMI National Standards for Adult Critical Care Services (2019, updated 2021).</Text>
         <Text style={styles.refItem}>2. AAGBI / ICS Safety Guideline: Inter-hospital Transfer of the Critically Ill Patient.</Text>
         <Text style={styles.refItem}>3. PHECC Protocol 37: Emergency Inter-Hospital Transfer Policy.</Text>
         <Text style={styles.refItem}>4. NAS Critical Care Retrieval Services (CCRS) transfer protocols.</Text>

@@ -133,6 +133,35 @@ const EMPIRIC_SECTIONS = [
     ],
   },
   {
+    key: 'postpartum',
+    title: 'POSTPARTUM SEPSIS (≤42 DAYS)',
+    icon: 'heart',
+    color: '#c62828',
+    bg: '#ffebee',
+    headers: ['Condition', 'Empiric Therapy', 'Comments'],
+    widths: [170, 250, 230],
+    rows: [
+      { cells: [c('Postpartum Sepsis (up to 42 days after delivery)', { fontWeight: '700' }), c('Co-amoxiclav 1.2g TDS IV + Gentamicin — refer to Obstetrics section for full dosing'), c('Most common sources: endometritis, wound infection, mastitis, UTI, pneumonia. Take high vaginal swab, blood cultures, MSU and wound swab before starting antibiotics. Inform Consultant Obstetrician; consider early Microbiology review. HSE Maternity Sepsis Screening Tool applies.')] },
+      { cells: [c('Group A Streptococcus (GAS) suspected', { fontWeight: '700' }), c('Benzylpenicillin + Clindamycin (Clindamycin to suppress toxin production)'), c('GAS can cause fulminant puerperal sepsis — maintain a low threshold for escalation.')] },
+    ],
+  },
+  {
+    key: 'bloodcultures',
+    title: 'POSITIVE BLOOD CULTURES',
+    icon: 'vials',
+    color: '#b71c1c',
+    bg: '#ffebee',
+    headers: ['Gram Stain', 'Likely Organisms', 'Empiric Approach'],
+    widths: [150, 220, 260],
+    rows: [
+      { cells: [c('Gram Positive Cocci (GPC)', { fontWeight: '700' }), c('Staphylococci (S. aureus MSSA/MRSA, Coagulase-negative), Streptococci (Group A/B/C/G, S. pneumoniae, S. viridans), Enterococci (E. faecalis / E. faecium / VRE)'), c('If systemic sepsis and source/pathogen unclear: a glycopeptide covers most Gram positives — a vancomycin loading dose is reasonable pending ID/sensitivity, then review. Check history of MRSA. Do NOT dismiss CoNS / S. viridans if endocarditis, intravascular catheter or prosthetic device infection suspected. If well and contamination suspected: watch-and-observe with a trigger for review.')] },
+      { cells: [c('Gram Negative Bacilli (GNB)', { fontWeight: '700' }), c('Enterobacterales (E. coli, Klebsiella, Enterobacter), Pseudomonas, Acinetobacter, Bacteroides. Includes MDROs: ESBL, CPE, MDR Pseudomonas/Acinetobacter'), c('Presumptive Gram-negative septicaemia — urgent review and prompt antibiotic treatment pending identification. If source unclear see Sepsis — Undetermined Origin section.')] },
+      { cells: [c('Gram Negative Cocci (GNC)', { fontWeight: '700' }), c('Presumptive Meningococcal septicaemia'), c('Medical emergency — urgent senior review, supportive therapy and rapid empiric antimicrobials pending identification. Follow Meningococcal Sepsis protocols. Notify Public Health.')] },
+      { cells: [c('Gram Positive Bacilli (GPB)', { fontWeight: '700' }), c('Diphtheroids/Coryneforms, Propionibacteria, Bacillus spp, Listeria monocytogenes, Clostridium perfringens & other Clostridia'), c('Often a skin contaminant. If Listeria suspected: Amoxicillin ± Gentamicin. If Clostridial (e.g. faecal peritonitis/severe wound): broad-spectrum penicillin such as Co-amoxiclav / Piperacillin-tazobactam. In penicillin allergy discuss with Microbiology.')] },
+      { cells: [c('Yeasts on Gram Stain', { fontWeight: '700' }), c('Candida spp (candidaemia); consider Cryptococcus in immunocompromised'), c('Always significant. Start an echinocandin: Anidulafungin 200mg stat IV Day 1, then 100mg OD IV thereafter, pending species ID/sensitivity. Remove central lines if implicated, repeat blood cultures, organise echocardiogram. Discuss with Microbiology.')] },
+    ],
+  },
+  {
     key: 'uti',
     title: 'URINARY TRACT INFECTIONS',
     icon: 'tint',
@@ -170,6 +199,20 @@ const EMPIRIC_SECTIONS = [
     ],
   },
   {
+    key: 'endocarditis',
+    title: 'INFECTIVE ENDOCARDITIS',
+    icon: 'heartbeat',
+    color: '#c62828',
+    bg: '#ffebee',
+    headers: ['Condition', 'Empiric Therapy', 'PCN Allergy', 'Comments'],
+    widths: [170, 240, 220, 200],
+    rows: [
+      { cells: [c('Native Valve IE (empiric, before pathogen ID)', { fontWeight: '700' }), c('Amoxicillin 2g 4-hourly IV + Flucloxacillin 2g 4-hourly IV + Gentamicin 3mg/kg OD IV (see gentamicin dosing schedule)'), c('Vancomycin 15mg/kg BD IV + Gentamicin 3mg/kg OD IV (see vancomycin & gentamicin dosing schedules)'), c('Take 3 sets of blood cultures (aerobic + anaerobic) at 30-minute intervals from different peripheral sites before antibiotics. Do not delay antibiotics in the acutely septic patient. Typical duration 4–6 weeks. Discuss all cases with Micro/ID.')] },
+      { cells: [c('Prosthetic Valve IE (empiric, before pathogen ID)', { fontWeight: '700' }), c('Vancomycin 15mg/kg BD IV + Gentamicin 3mg/kg OD IV + Rifampicin 300mg TDS PO'), c('Vancomycin 15mg/kg BD IV + Gentamicin 3mg/kg OD IV + Rifampicin 300mg TDS PO'), c('Oral Rifampicin only after discussion with Micro/ID and after 3–5 days of effective therapy or clearance of bacteraemia (minimises resistance from high bacterial burden).')] },
+      { cells: [c('Culture-negative endocarditis'), c('If blood cultures remain negative after 72 hours, discuss with Clinical Microbiologist or Infectious Diseases'), c(''), c('Gentamicin is a synergistic agent — typical duration 2 weeks. Adjust vancomycin & gentamicin for renal dysfunction and obesity.')] },
+    ],
+  },
+  {
     key: 'gi',
     title: 'INTRA-ABDOMINAL & GI INFECTIONS',
     icon: 'procedures',
@@ -196,7 +239,7 @@ const EMPIRIC_SECTIONS = [
     headers: ['Condition', 'Antibiotic', 'PCN Allergy (Severe)', 'Comments'],
     widths: [140, 240, 200, 170],
     rows: [
-      { cells: [c('Meningitis (bacterial)'), c('Ceftriaxone 2g BD IV + Amoxicillin 2g 4-hourly IV (if Listeria risk) + Vancomycin (if MRSA risk)'), c('Chloramphenicol 25mg/kg QDS IV. Non-immunocompromised: ADD Vancomycin + Co-trimoxazole 10mg/kg BD IV (if Listeria risk)'), c('Listeria risk factors: >60 years, diabetic, pregnant, immunocompromised, alcohol dependency')] },
+      { cells: [c('Meningitis (bacterial)'), c('Ceftriaxone 2g BD IV + Amoxicillin 2g 4-hourly IV (if Listeria risk) + Vancomycin (if MRSA risk)'), c('Chloramphenicol 25mg/kg QDS IV. Non-immunocompromised: ADD Vancomycin + Co-trimoxazole 10mg/kg BD IV (if Listeria risk)'), c('Adjunctive Dexamethasone 10mg QDS IV (start before/with first antibiotic dose, no later than 12h after). Continue dexamethasone for 4 days in suspected/proven pneumococcal meningitis. Do not give if meningococcal septicaemia/septic shock. Listeria risk factors: >60 years, diabetic, pregnant, immunocompromised, alcohol dependency')] },
       { cells: [c('Meningitis (viral)'), c('Supportive treatment — check PCR result on CSF if indicated'), c(''), c('')] },
       { cells: [c('Encephalitis'), c('Aciclovir 10mg/kg TDS IV'), c(''), c('')] },
     ],
@@ -211,6 +254,24 @@ const EMPIRIC_SECTIONS = [
     widths: [180, 250, 200],
     rows: [
       { cells: [c('Pelvic Inflammatory Disease, Salpingitis, Tubo-ovarian abscess'), c('Outpatient: Ceftriaxone 1g IM/IV stat, then Doxycycline 100mg BD PO + Metronidazole PO × 14 days. Inpatient: Ceftriaxone 1–2g OD IV + Doxycycline 100mg BD PO + Metronidazole PO × 14 days'), c('Clindamycin 900mg TDS IV + Gentamicin + Doxycycline 100mg BD PO + Metronidazole PO × 14 days')] },
+    ],
+  },
+  {
+    key: 'obstetrics',
+    title: 'OBSTETRICS',
+    icon: 'baby',
+    color: '#bf360c',
+    bg: '#fbe9e7',
+    headers: ['Condition', 'First Line', 'PCN Allergy', 'Comments'],
+    widths: [160, 250, 250, 190],
+    rows: [
+      { section: 'Pyrexia in Labour', bg: '#f1f3f5', color: '#212529' },
+      { cells: [c('Pyrexia in Labour (single temperature ≥38.0°C)'), c('Co-amoxiclav 1.2g TDS IV + Gentamicin 5mg/kg OD (booking weight, max 480mg)'), c('Not severe: Cefuroxime 1.5g QDS IV + Metronidazole 500mg TDS IV + Gentamicin 5mg/kg OD (booking weight, max 480mg). Severe/anaphylaxis: Vancomycin 15mg/kg 12-hourly IV (booking weight, max 2g/dose) + Gentamicin 5mg/kg OD + Metronidazole 500mg TDS IV'), c('If BMI ≥30: use Adjusted Body Weight for gentamicin. If already on IAP: Benzylpenicillin → stop and start Co-amoxiclav + Gentamicin; Cefuroxime → continue and add Gentamicin + Metronidazole; Vancomycin → continue and add Gentamicin + Metronidazole.')] },
+      { section: 'Sepsis in Pregnancy', bg: '#f1f3f5', color: '#212529' },
+      { cells: [c('Sepsis in Pregnancy (no identifiable source)'), c('Co-amoxiclav 1.25g TDS IV + Gentamicin 5mg/kg OD IV (booking weight, max 480mg). Early escalation to Piperacillin-tazobactam 4.5g QDS IV + Gentamicin may be warranted depending on severity/recent micro/recent co-amoxiclav use'), c('Not severe: Cefuroxime 1.5g QDS IV + Metronidazole 500mg TDS IV + Gentamicin 5mg/kg OD. Severe/anaphylaxis: Vancomycin 15mg/kg 12-hourly IV + Gentamicin 5mg/kg OD + Metronidazole 500mg TDS IV; add Clindamycin if invasive Group A Strep suspected'), c('If MRSA history: add Vancomycin 15mg/kg 12-hourly (consider 25mg/kg, max 2g, loading dose if severe/septic shock). BMI ≥30: use Adjusted Body Weight for gentamicin.')] },
+      { cells: [c('Severe Sepsis in Pregnancy (e.g. septic shock)'), c('Meropenem 1–2g TDS IV + Gentamicin 5mg/kg OD IV (booking weight, max 480mg) + Clindamycin 1.2g QDS IV. Add Vancomycin (25mg/kg load then 15mg/kg 12-hourly) if MRSA risk'), c('Vancomycin 25mg/kg load then 15mg/kg 12-hourly IV + Clindamycin 1.2g QDS IV + Gentamicin 5mg/kg OD IV. Use Amikacin 15mg/kg OD (booking weight, max 1.5g) if history of gentamicin-resistant GNB. Ciprofloxacin 400mg BD IV may be added for extra Gram-negative cover'), c('Consider IV immunoglobulin if Group A Strep septic shock strongly suspected. Review aminoglycoside daily; consider stopping after 48h if improving.')] },
+      { section: 'Intrapartum Antimicrobial Prophylaxis (IAP) for GBS', bg: '#f1f3f5', color: '#212529' },
+      { cells: [c('IAP — reduction of early-onset invasive GBS in neonate (NOT maternal treatment)'), c('Benzylpenicillin 3g IV loading dose, then 1.8g IV every 4 hours until delivery (infuse over 30–60 min to avoid CNS toxicity)'), c('Not severe: Cefuroxime 1.5g QDS IV until delivery. Severe/anaphylaxis: Vancomycin 15mg/kg 12-hourly IV (booking weight, max 2g/dose) OR Clindamycin 900mg TDS IV only if isolate known clindamycin-susceptible'), c('20–30% of GBS are clindamycin-resistant — not recommended empirically. In sepsis / clinically unwell / pyrexia in labour these regimens are NOT suitable — use Sepsis in Pregnancy or Pyrexia in Labour.')] },
     ],
   },
   {
@@ -261,6 +322,18 @@ const EMPIRIC_SECTIONS = [
       { cells: [c('Sinusitis / Otitis media'), c('Co-amoxiclav 1.2g TDS IV × 5–7 days'), c('Clarithromycin 500mg BD PO × 5–7 days')] },
     ],
   },
+  {
+    key: 'malaria',
+    title: 'MALARIA',
+    icon: 'bug',
+    color: '#827717',
+    bg: '#f9fbe7',
+    headers: ['Condition', 'Guidance'],
+    widths: [150, 320],
+    rows: [
+      { cells: [c('Malaria', { fontWeight: '700' }), c('No specific empiric regimen is listed in the source guideline — management is pathogen/species and severity directed. For recent outbreak information see www.cdc.gov/travel. Guidelines available at www.who.int/publications/i/item/guidelines-for-malaria.')] },
+    ],
+  },
 ];
 
 // ───────────────────────────────────────────────────────────────
@@ -306,7 +379,7 @@ export default function AntimicrobialsScreen() {
       <View style={styles.alertWarn}>
         <FontAwesome5 name="exclamation-triangle" size={13} color="#856404" style={{ marginRight: 8, marginTop: 2 }} />
         <Text style={styles.alertWarnText}>
-          Always consider patient-specific factors: organ function, allergies, interactions, cultures, and local resistance patterns. Consult Microbiology for complex cases.
+          Always verify doses against current SPC. Consider patient-specific factors: organ function, allergies, interactions, cultures, and local resistance patterns. Consult Microbiology for complex cases.
         </Text>
       </View>
 

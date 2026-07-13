@@ -13,7 +13,8 @@ const SECTIONS = [
     label: 'Irish Health Service & Governance',
     color: '#1a3a5c',
     links: [
-      { title: 'HSE — Health Service Executive', desc: 'National health service, models of care and clinical programmes.', url: 'https://www.hse.ie' },
+      { title: 'HSE — Health Service Executive', desc: 'National health service, models of care and clinical programmes.', url: 'https://www.hse.ie/eng/about/who/cspd/ncps/' },
+      { title: 'HPSC — Antimicrobial & Infection Guidance', desc: 'Health Protection Surveillance Centre guidance.', url: 'https://www.hpsc.ie/' },
       { title: 'College of Anaesthesiologists of Ireland (CAI)', desc: 'Training, standards and guidelines for Irish anaesthesiology.', url: 'https://www.anaesthesia.ie' },
       { title: 'HPRA — Health Products Regulatory Authority', desc: 'Irish medicines and medical device regulation and safety notices.', url: 'https://www.hpra.ie' },
     ],
@@ -23,11 +24,29 @@ const SECTIONS = [
     label: 'Anaesthesia Societies & Guidelines',
     color: '#2e7d32',
     links: [
-      { title: 'Association of Anaesthetists', desc: 'Guidelines, QRH and safety standards (formerly AAGBI).', url: 'https://www.anaesthetists.org' },
-      { title: 'Royal College of Anaesthetists (RCoA)', desc: 'Standards, GPAS and curriculum resources.', url: 'https://www.rcoa.ac.uk' },
-      { title: 'Difficult Airway Society (DAS)', desc: 'Airway management guidelines and cognitive aids.', url: 'https://das.uk.com' },
+      { title: 'Association of Anaesthetists', desc: 'Guidelines, QRH and safety standards (formerly AAGBI).', url: 'https://anaesthetists.org/Home/Resources-publications/Guidelines' },
+      { title: 'Royal College of Anaesthetists (RCoA)', desc: 'Standards, GPAS and curriculum resources.', url: 'https://www.rcoa.ac.uk/guidelines-and-quality-improvement' },
+      { title: 'Difficult Airway Society (DAS)', desc: 'Airway management guidelines and cognitive aids.', url: 'https://das.uk.com/guidelines' },
       { title: "Obstetric Anaesthetists' Association (OAA)", desc: 'Obstetric anaesthesia guidelines and resources.', url: 'https://www.oaa-anaes.ac.uk' },
-      { title: 'ASRA Pain Medicine', desc: 'Regional anaesthesia and anticoagulation guidelines.', url: 'https://www.asra.com' },
+      { title: 'ASRA Pain Medicine', desc: 'Regional anaesthesia and anticoagulation guidelines.', url: 'https://www.asra.com/guidelines-articles' },
+    ],
+  },
+  {
+    key: 'criticalcare',
+    label: 'Critical Care',
+    color: '#2e7d32',
+    links: [
+      { title: 'Intensive Care Society (ICS)', desc: 'UK critical care standards & guidelines.', url: 'https://ics.ac.uk/resource/guidelines-and-standards.html' },
+      { title: 'Faculty of Intensive Care Medicine (FICM)', desc: 'Critical care training & clinical guidance.', url: 'https://www.ficm.ac.uk/standardssafetyguidelines' },
+    ],
+  },
+  {
+    key: 'drugs',
+    label: 'Drug & Prescribing References',
+    color: '#27ae60',
+    links: [
+      { title: 'Medicines.ie', desc: 'Irish SPC & Patient Information Leaflets.', url: 'https://www.medicines.ie/' },
+      { title: 'BNF — British National Formulary', desc: 'Drug dosing, interactions & prescribing guidance.', url: 'https://bnf.nice.org.uk/' },
     ],
   },
   {

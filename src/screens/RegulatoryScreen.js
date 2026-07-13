@@ -233,6 +233,14 @@ export default function RegulatoryScreen() {
         </Text>
       </InfoCard>
 
+      <View style={styles.bulletRow}>
+        <Text style={styles.bulletDot}>•</Text>
+        <Text style={styles.bulletText}>
+          For assistance, visit{' '}
+          <Text style={styles.link} onPress={() => Linking.openURL('/support').catch(() => {})}>Support</Text>.
+        </Text>
+      </View>
+
     </ScreenWrapper>
   );
 }

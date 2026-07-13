@@ -266,6 +266,7 @@ const MEDICATIONS = [
   { name: 'Sulfonylureas (Glyburide, Glipizide, Gliclazide, etc.)', cls: 'Oral diabetic', rec: 'Hold', stop: 'Day of surgery', restart: 'When eating', notes: 'Hypoglycemia risk' },
   { name: 'Empagliflozin (Jardiance), Dapagliflozin (Farxiga), Canagliflozin (Invokana), Ertugliflozin (Steglatro)', cls: 'SGLT2 inhibitor', rec: 'Hold', stop: '3 days (4 for ertugliflozin)', restart: 'When eating, normal renal fxn', notes: 'Risk of euglycemic DKA' },
   { name: 'GLP-1 agonists (Liraglutide, Semaglutide, Exenatide, Dulaglutide, etc.)', cls: 'Injectable diabetic', rec: 'Hold', stop: 'Daily: day of surgery; Weekly (semaglutide/dulaglutide): 7 days prior', restart: 'When eating, no vomiting', notes: 'Aspiration risk — weekly preparations require 1-week hold (SAMBA/ASA 2023)' },
+  { name: 'Insulin (basal/bolus)', cls: 'Insulin (injectable diabetic)', rec: 'Adjust: reduce long-acting, hold short-acting morning of surgery', stop: 'As per protocol', restart: 'When eating, titrate to intake', notes: 'Avoid hypo/hyperglycaemia' },
   { name: 'Metoprolol, Atenolol, Bisoprolol, Propranolol', cls: 'Beta-blocker', rec: 'Continue', stop: 'N/A', restart: 'N/A', notes: 'Do not stop abruptly; may worsen cardiac risk' },
   { name: 'All ACE inhibitors', cls: 'ACE inhibitor', rec: 'Hold morning of surgery', stop: 'Morning of surgery', restart: 'When stable, normotensive', notes: 'Risk of intra-op hypotension' },
   { name: 'All ARBs', cls: 'ARB', rec: 'Hold morning of surgery', stop: 'Morning of surgery', restart: 'When stable, normotensive', notes: 'Risk of intra-op hypotension' },
@@ -656,7 +657,7 @@ export default function PerioperativeMedicationScreen() {
           <View style={styles.chartCard}>
             <View style={[styles.chartHeader, { backgroundColor: COLORS.success }]}>
               <FontAwesome5 name="leaf" size={13} color={COLORS.white} style={styles.chartHeaderIcon} />
-              <Text style={styles.chartHeaderText}>Herbal Medications Perioperative Reference (200+ Herbs)</Text>
+              <Text style={styles.chartHeaderText}>Herbal Medications Perioperative Reference (225+ Herbs)</Text>
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tableScrollContent}>
