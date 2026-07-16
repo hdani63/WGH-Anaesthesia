@@ -349,17 +349,78 @@ async function openReference(url) {
   }
 }
 
-function getSectionKey(medication) {
-  const cls = medication.cls.toLowerCase();
+// Class labels are short clinical abbreviations ('DOAC', 'ACEi', 'Oral
+// diabetic'), so matching them against long names ('anticoagulant', 'diabetes',
+// 'ace inhibitor') silently files them under "Supplements & Others". Match the
+// exact label; the rules below only cover labels added after this was written.
+const SECTION_BY_CLASS = {
+  'antiplatelet': 'antithrombotic',
+  'anticoagulant': 'antithrombotic',
+  'anticoagulant (vka)': 'antithrombotic',
+  'doac': 'antithrombotic',
+  'lmwh': 'antithrombotic',
 
-  if (cls.includes('antiplatelet') || cls.includes('anticoagulant')) return 'antithrombotic';
-  if (cls.includes('nsaid')) return 'nsaid';
-  if (cls.includes('ssri') || cls.includes('snri') || cls.includes('tca') || cls.includes('antipsychotic') || cls.includes('maoi') || cls.includes('mood stabilizer')) return 'psychiatric';
-  if (cls.includes('diabetes') || cls.includes('insulin')) return 'diabetes';
-  if (cls.includes('beta-blocker') || cls.includes('ace inhibitor') || cls.includes('arb') || cls.includes('ccb') || cls.includes('diuretic') || cls.includes('statin')) return 'cardio';
-  if (cls.includes('thyroid') || cls.includes('corticosteroid')) return 'endocrine';
-  if (cls.includes('biologic') || cls.includes('dmard')) return 'immuno';
-  return 'other';
+  'nsaid': 'nsaid',
+  'nsaid (cox-2 selective)': 'nsaid',
+
+  'ssri': 'psychiatric',
+  'snri': 'psychiatric',
+  'tca': 'psychiatric',
+  'antipsychotic': 'psychiatric',
+  'maoi': 'psychiatric',
+  'mood stabilizer': 'psychiatric',
+
+  'insulin (injectable diabetic)': 'diabetes',
+  'injectable diabetic': 'diabetes',
+  'oral diabetic': 'diabetes',
+  'biguanide (oral diabetic)': 'diabetes',
+  'sglt2 inhibitor': 'diabetes',
+
+  'beta-blocker': 'cardio',
+  'ace inhibitor': 'cardio',
+  'acei': 'cardio',
+  'arb': 'cardio',
+  'calcium channel blocker (ccb)': 'cardio',
+  'diuretic': 'cardio',
+  'loop diuretic': 'cardio',
+  'k-sparing diuretic': 'cardio',
+  'thiazide diuretic': 'cardio',
+  'thiazide-like diuretic': 'cardio',
+  'statin': 'cardio',
+
+  'thyroid hormone': 'endocrine',
+  'antithyroid': 'endocrine',
+  'corticosteroid': 'endocrine',
+
+  'biologic dmard': 'immuno',
+  'nonbiologic dmard': 'immuno',
+
+  'herbal': 'other',
+  'hormonal': 'other',
+  'inhaled bronchodilator': 'other',
+  'ppi/h2-blocker': 'other',
+};
+
+// Ordered: 'Biguanide (oral diabetic)' must reach the diabetes rule, and
+// 'Antithyroid' the endocrine one, before any looser pattern claims them.
+const SECTION_FALLBACK_RULES = [
+  [/antiplatelet|anticoagulant|\bdoac\b|\blmwh\b|heparin/, 'antithrombotic'],
+  [/\bnsaid\b/, 'nsaid'],
+  [/\bssri\b|\bsnri\b|\btca\b|antipsychotic|\bmaoi\b|mood stabilizer/, 'psychiatric'],
+  [/diabet|insulin|gliflozin|gliptin|\bglp-1\b/, 'diabetes'],
+  [/beta-blocker|ace inhibitor|\bacei\b|\barb\b|\bccb\b|diuretic|statin/, 'cardio'],
+  [/thyroid|corticosteroid/, 'endocrine'],
+  [/dmard|biologic/, 'immuno'],
+];
+
+function getSectionKey(medication) {
+  const cls = (medication.cls || '').toLowerCase().trim();
+
+  const mapped = SECTION_BY_CLASS[cls];
+  if (mapped) return mapped;
+
+  const rule = SECTION_FALLBACK_RULES.find(([pattern]) => pattern.test(cls));
+  return rule ? rule[1] : 'other';
 }
 
 export default function PerioperativeMedicationScreen() {
