@@ -104,7 +104,7 @@ export default function HomeScreen({ navigation }) {
       style={styles.safeAreaGradient}
     >
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <LinearGradient
             colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
             start={{ x: 0, y: 0 }}
