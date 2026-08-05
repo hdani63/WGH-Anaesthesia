@@ -1,25 +1,22 @@
-import { MOCK_NEWS } from '../data/newsMock';
+import { request } from './apiClient';
 
-// UI-only for now: an in-memory copy of the mock announcements stands in for the
-// database, so add / edit / delete / hide in the admin screen behave realistically
-// while the screens are being built. Replace each function body with the matching
-// API call once the backend is wired up (see the notes on each one).
+// News & Announcements network layer — see docs/NEWS_API.md for the contract.
+//   GET    /news                     public feed (active only, pinned first)
+//   POST   /admin/news/login         shared-password sign-in -> bearer token
+//   GET    /admin/news               everything, hidden included
+//   POST   /admin/news               publish
+//   PUT    /admin/news/:id           full replace
+//   PATCH  /admin/news/:id/toggle    hide / show
+//   DELETE /admin/news/:id           hard delete
 
-let store = MOCK_NEWS.map(item => ({ ...item }));
+// Held in memory only, so it never reaches disk and dies with the process.
+// NewsAdminScreen clears it on unmount.
+let adminToken = null;
 
-const delay = (value, ms = 400) =>
-  new Promise(resolve => setTimeout(() => resolve(value), ms));
+const auth = () => ({ Authorization: `Bearer ${adminToken}` });
 
-function nextId() {
-  return store.reduce((max, item) => Math.max(max, item.id), 0) + 1;
-}
-
-// Server order (app.py): pinned first, then most recent published date.
-function sorted(list) {
-  return [...list].sort((a, b) => {
-    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-    return b.publishedDate.localeCompare(a.publishedDate);
-  });
+export function clearAdminToken() {
+  adminToken = null;
 }
 
 export function formatDate(isoDate) {
@@ -36,58 +33,60 @@ export function todayIso() {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-// Public feed — active announcements only. An announcement counts as active
-// unless it is explicitly switched off, matching the model default (models.py:
-// is_active defaults to True), so a record without the field still shows.
-// Later: request('/news')
-export function getNews() {
-  return delay(sorted(store.filter(item => item.active !== false)), 600);
-}
-
-// Admin list — everything, including hidden. Later: request('/admin/news')
-export function getAllNews() {
-  return delay(sorted(store));
-}
-
-// Later: request('/admin/news', { method: 'POST', body: ... })
-export function addNews(fields) {
-  const item = {
-    id: nextId(),
-    title: fields.title,
-    body: fields.body,
-    type: fields.type || 'info',
-    pinned: !!fields.pinned,
-    active: true,
-    publishedDate: fields.publishedDate,
-    date: formatDate(fields.publishedDate),
+// The server sends `date` and `active`, but the spec marks both optional:
+// `date` is derivable from publishedDate, and a missing `active` means visible
+// (the is_active column defaults to true). Filling them in here keeps the
+// screens from having to care.
+function normalize(item) {
+  if (!item || typeof item !== 'object') return item;
+  return {
+    ...item,
+    active: item.active !== false,
+    date: item.date || formatDate(item.publishedDate),
   };
-  store = [item, ...store];
-  return delay(item);
+}
+
+const normalizeList = data => (Array.isArray(data) ? data.map(normalize) : []);
+
+// Ordering is the server's job — the list is rendered as received.
+export function getNews() {
+  return request('/news').then(normalizeList);
+}
+
+export function adminLogin(password) {
+  return request('/admin/news/login', {
+    method: 'POST',
+    body: JSON.stringify({ password }),
+  }).then(data => {
+    adminToken = data?.token ?? null;
+    return data;
+  });
+}
+
+export function getAllNews() {
+  return request('/admin/news', { headers: auth() }).then(normalizeList);
+}
+
+export function addNews(fields) {
+  return request('/admin/news', {
+    method: 'POST',
+    headers: auth(),
+    body: JSON.stringify(fields),
+  }).then(normalize);
 }
 
 export function updateNews(id, fields) {
-  store = store.map(item =>
-    item.id === id
-      ? {
-          ...item,
-          title: fields.title,
-          body: fields.body,
-          type: fields.type,
-          pinned: !!fields.pinned,
-          publishedDate: fields.publishedDate,
-          date: formatDate(fields.publishedDate),
-        }
-      : item
-  );
-  return delay(true);
+  return request(`/admin/news/${id}`, {
+    method: 'PUT',
+    headers: auth(),
+    body: JSON.stringify(fields),
+  }).then(normalize);
 }
 
 export function toggleNews(id) {
-  store = store.map(item => (item.id === id ? { ...item, active: !item.active } : item));
-  return delay(true);
+  return request(`/admin/news/${id}/toggle`, { method: 'PATCH', headers: auth() });
 }
 
 export function deleteNews(id) {
-  store = store.filter(item => item.id !== id);
-  return delay(true);
+  return request(`/admin/news/${id}`, { method: 'DELETE', headers: auth() });
 }

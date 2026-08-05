@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert } from 'react-native';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react-native';
 
 jest.mock('../../services/newsService', () => ({
   getAllNews: jest.fn(),
@@ -8,6 +8,8 @@ jest.mock('../../services/newsService', () => ({
   updateNews: jest.fn(),
   toggleNews: jest.fn(),
   deleteNews: jest.fn(),
+  adminLogin: jest.fn(),
+  clearAdminToken: jest.fn(),
   formatDate: jest.requireActual('../../services/newsService').formatDate,
   todayIso: jest.fn(() => '2026-08-05'),
 }));
@@ -15,11 +17,18 @@ jest.mock('../../services/newsService', () => ({
 import NewsAdminScreen from '../NewsAdminScreen';
 import {
   addNews,
+  adminLogin,
+  clearAdminToken,
   deleteNews,
   getAllNews,
   toggleNews,
   updateNews,
 } from '../../services/newsService';
+
+// The password is verified by POST /admin/news/login, so the screen never
+// compares it locally — any non-blank string reaches the endpoint, and what the
+// user sees on failure is whatever message the server sent back.
+const ADMIN_PASSWORD = 'the-admin-password';
 
 const ITEMS = [
   {
@@ -52,7 +61,7 @@ const navigation = { goBack: jest.fn(), navigate: jest.fn() };
 
 async function renderLoggedIn() {
   await render(<NewsAdminScreen navigation={navigation} />);
-  await fireEvent.changeText(screen.getByPlaceholderText('••••••••'), 'secret');
+  await fireEvent.changeText(screen.getByPlaceholderText('••••••••'), ADMIN_PASSWORD);
   await fireEvent.press(screen.getByText('Login'));
   await waitFor(() => expect(screen.getByText('Add New Announcement')).toBeTruthy());
 }
@@ -64,6 +73,13 @@ beforeEach(() => {
   updateNews.mockResolvedValue(true);
   toggleNews.mockResolvedValue(true);
   deleteNews.mockResolvedValue(true);
+  // Default: the endpoint accepts and returns a token. Tests that exercise a
+  // rejection override this with the message the server would have sent.
+  adminLogin.mockImplementation(password =>
+    password === ADMIN_PASSWORD
+      ? Promise.resolve({ token: 'test-token', expiresIn: 28800 })
+      : Promise.reject(new Error('Wrong password.'))
+  );
 });
 
 describe('login gate', () => {
@@ -76,12 +92,58 @@ describe('login gate', () => {
     expect(getAllNews).not.toHaveBeenCalled();
   });
 
-  it('rejects an empty password', async () => {
+  it('rejects an empty password without calling the endpoint', async () => {
     await render(<NewsAdminScreen navigation={navigation} />);
     await fireEvent.press(screen.getByText('Login'));
 
     expect(screen.getByText('Please enter the admin password.')).toBeTruthy();
     expect(screen.queryByText('Add New Announcement')).toBeNull();
+    expect(adminLogin).not.toHaveBeenCalled();
+  });
+
+  it('rejects a wrong password without loading anything', async () => {
+    await render(<NewsAdminScreen navigation={navigation} />);
+    await fireEvent.changeText(screen.getByPlaceholderText('••••••••'), 'not-the-password');
+    await fireEvent.press(screen.getByText('Login'));
+
+    await waitFor(() => expect(screen.getByText('Wrong password.')).toBeTruthy());
+    expect(screen.queryByText('Add New Announcement')).toBeNull();
+    expect(getAllNews).not.toHaveBeenCalled();
+  });
+
+  it('shows whatever message the server sent, so rate limiting reads clearly', async () => {
+    adminLogin.mockRejectedValue(
+      new Error('Too many sign-in attempts. Please try again later.')
+    );
+
+    await render(<NewsAdminScreen navigation={navigation} />);
+    await fireEvent.changeText(screen.getByPlaceholderText('••••••••'), 'anything');
+    await fireEvent.press(screen.getByText('Login'));
+
+    await waitFor(() =>
+      expect(screen.getByText('Too many sign-in attempts. Please try again later.')).toBeTruthy()
+    );
+    expect(screen.queryByText('Add New Announcement')).toBeNull();
+  });
+
+  it('sends the typed password to the endpoint and opens on success', async () => {
+    await renderLoggedIn();
+
+    expect(adminLogin).toHaveBeenCalledWith(ADMIN_PASSWORD);
+    expect(screen.queryByText('Wrong password.')).toBeNull();
+    expect(screen.queryByPlaceholderText('••••••••')).toBeNull(); // login card gone
+  });
+
+  it('drops the admin token when the screen unmounts', async () => {
+    await render(<NewsAdminScreen navigation={navigation} />);
+    await waitFor(() => expect(screen.getByText('Admin Login')).toBeTruthy());
+
+    // act() so React flushes the effect cleanup before the assertion.
+    await act(async () => {
+      screen.unmount();
+    });
+
+    expect(clearAdminToken).toHaveBeenCalled();
   });
 
   it('loads the announcements once logged in', async () => {
@@ -279,6 +341,125 @@ describe('deleting an announcement', () => {
     await waitFor(() => expect(deleteNews).toHaveBeenCalledWith(1));
     await waitFor(() => expect(screen.getByText('Deleted.')).toBeTruthy());
     spy.mockRestore();
+  });
+});
+
+describe('button loading states', () => {
+  // Each button shows its own spinner while its request is in flight, so the
+  // user can see which action is running and cannot fire it twice.
+  const deferred = () => {
+    let resolve;
+    const promise = new Promise(r => { resolve = r; });
+    return { promise, resolve };
+  };
+
+  it('spins the Login button while signing in', async () => {
+    const login = deferred();
+    adminLogin.mockReturnValue(login.promise);
+
+    await render(<NewsAdminScreen navigation={navigation} />);
+    await fireEvent.changeText(screen.getByPlaceholderText('••••••••'), ADMIN_PASSWORD);
+    await fireEvent.press(screen.getByText('Login'));
+
+    expect(screen.getByText('Signing in…')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Signing in…'));
+    expect(adminLogin).toHaveBeenCalledTimes(1); // disabled, so no second call
+
+    await act(async () => login.resolve({ token: 't' }));
+    await waitFor(() => expect(screen.getByText('Add New Announcement')).toBeTruthy());
+  });
+
+  it('spins the Publish button while publishing', async () => {
+    const add = deferred();
+    addNews.mockReturnValue(add.promise);
+    await renderLoggedIn();
+
+    await fireEvent.changeText(screen.getByPlaceholderText(TITLE_PLACEHOLDER), 'Title');
+    await fireEvent.changeText(screen.getByPlaceholderText(BODY_PLACEHOLDER), 'Body');
+    await fireEvent.press(screen.getByText('Publish'));
+
+    expect(screen.getByTestId('publish-spinner')).toBeTruthy();
+    expect(screen.getByText('Publishing…')).toBeTruthy();
+
+    await fireEvent.press(screen.getByText('Publishing…'));
+    expect(addNews).toHaveBeenCalledTimes(1); // no double submit
+
+    await act(async () => add.resolve({ id: 9 }));
+    await waitFor(() => expect(screen.getByText('Publish')).toBeTruthy());
+    expect(screen.queryByTestId('publish-spinner')).toBeNull();
+  });
+
+  it('spins the Save Changes button while saving', async () => {
+    const save = deferred();
+    updateNews.mockReturnValue(save.promise);
+    await renderLoggedIn();
+
+    await fireEvent.press(screen.getAllByLabelText('Edit')[0]);
+    await fireEvent.press(screen.getByText('Save Changes'));
+
+    expect(screen.getByTestId('save-spinner-1')).toBeTruthy();
+    expect(screen.getByText('Saving…')).toBeTruthy();
+
+    await fireEvent.press(screen.getByText('Saving…'));
+    expect(updateNews).toHaveBeenCalledTimes(1);
+
+    await act(async () => save.resolve(true));
+    await waitFor(() => expect(screen.getByText('Updated!')).toBeTruthy());
+  });
+
+  it('spins the hide/show button and locks the rest of that row', async () => {
+    const toggle = deferred();
+    toggleNews.mockReturnValue(toggle.promise);
+    await renderLoggedIn();
+
+    await fireEvent.press(screen.getByLabelText('Hide'));
+    expect(screen.getByTestId('toggle-spinner-1')).toBeTruthy();
+
+    // Edit and Delete on the same row are disabled while it runs...
+    await fireEvent.press(screen.getAllByLabelText('Edit')[0]);
+    expect(screen.queryByText('Save Changes')).toBeNull();
+
+    // ...but the other row is untouched.
+    await fireEvent.press(screen.getAllByLabelText('Edit')[1]);
+    expect(screen.getByText('Save Changes')).toBeTruthy();
+
+    await act(async () => toggle.resolve(true));
+    await waitFor(() => expect(screen.queryByTestId('toggle-spinner-1')).toBeNull());
+  });
+
+  it('spins the Delete button while deleting', async () => {
+    const del = deferred();
+    deleteNews.mockReturnValue(del.promise);
+    const spy = jest
+      .spyOn(Alert, 'alert')
+      .mockImplementation((title, message, buttons) =>
+        buttons.find(b => b.text === 'Delete').onPress()
+      );
+
+    await renderLoggedIn();
+    await fireEvent.press(screen.getAllByLabelText('Delete')[0]);
+
+    expect(screen.getByTestId('delete-spinner-1')).toBeTruthy();
+
+    await act(async () => del.resolve(true));
+    await waitFor(() => expect(screen.queryByTestId('delete-spinner-1')).toBeNull());
+    expect(screen.getByText('Deleted.')).toBeTruthy();
+    spy.mockRestore();
+  });
+
+  it('clears the spinner when the request fails', async () => {
+    addNews.mockRejectedValue(new Error('offline'));
+    await renderLoggedIn();
+
+    await fireEvent.changeText(screen.getByPlaceholderText(TITLE_PLACEHOLDER), 'Title');
+    await fireEvent.changeText(screen.getByPlaceholderText(BODY_PLACEHOLDER), 'Body');
+    await fireEvent.press(screen.getByText('Publish'));
+
+    await waitFor(() =>
+      expect(screen.getByText('Could not add the announcement.')).toBeTruthy()
+    );
+    expect(screen.queryByTestId('publish-spinner')).toBeNull();
+    expect(screen.getByText('Publish')).toBeTruthy();
   });
 });
 

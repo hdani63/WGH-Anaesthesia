@@ -18,6 +18,8 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { NEWS_TYPES, NEWS_TYPE_ORDER, getNewsType } from '../data/newsTypes';
 import {
   addNews,
+  adminLogin,
+  clearAdminToken,
   deleteNews,
   getAllNews,
   todayIso,
@@ -139,6 +141,7 @@ const emptyDraft = () => ({
 export default function NewsAdminScreen({ navigation }) {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -149,9 +152,27 @@ export default function NewsAdminScreen({ navigation }) {
   const [editingId, setEditingId] = useState(null);
   const [editDraft, setEditDraft] = useState(emptyDraft);
 
+  // In-flight requests, keyed by action — 'add', or `${action}:${id}` for a row.
+  // Each key drives the spinner inside its own button, so two rows can be busy
+  // at once without one blocking the other.
+  const [busy, setBusy] = useState({});
+  const isBusy = key => !!busy[key];
+  const rowBusy = id => isBusy(`save:${id}`) || isBusy(`toggle:${id}`) || isBusy(`delete:${id}`);
+
+  const runBusy = (key, work) => {
+    setBusy(prev => ({ ...prev, [key]: true }));
+    return work().finally(() =>
+      setBusy(prev => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      })
+    );
+  };
+
   const load = useCallback(() => {
     setIsLoading(true);
-    getAllNews()
+    return getAllNews()
       .then(data => setItems(Array.isArray(data) ? data : []))
       .catch(() => setError('Could not load announcements.'))
       .finally(() => setIsLoading(false));
@@ -161,22 +182,34 @@ export default function NewsAdminScreen({ navigation }) {
     if (authed) load();
   }, [authed, load]);
 
+  // Drop the admin token when the screen goes away, so returning to it requires
+  // signing in again rather than inheriting a session left open on the device.
+  useEffect(() => clearAdminToken, []);
+
   const notify = (message, isError = false) => {
     setError(isError ? message : null);
     setSuccess(isError ? null : message);
   };
 
-  // UI only: this gate is a placeholder. The real check lives server-side
-  // (app.py -> ADMIN_PASSWORD) and must stay there — never ship the password
-  // in the app bundle.
+  // The password is checked by the server (POST /admin/news/login), which hands
+  // back a bearer token the admin calls then carry. Failure messages come from
+  // the server so the user sees the real reason ("Wrong password.", a rate-limit
+  // notice, or a connection error).
   const handleLogin = () => {
     if (!password.trim()) {
       setError('Please enter the admin password.');
       return;
     }
-    setError(null);
-    setPassword('');
-    setAuthed(true);
+
+    setIsAuthenticating(true);
+    adminLogin(password)
+      .then(() => {
+        setError(null);
+        setPassword('');
+        setAuthed(true);
+      })
+      .catch(err => setError(err?.message || 'Could not sign in.'))
+      .finally(() => setIsAuthenticating(false));
   };
 
   const handleAdd = () => {
@@ -184,13 +217,15 @@ export default function NewsAdminScreen({ navigation }) {
       notify('Title and body are required.', true);
       return;
     }
-    addNews({ ...newDraft, title: newDraft.title.trim(), body: newDraft.body.trim() })
-      .then(() => {
-        setNewDraft(emptyDraft());
-        notify('Announcement added!');
-        load();
-      })
-      .catch(() => notify('Could not add the announcement.', true));
+    runBusy('add', () =>
+      addNews({ ...newDraft, title: newDraft.title.trim(), body: newDraft.body.trim() })
+        .then(() => {
+          setNewDraft(emptyDraft());
+          notify('Announcement added!');
+          return load();
+        })
+        .catch(() => notify('Could not add the announcement.', true))
+    );
   };
 
   const startEdit = item => {
@@ -209,22 +244,26 @@ export default function NewsAdminScreen({ navigation }) {
       notify('Title and body are required.', true);
       return;
     }
-    updateNews(id, { ...editDraft, title: editDraft.title.trim(), body: editDraft.body.trim() })
-      .then(() => {
-        setEditingId(null);
-        notify('Updated!');
-        load();
-      })
-      .catch(() => notify('Could not save changes.', true));
+    runBusy(`save:${id}`, () =>
+      updateNews(id, { ...editDraft, title: editDraft.title.trim(), body: editDraft.body.trim() })
+        .then(() => {
+          setEditingId(null);
+          notify('Updated!');
+          return load();
+        })
+        .catch(() => notify('Could not save changes.', true))
+    );
   };
 
   const handleToggle = id => {
-    toggleNews(id)
-      .then(() => {
-        notify('Status toggled.');
-        load();
-      })
-      .catch(() => notify('Could not change the status.', true));
+    runBusy(`toggle:${id}`, () =>
+      toggleNews(id)
+        .then(() => {
+          notify('Status toggled.');
+          return load();
+        })
+        .catch(() => notify('Could not change the status.', true))
+    );
   };
 
   const handleDelete = id => {
@@ -234,13 +273,15 @@ export default function NewsAdminScreen({ navigation }) {
         text: 'Delete',
         style: 'destructive',
         onPress: () =>
-          deleteNews(id)
-            .then(() => {
-              if (editingId === id) setEditingId(null);
-              notify('Deleted.');
-              load();
-            })
-            .catch(() => notify('Could not delete the announcement.', true)),
+          runBusy(`delete:${id}`, () =>
+            deleteNews(id)
+              .then(() => {
+                if (editingId === id) setEditingId(null);
+                notify('Deleted.');
+                return load();
+              })
+              .catch(() => notify('Could not delete the announcement.', true))
+          ),
       },
     ]);
   };
@@ -303,15 +344,23 @@ export default function NewsAdminScreen({ navigation }) {
                       autoCorrect={false}
                       onSubmitEditing={handleLogin}
                       returnKeyType="go"
+                      editable={!isAuthenticating}
                     />
 
                     <TouchableOpacity
-                      style={styles.primaryButton}
+                      style={[styles.primaryButton, isAuthenticating && styles.buttonBusy]}
                       onPress={handleLogin}
                       activeOpacity={0.85}
+                      disabled={isAuthenticating}
                     >
-                      <FontAwesome5 name="sign-in-alt" size={12} color={COLORS.white} />
-                      <Text style={styles.primaryButtonText}>Login</Text>
+                      {isAuthenticating ? (
+                        <ActivityIndicator size="small" color={COLORS.white} />
+                      ) : (
+                        <FontAwesome5 name="sign-in-alt" size={12} color={COLORS.white} />
+                      )}
+                      <Text style={styles.primaryButtonText}>
+                        {isAuthenticating ? 'Signing in…' : 'Login'}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -339,12 +388,23 @@ export default function NewsAdminScreen({ navigation }) {
                   <View style={styles.cardPad}>
                     <AnnouncementForm draft={newDraft} setDraft={setNewDraft} />
                     <TouchableOpacity
-                      style={[styles.primaryButton, styles.publishButton]}
+                      style={[
+                        styles.primaryButton,
+                        styles.publishButton,
+                        isBusy('add') && styles.buttonBusy,
+                      ]}
                       onPress={handleAdd}
                       activeOpacity={0.85}
+                      disabled={isBusy('add')}
                     >
-                      <FontAwesome5 name="paper-plane" size={12} color={COLORS.white} />
-                      <Text style={styles.primaryButtonText}>Publish</Text>
+                      {isBusy('add') ? (
+                        <ActivityIndicator testID="publish-spinner" size="small" color={COLORS.white} />
+                      ) : (
+                        <FontAwesome5 name="paper-plane" size={12} color={COLORS.white} />
+                      )}
+                      <Text style={styles.primaryButtonText}>
+                        {isBusy('add') ? 'Publishing…' : 'Publish'}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -403,32 +463,65 @@ export default function NewsAdminScreen({ navigation }) {
 
                         <View style={styles.actionCol}>
                           <TouchableOpacity
-                            style={[styles.actionButton, styles.actionSecondary]}
+                            style={[
+                              styles.actionButton,
+                              styles.actionSecondary,
+                              rowBusy(item.id) && styles.buttonBusy,
+                            ]}
                             onPress={() => handleToggle(item.id)}
                             activeOpacity={0.75}
                             accessibilityLabel={item.active ? 'Hide' : 'Show'}
+                            disabled={rowBusy(item.id)}
                           >
-                            <FontAwesome5
-                              name={item.active ? 'eye-slash' : 'eye'}
-                              size={12}
-                              color={COLORS.textMuted}
-                            />
+                            {isBusy(`toggle:${item.id}`) ? (
+                              <ActivityIndicator
+                                testID={`toggle-spinner-${item.id}`}
+                                size="small"
+                                color={COLORS.textMuted}
+                              />
+                            ) : (
+                              <FontAwesome5
+                                name={item.active ? 'eye-slash' : 'eye'}
+                                size={12}
+                                color={COLORS.textMuted}
+                              />
+                            )}
                           </TouchableOpacity>
+                          {/* Edit opens the form locally — nothing to wait for, but
+                              it stays disabled while the row has a request in flight. */}
                           <TouchableOpacity
-                            style={[styles.actionButton, styles.actionPrimary]}
+                            style={[
+                              styles.actionButton,
+                              styles.actionPrimary,
+                              rowBusy(item.id) && styles.buttonBusy,
+                            ]}
                             onPress={() => startEdit(item)}
                             activeOpacity={0.75}
                             accessibilityLabel="Edit"
+                            disabled={rowBusy(item.id)}
                           >
                             <FontAwesome5 name="edit" size={12} color={COLORS.primary} />
                           </TouchableOpacity>
                           <TouchableOpacity
-                            style={[styles.actionButton, styles.actionDanger]}
+                            style={[
+                              styles.actionButton,
+                              styles.actionDanger,
+                              rowBusy(item.id) && styles.buttonBusy,
+                            ]}
                             onPress={() => handleDelete(item.id)}
                             activeOpacity={0.75}
                             accessibilityLabel="Delete"
+                            disabled={rowBusy(item.id)}
                           >
-                            <FontAwesome5 name="trash" size={12} color={COLORS.danger} />
+                            {isBusy(`delete:${item.id}`) ? (
+                              <ActivityIndicator
+                                testID={`delete-spinner-${item.id}`}
+                                size="small"
+                                color={COLORS.danger}
+                              />
+                            ) : (
+                              <FontAwesome5 name="trash" size={12} color={COLORS.danger} />
+                            )}
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -443,17 +536,36 @@ export default function NewsAdminScreen({ navigation }) {
                           />
                           <View style={styles.editActions}>
                             <TouchableOpacity
-                              style={[styles.primaryButton, styles.editSaveButton]}
+                              style={[
+                                styles.primaryButton,
+                                styles.editSaveButton,
+                                isBusy(`save:${item.id}`) && styles.buttonBusy,
+                              ]}
                               onPress={() => handleSaveEdit(item.id)}
                               activeOpacity={0.85}
+                              disabled={isBusy(`save:${item.id}`)}
                             >
-                              <FontAwesome5 name="save" size={12} color={COLORS.white} />
-                              <Text style={styles.primaryButtonText}>Save Changes</Text>
+                              {isBusy(`save:${item.id}`) ? (
+                                <ActivityIndicator
+                                  testID={`save-spinner-${item.id}`}
+                                  size="small"
+                                  color={COLORS.white}
+                                />
+                              ) : (
+                                <FontAwesome5 name="save" size={12} color={COLORS.white} />
+                              )}
+                              <Text style={styles.primaryButtonText}>
+                                {isBusy(`save:${item.id}`) ? 'Saving…' : 'Save Changes'}
+                              </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={styles.cancelButton}
+                              style={[
+                                styles.cancelButton,
+                                isBusy(`save:${item.id}`) && styles.buttonBusy,
+                              ]}
                               onPress={() => setEditingId(null)}
                               activeOpacity={0.85}
+                              disabled={isBusy(`save:${item.id}`)}
                             >
                               <Text style={styles.cancelButtonText}>Cancel</Text>
                             </TouchableOpacity>
@@ -577,6 +689,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: { fontSize: 13.5, fontWeight: '600', color: COLORS.white },
   publishButton: { alignSelf: 'flex-start', paddingHorizontal: 28 },
+  buttonBusy: { opacity: 0.7 },
 
   alert: {
     borderRadius: 6,
