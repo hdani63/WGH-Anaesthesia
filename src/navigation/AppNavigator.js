@@ -35,6 +35,7 @@ import AIEducationScreen from '../screens/AIEducationScreen';
 import AntimicrobialsScreen from '../screens/AntimicrobialsScreen';
 import UHWGuidelinesScreen from '../screens/UHWGuidelinesScreen';
 import RegulatoryScreen from '../screens/RegulatoryScreen';
+import NewsAdminScreen from '../screens/NewsAdminScreen';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -98,6 +99,7 @@ function MainNavigator() {
       <MainStack.Screen name="Antimicrobials" component={AntimicrobialsScreen} options={{ title: 'Sepsis / Antimicrobial Guidelines' }} />
       <MainStack.Screen name="UHWGuidelines" component={UHWGuidelinesScreen} options={{ title: 'UHW Antimicrobial Guidelines' }} />
       <MainStack.Screen name="Regulatory" component={RegulatoryScreen} options={{ title: 'Regulatory & Safety' }} />
+      <MainStack.Screen name="NewsAdmin" component={NewsAdminScreen} options={{ title: 'News Admin' }} />
       <MainStack.Screen name="PdfViewerScreen" component={PdfViewerScreen} options={{ title: 'PDF Viewer' }} />
     </MainStack.Navigator>
   );

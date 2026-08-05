@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Modal, Pressable, View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,6 +6,8 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
+import NewsFeed from '../components/NewsFeed';
+import { getNews } from '../services/newsService';
 
 // Home grid mirrors the Replit web app (templates/index_simple.html): the same
 // 16 tools, in the same order, with matching titles, badges and per-tile colors.
@@ -34,6 +36,10 @@ export default function HomeScreen({ navigation }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [search, setSearch] = useState('');
+  // Home is split into two tabs, matching the web app: Tools | News & Updates.
+  const [activeTab, setActiveTab] = useState('tools');
+  const [hasNews, setHasNews] = useState(false);
+  const [newsOpened, setNewsOpened] = useState(false);
   const menuButtonRef = useRef(null);
   const { width } = useWindowDimensions();
   const isCompactHeader = width < 768;
@@ -79,6 +85,29 @@ export default function HomeScreen({ navigation }) {
         },
       ]
     );
+  };
+
+  // The "New" badge on the News tab shows while there are announcements the
+  // user hasn't opened yet, so check for them without waiting for the tab.
+  useEffect(() => {
+    let cancelled = false;
+    getNews()
+      .then(items => {
+        if (!cancelled) setHasNews(Array.isArray(items) && items.length > 0);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleNewsLoaded = useCallback(items => {
+    setHasNews(items.length > 0);
+  }, []);
+
+  const openNewsTab = () => {
+    setActiveTab('news');
+    setNewsOpened(true);
   };
 
   // All tools are accessible to both guests and authenticated users.
@@ -195,6 +224,48 @@ export default function HomeScreen({ navigation }) {
             </View>
           </Modal>
 
+        <View style={styles.tabBar}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'tools' && styles.tabActive]}
+            onPress={() => setActiveTab('tools')}
+            activeOpacity={0.8}
+          >
+            <FontAwesome5
+              name="th"
+              size={13}
+              color={activeTab === 'tools' ? COLORS.medicalBlue : COLORS.textMuted}
+            />
+            <Text style={[styles.tabText, activeTab === 'tools' && styles.tabTextActive]}>Tools</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'news' && styles.tabActive]}
+            onPress={openNewsTab}
+            activeOpacity={0.8}
+          >
+            <FontAwesome5
+              name="bullhorn"
+              size={13}
+              color={activeTab === 'news' ? COLORS.medicalBlue : COLORS.textMuted}
+            />
+            <Text style={[styles.tabText, activeTab === 'news' && styles.tabTextActive]}>
+              News & Updates
+            </Text>
+            {hasNews && !newsOpened && (
+              <View style={styles.tabBadge}>
+                <Text style={styles.tabBadgeText}>New</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {activeTab === 'news' ? (
+          <NewsFeed
+            onLoaded={handleNewsLoaded}
+            onAdminPress={() => navigation.navigate('NewsAdmin')}
+          />
+        ) : (
+        <>
         <View style={styles.searchWrap}>
           <View style={styles.searchBar}>
             <FontAwesome5 name="search" size={14} color={COLORS.textMuted || '#6c757d'} style={styles.searchIcon} />
@@ -294,6 +365,12 @@ export default function HomeScreen({ navigation }) {
           ))}
           </View>
         </View>
+        </>
+        )}
+
+          {/* Pushes the footer to the bottom of the screen when the tab content
+              is shorter than the viewport (e.g. an empty news feed). */}
+          <View style={styles.footerSpacer} />
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>© 2025 Anaesthesia Companion App</Text>
@@ -309,7 +386,8 @@ const styles = StyleSheet.create({
   safeAreaGradient: { flex: 1 },
   safeArea: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { paddingBottom: 24, position: 'relative' },
+  // flexGrow lets the content fill the viewport so the footer can sit at the bottom.
+  content: { flexGrow: 1, position: 'relative' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -400,6 +478,44 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 10,
   },
+  tabBar: {
+    flexDirection: 'row',
+    paddingHorizontal: SPACING.sm,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.border,
+    marginBottom: SPACING.sm,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    marginBottom: -2,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  tabActive: {
+    borderBottomColor: COLORS.medicalBlue,
+  },
+  tabText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+  },
+  tabTextActive: { color: COLORS.medicalBlue },
+  tabBadge: {
+    backgroundColor: COLORS.danger,
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    marginLeft: 2,
+  },
+  tabBadgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: COLORS.white,
+  },
   searchWrap: { paddingHorizontal: SPACING.sm, marginBottom: SPACING.md },
   searchBar: {
     flexDirection: 'row',
@@ -483,6 +599,7 @@ const styles = StyleSheet.create({
     width: '31%',
     marginBottom: SPACING.md,
   },
+  footerSpacer: { flexGrow: 1 },
   footer: {
     alignItems: 'center',
     paddingHorizontal: SPACING.md,
