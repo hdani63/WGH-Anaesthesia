@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,6 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { NEWS_TYPES, NEWS_TYPE_ORDER, getNewsType } from '../data/newsTypes';
 import {
@@ -25,7 +27,11 @@ import {
   todayIso,
   toggleNews,
   updateNews,
+  uploadImage,
+  validateImageAsset,
 } from '../services/newsService';
+
+const IMAGE_PICKER_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 
 const ADMIN_NAVY = '#1e3a5f';
 
@@ -77,6 +83,94 @@ function Checkbox({ checked, label, onToggle }) {
   );
 }
 
+function fileNameFromUrl(url) {
+  if (!url) return '';
+  const clean = url.split('?')[0];
+  const parts = clean.split('/');
+  return parts[parts.length - 1] || url;
+}
+
+function AttachmentField({ draft, update }) {
+  const [pickError, setPickError] = useState(null);
+
+  const pickFile = async () => {
+    setPickError(null);
+    let result;
+    try {
+      result = await DocumentPicker.getDocumentAsync({
+        type: IMAGE_PICKER_TYPES,
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+    } catch {
+      setPickError('Could not open the file picker.');
+      return;
+    }
+
+    if (result.canceled || !result.assets?.length) return;
+
+    const asset = result.assets[0];
+    const invalidReason = validateImageAsset(asset);
+    if (invalidReason) {
+      setPickError(invalidReason);
+      return;
+    }
+
+    update({ imageAsset: asset, removeImage: false });
+  };
+
+  const clearSelection = () => {
+    setPickError(null);
+    update({ imageAsset: null, removeImage: true });
+  };
+
+  const hasExisting = !draft.removeImage && !draft.imageAsset && !!draft.imageUrl;
+  const displayName = draft.imageAsset
+    ? draft.imageAsset.name
+    : hasExisting
+    ? fileNameFromUrl(draft.imageUrl)
+    : 'no file selected';
+  const canClear = hasExisting || !!draft.imageAsset;
+
+  const previewUri = draft.imageAsset
+    ? draft.imageAsset.uri
+    : hasExisting
+    ? draft.imageUrl
+    : null;
+  const previewType = draft.imageAsset ? draft.imageAsset.mimeType : null;
+  const isPdfPreview = previewType
+    ? previewType === 'application/pdf'
+    : /\.pdf$/i.test(previewUri || '');
+  const showPreview = previewUri && !isPdfPreview;
+
+  return (
+    <>
+      <FieldLabel>Image / Flyer (optional — JPG, PNG, GIF, WEBP, PDF · max 16MB)</FieldLabel>
+      {showPreview && <Image source={{ uri: previewUri }} style={styles.attachmentPreview} resizeMode="cover" />}
+      <View style={styles.attachmentRow}>
+        <TouchableOpacity style={styles.chooseFileButton} onPress={pickFile} activeOpacity={0.8}>
+          <FontAwesome5 name="image" size={11} color={COLORS.primary} />
+          <Text style={styles.chooseFileText}>Choose File</Text>
+        </TouchableOpacity>
+        <Text style={styles.attachmentName} numberOfLines={1}>
+          {displayName}
+        </Text>
+        {canClear && (
+          <TouchableOpacity
+            style={styles.removeFileButton}
+            onPress={clearSelection}
+            activeOpacity={0.75}
+            accessibilityLabel="Remove attachment"
+          >
+            <FontAwesome5 name="times" size={11} color={COLORS.danger} />
+          </TouchableOpacity>
+        )}
+      </View>
+      {pickError && <Text style={styles.attachmentError}>{pickError}</Text>}
+    </>
+  );
+}
+
 function AnnouncementForm({ draft, setDraft, pinLabel = '📌 Pin to top (always shows first)' }) {
   const update = patch => setDraft({ ...draft, ...patch });
 
@@ -119,6 +213,8 @@ function AnnouncementForm({ draft, setDraft, pinLabel = '📌 Pin to top (always
         Plain text. Line breaks are shown as-is on the home screen.
       </Text>
 
+      <AttachmentField draft={draft} update={update} />
+
       <Checkbox
         checked={draft.pinned}
         label={pinLabel}
@@ -136,7 +232,37 @@ const emptyDraft = () => ({
   type: 'info',
   publishedDate: todayIso(),
   pinned: false,
+  imageUrl: null, // existing attachment URL (edit) or null (new)
+  imageAsset: null, // newly picked file pending upload, if any
+  removeImage: false, // user asked to clear the existing attachment
 });
+
+// Resolves what `imageUrl` to send with a create/update request: uploads a
+// freshly picked file if there is one, honours an explicit "remove", or
+// otherwise keeps whatever was already there.
+function resolveImageUrl(draft) {
+  if (draft.imageAsset) {
+    return uploadImage(draft.imageAsset).then(result => result.url);
+  }
+  if (draft.removeImage) {
+    return Promise.resolve(null);
+  }
+  return Promise.resolve(draft.imageUrl || null);
+}
+
+// Only the fields the API contract expects — the draft also carries
+// transient, client-only picker state (imageAsset, removeImage) that has no
+// business being serialized and sent over the wire.
+function toAnnouncementFields(draft, imageUrl) {
+  return {
+    title: draft.title.trim(),
+    body: draft.body.trim(),
+    type: draft.type,
+    publishedDate: draft.publishedDate,
+    pinned: draft.pinned,
+    imageUrl,
+  };
+}
 
 export default function NewsAdminScreen({ navigation }) {
   const [authed, setAuthed] = useState(false);
@@ -218,13 +344,17 @@ export default function NewsAdminScreen({ navigation }) {
       return;
     }
     runBusy('add', () =>
-      addNews({ ...newDraft, title: newDraft.title.trim(), body: newDraft.body.trim() })
+      resolveImageUrl(newDraft)
+        .catch(err => {
+          throw new Error(err?.message || 'Could not upload the image.');
+        })
+        .then(imageUrl => addNews(toAnnouncementFields(newDraft, imageUrl)))
         .then(() => {
           setNewDraft(emptyDraft());
           notify('Announcement added!');
           return load();
         })
-        .catch(() => notify('Could not add the announcement.', true))
+        .catch(err => notify(err?.message || 'Could not add the announcement.', true))
     );
   };
 
@@ -236,6 +366,9 @@ export default function NewsAdminScreen({ navigation }) {
       type: item.type,
       publishedDate: item.publishedDate,
       pinned: item.pinned,
+      imageUrl: item.imageUrl || null,
+      imageAsset: null,
+      removeImage: false,
     });
   };
 
@@ -245,13 +378,17 @@ export default function NewsAdminScreen({ navigation }) {
       return;
     }
     runBusy(`save:${id}`, () =>
-      updateNews(id, { ...editDraft, title: editDraft.title.trim(), body: editDraft.body.trim() })
+      resolveImageUrl(editDraft)
+        .catch(err => {
+          throw new Error(err?.message || 'Could not upload the image.');
+        })
+        .then(imageUrl => updateNews(id, toAnnouncementFields(editDraft, imageUrl)))
         .then(() => {
           setEditingId(null);
           notify('Updated!');
           return load();
         })
-        .catch(() => notify('Could not save changes.', true))
+        .catch(err => notify(err?.message || 'Could not save changes.', true))
     );
   };
 
@@ -651,6 +788,37 @@ const styles = StyleSheet.create({
   },
   textarea: { minHeight: 96, paddingTop: 9 },
   helpText: { fontSize: 11, color: COLORS.textMuted, marginTop: 5 },
+
+  attachmentPreview: {
+    width: '100%',
+    height: 140,
+    borderRadius: 6,
+    marginBottom: 8,
+    backgroundColor: '#f1f3f5',
+  },
+  attachmentRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  chooseFileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  chooseFileText: { fontSize: 12, fontWeight: '600', color: COLORS.primary },
+  attachmentName: { flex: 1, fontSize: 12, color: COLORS.textMuted },
+  removeFileButton: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: COLORS.danger,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attachmentError: { fontSize: 11, color: COLORS.danger, marginTop: 5 },
 
   typeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   typeChip: {

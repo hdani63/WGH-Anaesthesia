@@ -1,6 +1,6 @@
 import { BACKEND_URL } from '../../env';
 
-function normalizeApiBase(url) {
+export function normalizeApiBase(url) {
 	const trimmed = String(url || '').replace(/\/+$/, '');
 	if (!trimmed) return '';
 	return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;

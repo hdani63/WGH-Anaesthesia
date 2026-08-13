@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Modal, Pressable, View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert, Keyboard, Modal, Pressable, View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -106,12 +106,24 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   const openNewsTab = () => {
+    // The tool search box above may still be focused with the keyboard open
+    // (e.g. after typing "news" to find this tab) — dismiss it so it doesn't
+    // carry over onto the News tab.
+    Keyboard.dismiss();
     setActiveTab('news');
     setNewsOpened(true);
   };
 
-  // All tools are accessible to both guests and authenticated users.
+  const openToolsTab = () => {
+    setActiveTab('tools');
+  };
+
+  // All tools are accessible to both guests and authenticated users. Dismiss
+  // the keyboard first — if the tool was found by typing in the search box
+  // (e.g. "who" or "ai"), the keyboard would otherwise still be open and stay
+  // open across the navigation, looking like the destination screen opened it.
   const handleToolPress = (toolKey) => {
+    Keyboard.dismiss();
     navigation.navigate(toolKey);
   };
 
@@ -227,7 +239,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.tabBar}>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'tools' && styles.tabActive]}
-            onPress={() => setActiveTab('tools')}
+            onPress={openToolsTab}
             activeOpacity={0.8}
           >
             <FontAwesome5

@@ -1,13 +1,24 @@
-import { request } from './apiClient';
+import { BACKEND_URL } from '../../env';
+import { normalizeApiBase, request } from './apiClient';
 
 // News & Announcements network layer — see docs/NEWS_API.md for the contract.
 //   GET    /news                     public feed (active only, pinned first)
 //   POST   /admin/news/login         shared-password sign-in -> bearer token
 //   GET    /admin/news               everything, hidden included
 //   POST   /admin/news               publish
+//   POST   /admin/news/upload        image/flyer attachment -> { url }
 //   PUT    /admin/news/:id           full replace
 //   PATCH  /admin/news/:id/toggle    hide / show
 //   DELETE /admin/news/:id           hard delete
+
+const MAX_IMAGE_BYTES = 16 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+]);
 
 // Held in memory only, so it never reaches disk and dies with the process.
 // NewsAdminScreen clears it on unmount.
@@ -17,6 +28,66 @@ const auth = () => ({ Authorization: `Bearer ${adminToken}` });
 
 export function clearAdminToken() {
   adminToken = null;
+}
+
+// Client-side pre-flight checks — the server enforces the real limits, this
+// just gives an immediate, specific message instead of waiting on a request
+// that's certain to fail (and avoids uploading a file we already know is bad).
+export function validateImageAsset(asset) {
+  if (!asset) return null;
+
+  const type = asset.mimeType || asset.type;
+  if (type && !ALLOWED_IMAGE_TYPES.has(type)) {
+    return 'Unsupported file type. Use JPG, PNG, GIF, WEBP or PDF.';
+  }
+
+  if (typeof asset.size === 'number' && asset.size > MAX_IMAGE_BYTES) {
+    return 'File is too large. Maximum size is 16MB.';
+  }
+
+  return null;
+}
+
+// Uploads a picked document/image and returns its public URL. Bypasses the
+// JSON-only request() helper — a multipart body needs its own boundary, which
+// fetch sets automatically as long as we don't specify Content-Type ourselves.
+export function uploadImage(asset) {
+  const invalidReason = validateImageAsset(asset);
+  if (invalidReason) {
+    return Promise.reject(new Error(invalidReason));
+  }
+
+  const formData = new FormData();
+  formData.append('file', {
+    uri: asset.uri,
+    name: asset.name || 'upload',
+    type: asset.mimeType || asset.type || 'application/octet-stream',
+  });
+
+  const url = `${normalizeApiBase(BACKEND_URL)}/admin/news/upload`;
+
+  return fetch(url, {
+    method: 'POST',
+    headers: auth(),
+    body: formData,
+  })
+    .catch(() => {
+      throw new Error(`Cannot connect to API at ${url}.`);
+    })
+    .then(async response => {
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch {
+        // ignore — handled by the checks below
+      }
+
+      if (!response.ok || payload?.success === false) {
+        throw new Error(payload?.message || `Upload failed (${response.status})`);
+      }
+
+      return payload?.data ?? payload;
+    });
 }
 
 export function formatDate(isoDate) {

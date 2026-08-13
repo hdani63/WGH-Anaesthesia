@@ -1,15 +1,25 @@
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { getNewsType } from '../data/newsTypes';
 import { getNews } from '../services/newsService';
 
+const isPdfAttachment = url => /\.pdf(\?.*)?$/i.test(String(url || ''));
+
 export default function NewsFeed({ onLoaded, onAdminPress }) {
+  const navigation = useNavigation();
   const [items, setItems] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const openAttachment = item => {
+    if (!item.imageUrl) return;
+    if (isPdfAttachment(item.imageUrl)) {
+      navigation.navigate('PdfViewerScreen', { uri: item.imageUrl, title: item.title });
+    }
+  };
 
   const load = useCallback(() => {
     let cancelled = false;
@@ -95,6 +105,25 @@ export default function NewsFeed({ onLoaded, onAdminPress }) {
                   </View>
 
                   <Text style={styles.body}>{item.body}</Text>
+
+                  {item.imageUrl && (
+                    isPdfAttachment(item.imageUrl) ? (
+                      <TouchableOpacity
+                        style={styles.attachmentLink}
+                        onPress={() => openAttachment(item)}
+                        activeOpacity={0.75}
+                      >
+                        <FontAwesome5 name="file-pdf" size={12} color={COLORS.medicalBlue} />
+                        <Text style={styles.attachmentLinkText}>View Flyer / PDF</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <Image
+                        source={{ uri: item.imageUrl }}
+                        style={styles.attachmentImage}
+                        resizeMode="cover"
+                      />
+                    )
+                  )}
 
                   <View style={styles.dateRow}>
                     <FontAwesome5 name="calendar-alt" size={10} color={COLORS.textMuted} />
@@ -185,6 +214,26 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 8,
   },
+  attachmentImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: BORDER_RADIUS,
+    marginBottom: 8,
+    backgroundColor: '#f1f3f5',
+  },
+  attachmentLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: COLORS.medicalBlue,
+    borderRadius: BORDER_RADIUS,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    marginBottom: 8,
+  },
+  attachmentLinkText: { fontSize: 12, fontWeight: '600', color: COLORS.medicalBlue },
   dateRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   date: { fontSize: 11, color: COLORS.textMuted },
   adminWrap: {

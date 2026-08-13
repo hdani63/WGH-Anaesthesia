@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 10
   cacheKey: 10c0
 
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.29.7":
@@ -4416,6 +4416,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-document-picker@npm:~55.0.15":
+  version: 55.0.15
+  resolution: "expo-document-picker@npm:55.0.15"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/6822a82a91281cd33aa51b9d3fb9aafe908a5bc618ee5e9700228c2fac2b0eb4501f60fda11daa04950de6e421c386b1472ffb4b1095457866380a44d99c3894
+  languageName: node
+  linkType: hard
+
 "expo-file-system@npm:~55.0.19":
   version: 55.0.19
   resolution: "expo-file-system@npm:55.0.19"
@@ -8398,6 +8407,7 @@ __metadata:
     crypto-js: "npm:^4.2.0"
     expo: "npm:~55.0.23"
     expo-asset: "npm:~55.0.17"
+    expo-document-picker: "npm:~55.0.15"
     expo-file-system: "npm:~55.0.19"
     expo-linear-gradient: "npm:~55.0.13"
     expo-linking: "npm:~55.0.15"
