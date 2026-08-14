@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -78,6 +78,7 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
     >
       <StatusBar barStyle="light-content" backgroundColor={headerColor || COLORS.headerGradientStart} />
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <KeyboardAvoidingView style={styles.keyboardWrap} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <LinearGradient
           colors={[COLORS.headerGradientStart, COLORS.headerGradientEnd]}
@@ -126,6 +127,7 @@ export default function ScreenWrapper({ title, subtitle, children, headerColor, 
         )}
         {children}
         </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -138,6 +140,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  keyboardWrap: {
+    flex: 1,
   },
   container: {
     flex: 1,

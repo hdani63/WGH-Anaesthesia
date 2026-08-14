@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 10
+  version: 8
   cacheKey: 10c0
 
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.29.7":
@@ -4448,6 +4448,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-image-loader@npm:~55.0.1":
+  version: 55.0.1
+  resolution: "expo-image-loader@npm:55.0.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/a596d36bc95f1fedf63805122e21a36aee859d79f1f6726aa256b24908ba0ace8c413556fbe2a824e845f29375072d8d6144c6a6cfbc30b314a42fa88c68f686
+  languageName: node
+  linkType: hard
+
+"expo-image-picker@npm:~55.0.22":
+  version: 55.0.22
+  resolution: "expo-image-picker@npm:55.0.22"
+  dependencies:
+    expo-image-loader: "npm:~55.0.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/2c314b9d7b3c88cc4ea506dd6283ff02b957e412edabeb017e4c83bda2f3b3741b884814b8665bd720e70e36b1bceb2a4d2babf83d4b3ccc00c59558d9251765
+  languageName: node
+  linkType: hard
+
 "expo-keep-awake@npm:~55.0.8":
   version: 55.0.8
   resolution: "expo-keep-awake@npm:55.0.8"
@@ -8409,6 +8429,7 @@ __metadata:
     expo-asset: "npm:~55.0.17"
     expo-document-picker: "npm:~55.0.15"
     expo-file-system: "npm:~55.0.19"
+    expo-image-picker: "npm:~55.0.22"
     expo-linear-gradient: "npm:~55.0.13"
     expo-linking: "npm:~55.0.15"
     expo-sharing: "npm:~55.0.18"
