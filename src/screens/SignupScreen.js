@@ -15,7 +15,7 @@ import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignupScreen({ navigation }) {
-  const { signup, continueAsGuest, isLoading } = useAuth();
+  const { signup, isLoading } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,11 +41,18 @@ export default function SignupScreen({ navigation }) {
     setError('');
 
     try {
-      await signup({
+      const result = await signup({
         fullName: fullName.trim(),
         email: email.trim(),
         password,
       });
+
+      // Sign-up no longer signs the user in — the account waits for the admin —
+      // so send them back to Login with the confirmation rather than leaving
+      // them on a form that looks like it did nothing.
+      if (result?.pendingApproval) {
+        navigation.navigate('Login', { notice: result.message });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to sign up');
     }
@@ -64,8 +71,11 @@ export default function SignupScreen({ navigation }) {
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View style={[styles.card, SHADOW]}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>All new users are registered as paramedical</Text>
+            <Text style={styles.title}>Request Access</Text>
+            <Text style={styles.subtitle}>
+              New accounts are reviewed by the department administrator. You can sign in once your
+              request is approved.
+            </Text>
 
             <View style={styles.fieldWrap}>
               <Text style={styles.label}>Full Name</Text>
@@ -117,7 +127,7 @@ export default function SignupScreen({ navigation }) {
               {isLoading ? (
                 <ActivityIndicator color={COLORS.white} />
               ) : (
-                <Text style={styles.primaryButtonText}>Sign Up</Text>
+                <Text style={styles.primaryButtonText}>Request Access</Text>
               )}
             </TouchableOpacity>
 
@@ -126,26 +136,6 @@ export default function SignupScreen({ navigation }) {
                 Already have an account? <Text style={styles.linkTextStrong}>Login</Text>
               </Text>
             </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            {/* Guest mode — required by Apple App Store Guideline 5.1.1 */}
-            <TouchableOpacity
-              style={styles.guestButton}
-              onPress={continueAsGuest}
-              activeOpacity={0.75}
-            >
-              <Text style={styles.guestButtonText}>Continue as Guest</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.guestNote}>
-              Login is optional. You can explore all clinical tools as a guest.
-            </Text>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -173,6 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textMuted,
     textAlign: 'center',
+    lineHeight: 19,
     marginTop: 6,
     marginBottom: SPACING.lg,
   },
@@ -207,38 +198,4 @@ const styles = StyleSheet.create({
   linkButton: { marginTop: SPACING.md, alignItems: 'center' },
   linkText: { fontSize: 13, color: COLORS.textMuted },
   linkTextStrong: { color: COLORS.primary, fontWeight: '600' },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: SPACING.md,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border,
-  },
-  dividerText: {
-    marginHorizontal: SPACING.sm,
-    fontSize: 12,
-    color: COLORS.textMuted,
-  },
-  guestButton: {
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-    borderRadius: 10,
-    paddingVertical: 11,
-    alignItems: 'center',
-  },
-  guestButtonText: {
-    color: COLORS.primary,
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  guestNote: {
-    marginTop: SPACING.sm,
-    fontSize: 11,
-    color: COLORS.textMuted,
-    textAlign: 'center',
-    lineHeight: 16,
-  },
 });

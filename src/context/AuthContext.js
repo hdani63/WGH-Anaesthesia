@@ -4,6 +4,11 @@ import { useAuthStore } from '../store/authStore';
 
 const AuthContext = createContext(null);
 
+// Fallback copy for the approval gate, used when an older backend build replies
+// to sign-up without a token and without a message of its own.
+const PENDING_APPROVAL_MESSAGE =
+  'Your account request has been sent to the administrator. You will be able to sign in once it is approved.';
+
 function extractToken(payload) {
   const direct = payload?.token || payload?.accessToken || payload?.access_token || payload?.jwt || null;
   if (direct) return direct;
@@ -27,11 +32,9 @@ function extractUser(payload) {
 export function AuthProvider({ children }) {
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
-  const isGuest = useAuthStore((s) => s.isGuest);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const setSession = useAuthStore((s) => s.setSession);
   const clearSession = useAuthStore((s) => s.clearSession);
-  const setGuestMode = useAuthStore((s) => s.setGuestMode);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrating, setIsHydrating] = useState(true);
   const checkedTokenRef = useRef(null);
@@ -46,11 +49,6 @@ export function AuthProvider({ children }) {
         const savedToken = token;
         const savedUser = user || null;
 
-        // Guest sessions don't need server verification
-        if (isGuest) {
-          return;
-        }
-
         if (!savedToken) {
           checkedTokenRef.current = null;
           return;
@@ -64,11 +62,18 @@ export function AuthProvider({ children }) {
           if (!mounted) return;
           setSession({ token: savedToken, user: me || savedUser || null });
           return;
-        } catch {
+        } catch (err) {
           if (!mounted) return;
-          if (savedToken) {
-            return;
+
+          // 401/403 means the server rejected this session outright — the token
+          // is invalid, or the admin revoked the account's approval. Anything
+          // else (offline, server down) keeps the saved session usable.
+          if (err?.status === 401 || err?.status === 403) {
+            checkedTokenRef.current = null;
+            clearSession();
           }
+
+          return;
         }
       } catch {
         // ignore corrupted local session state
@@ -81,7 +86,7 @@ export function AuthProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [hasHydrated, token, user, isGuest, setSession]);
+  }, [hasHydrated, token, user, setSession, clearSession]);
 
   const login = useCallback(async ({ email, password }) => {
     setIsLoading(true);
@@ -91,7 +96,6 @@ export function AuthProvider({ children }) {
       const nextUser = extractUser(result);
       const nextToken = extractToken(result);
       if (nextToken) {
-        // Clear any guest session before setting authenticated session
         setSession({ token: nextToken, user: nextUser });
       }
       return result;
@@ -108,31 +112,23 @@ export function AuthProvider({ children }) {
 
       const signupToken = extractToken(result);
       const signupUser = extractUser(result);
-      if (signupToken) {
-        setSession({ token: signupToken, user: signupUser });
-        return result;
+
+      // Sign-up creates an access request, not a session: the backend withholds
+      // the token until a super admin approves the account from the admin panel.
+      if (!signupToken) {
+        return {
+          pendingApproval: true,
+          message: result?.message || PENDING_APPROVAL_MESSAGE,
+          user: signupUser,
+        };
       }
 
-      const loginResult = await authService.login({ email, password });
-      const nextUser = extractUser(loginResult);
-      const nextToken = extractToken(loginResult);
-      if (nextToken) {
-        setSession({ token: nextToken, user: nextUser });
-      }
-      return loginResult;
+      setSession({ token: signupToken, user: signupUser });
+      return { pendingApproval: false, user: signupUser };
     } finally {
       setIsLoading(false);
     }
   }, [setSession]);
-
-  /**
-   * Enters guest mode — no server call required.
-   * Complies with Apple App Store Review Guideline 5.1.1 which requires
-   * apps to allow users to access core functionality without creating an account.
-   */
-  const continueAsGuest = useCallback(() => {
-    setGuestMode(true);
-  }, [setGuestMode]);
 
   const logout = useCallback(async () => {
     clearSession();
@@ -152,18 +148,16 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       token,
-      isGuest,
       isLoading,
       isHydrating,
-      isAuthenticated: Boolean(token) || isGuest,
+      isAuthenticated: Boolean(token),
       isFullyAuthenticated: Boolean(token),
       login,
       signup,
-      continueAsGuest,
       logout,
       deleteAccount,
     }),
-    [user, token, isGuest, isLoading, isHydrating, login, signup, continueAsGuest, logout, deleteAccount]
+    [user, token, isLoading, isHydrating, login, signup, logout, deleteAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

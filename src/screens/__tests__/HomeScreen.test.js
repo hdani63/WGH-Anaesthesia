@@ -11,7 +11,6 @@ jest.mock('../../context/AuthContext', () => ({
     logout: jest.fn(),
     deleteAccount: jest.fn(),
     isLoading: false,
-    isGuest: false,
   }),
 }));
 

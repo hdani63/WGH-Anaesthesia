@@ -32,7 +32,7 @@ const TOOLS = [
 ];
 
 export default function HomeScreen({ navigation }) {
-  const { user, logout, deleteAccount, isLoading, isGuest } = useAuth();
+  const { user, logout, deleteAccount, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [search, setSearch] = useState('');
@@ -118,8 +118,7 @@ export default function HomeScreen({ navigation }) {
     setActiveTab('tools');
   };
 
-  // All tools are accessible to both guests and authenticated users. Dismiss
-  // the keyboard first — if the tool was found by typing in the search box
+  // Dismiss the keyboard first — if the tool was found by typing in the search box
   // (e.g. "who" or "ai"), the keyboard would otherwise still be open and stay
   // open across the navigation, looking like the destination screen opened it.
   const handleToolPress = (toolKey) => {
@@ -189,49 +188,22 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.menuDropdown}>
                 <View style={styles.menuUserRow}>
                   <FontAwesome5 name="user-circle" size={18} color={COLORS.medicalBlue} />
-                  <Text style={styles.menuUserText}>
-                    {isGuest ? 'Guest' : (user?.fullName || 'User')}
-                  </Text>
+                  <Text style={styles.menuUserText}>{user?.fullName || 'User'}</Text>
                 </View>
 
-                {isGuest ? (
-                  // Guest menu: prompt to sign in or create account
-                  <>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => { setIsMenuOpen(false); logout(); }}
-                      activeOpacity={0.75}
-                    >
-                      <FontAwesome5 name="sign-in-alt" size={14} color={COLORS.medicalBlue} />
-                      <Text style={styles.menuItemText}>Sign In</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => { setIsMenuOpen(false); logout(); }}
-                      activeOpacity={0.75}
-                    >
-                      <FontAwesome5 name="user-plus" size={14} color={COLORS.medicalBlue} />
-                      <Text style={styles.menuItemText}>Create Account</Text>
-                    </TouchableOpacity>
-                  </>
-                ) : (
-                  // Authenticated menu: logout and delete account
-                  <>
-                    <TouchableOpacity style={styles.menuItem} onPress={handleLogout} activeOpacity={0.75}>
-                      <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.medicalBlue} />
-                      <Text style={styles.menuItemText}>Logout</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={handleDeleteAccount}
-                      activeOpacity={0.75}
-                      disabled={isLoading}
-                    >
-                      <FontAwesome5 name="trash-alt" size={14} color={COLORS.danger || '#dc3545'} />
-                      <Text style={styles.deleteMenuText}>Delete Account</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout} activeOpacity={0.75}>
+                  <FontAwesome5 name="sign-out-alt" size={14} color={COLORS.medicalBlue} />
+                  <Text style={styles.menuItemText}>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={handleDeleteAccount}
+                  activeOpacity={0.75}
+                  disabled={isLoading}
+                >
+                  <FontAwesome5 name="trash-alt" size={14} color={COLORS.danger || '#dc3545'} />
+                  <Text style={styles.deleteMenuText}>Delete Account</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>

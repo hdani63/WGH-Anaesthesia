@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -14,11 +14,19 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
 
-export default function LoginScreen({ navigation }) {
-  const { login, continueAsGuest, isLoading } = useAuth();
+export default function LoginScreen({ navigation, route }) {
+  const { login, isLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState(route?.params?.notice || '');
+
+  // Login is already mounted underneath Signup, so navigating back to it with a
+  // notice only updates params — the initial useState value never re-runs.
+  const routeNotice = route?.params?.notice;
+  useEffect(() => {
+    if (routeNotice) setNotice(routeNotice);
+  }, [routeNotice]);
 
   const onLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -27,6 +35,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     setError('');
+    setNotice('');
 
     try {
       await login({ email: email.trim(), password });
@@ -50,6 +59,8 @@ export default function LoginScreen({ navigation }) {
           <View style={[styles.card, SHADOW]}>
             <Text style={styles.title}>Anaesthesia Companion</Text>
             <Text style={styles.subtitle}>Sign in to continue</Text>
+
+            {notice ? <Text style={styles.notice}>{notice}</Text> : null}
 
             <View style={styles.fieldWrap}>
               <Text style={styles.label}>Email</Text>
@@ -86,28 +97,12 @@ export default function LoginScreen({ navigation }) {
 
             <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.linkButton}>
               <Text style={styles.linkText}>
-                No account? <Text style={styles.linkTextStrong}>Sign up</Text>
+                No account? <Text style={styles.linkTextStrong}>Request access</Text>
               </Text>
             </TouchableOpacity>
 
-            {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            {/* Guest mode — required by Apple App Store Guideline 5.1.1 */}
-            <TouchableOpacity
-              style={styles.guestButton}
-              onPress={continueAsGuest}
-              activeOpacity={0.75}
-            >
-              <Text style={styles.guestButtonText}>Continue as Guest</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.guestNote}>
-              Login is optional. You can explore all clinical tools as a guest.
+            <Text style={styles.footnote}>
+              Accounts must be approved by the department administrator before first sign in.
             </Text>
           </View>
         </KeyboardAvoidingView>
@@ -170,35 +165,18 @@ const styles = StyleSheet.create({
   linkButton: { marginTop: SPACING.md, alignItems: 'center' },
   linkText: { fontSize: 13, color: COLORS.textMuted },
   linkTextStrong: { color: COLORS.primary, fontWeight: '600' },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: SPACING.md,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border,
-  },
-  dividerText: {
-    marginHorizontal: SPACING.sm,
+  notice: {
+    backgroundColor: '#e7f1ff',
+    borderRadius: 8,
+    color: COLORS.medicalBlue,
     fontSize: 12,
-    color: COLORS.textMuted,
+    lineHeight: 18,
+    marginBottom: SPACING.md,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
-  guestButton: {
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-    borderRadius: 10,
-    paddingVertical: 11,
-    alignItems: 'center',
-  },
-  guestButtonText: {
-    color: COLORS.primary,
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  guestNote: {
-    marginTop: SPACING.sm,
+  footnote: {
+    marginTop: SPACING.md,
     fontSize: 11,
     color: COLORS.textMuted,
     textAlign: 'center',

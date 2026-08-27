@@ -44,7 +44,11 @@ export async function request(path, options = {}) {
 	const message = payload?.message || `Request failed (${response.status})`;
 
 	if (!response.ok || payload?.success === false) {
-		throw new Error(message);
+		// Callers need the status to tell a rejected session (401/403 — token
+		// revoked or account no longer approved) from a transient server error.
+		const error = new Error(message);
+		error.status = response.status;
+		throw error;
 	}
 
 	if (!payload && response.status !== 204) {
